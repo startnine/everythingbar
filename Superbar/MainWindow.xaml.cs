@@ -283,8 +283,8 @@ namespace Superbar
         {
             //Debug.WriteLine((sender as ToggleButton).Tag.GetType().ToString());
             new ProgramWindow((IntPtr)(sender as ToggleButton).Tag).Show();
+            Debug.WriteLine("");
         }
     }
+    //pls
 }
-
-//please
