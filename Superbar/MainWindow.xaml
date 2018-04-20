@@ -1,0 +1,46 @@
+﻿<local:QuadContentWindow x:Class="Superbar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prog="clr-namespace:Start9.Api.Programs;assembly=Start9.Api"
+        xmlns:apiobj="clr-namespace:Start9.Api.Objects;assembly=Start9.Api"
+        xmlns:local="clr-namespace:Superbar"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="40" Width="800" Style="{DynamicResource WindowStyle}" Topmost="True" Background="#6B74B8FC" Loaded="QuadContentWindow_Loaded">
+    <local:QuadContentWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Superbar;component/DefaultSkin.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <apiobj:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </ResourceDictionary>
+    </local:QuadContentWindow.Resources>
+    <local:QuadContentWindow.SecondContent>
+        <!--ScrollViewer x:Name="TaskbandScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Visible" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" ScrollBar.Scroll="TaskbandScrollViewer_Scroll" Loaded="TaskbandScrollViewer_Loaded"-->
+        <DockPanel>
+            <ScrollBar x:Name="TaskbandScrollBar" Orientation="Vertical" DockPanel.Dock="Right" MouseWheel="TaskbandScrollBar_MouseWheel" ValueChanged="TaskbandScrollBar_ValueChanged" />
+            <!--Maximum="{Binding ActualHeight, Source={x:Reference TaskbandListView}}"-->
+            <ListView x:Name="TaskbandListView" ItemsSource="{Binding OpenWindows, Mode=TwoWay}" MouseWheel="TaskbandScrollBar_MouseWheel" Style="{DynamicResource TaskbandStyle}" SelectionMode="Single"/>
+        </DockPanel>
+        <!--/ScrollViewer-->
+    </local:QuadContentWindow.SecondContent>
+    <local:QuadContentWindow.ThirdContent>
+        <StackPanel Orientation="Horizontal">
+            <ToggleButton x:Name="TrayFlyoutToggleButton" Style="{DynamicResource TrayFlyoutToggleButtonStyle}" Click="TrayFlyoutToggleButton_Click"/>
+            <StackPanel x:Name="SystemTrayStackPanel" Orientation="Horizontal"/>
+            <ToggleButton x:Name="ClockButton" Style="{DynamicResource ClockButtonStyle}" Click="ClockButton_Click">
+                <TextBlock Loaded="Clock_Loaded" Style="{DynamicResource ClockTextBlockStyle}"/>
+            </ToggleButton>
+            <Button x:Name="ShowDesktopButton" Style="{DynamicResource ShowDesktopButtonStyle}" Click="ShowDesktopButton_Click"/>
+        </StackPanel>
+    </local:QuadContentWindow.ThirdContent>
+    <StackPanel Orientation="Horizontal">
+        <ToggleButton x:Name="Start" Style="{DynamicResource StartStyle}"/>
+        <ToggleButton x:Name="SearchButton" Style="{DynamicResource SearchButtonStyle}"/>
+        <TextBox x:Name="SearchBox" Style="{DynamicResource SearchBoxStyle}" Visibility="Collapsed"/>
+        <ToggleButton x:Name="TaskView" Style="{DynamicResource TaskViewButtonStyle}"/>
+    </StackPanel>
+</local:QuadContentWindow>
