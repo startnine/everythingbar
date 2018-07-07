@@ -31,20 +31,14 @@ namespace Superbar
     {
         Timer activeWindowTimer = new Timer(1);
 
-        ObservableCollection<TaskItemGroup> openWindows = new ObservableCollection<TaskItemGroup>();
-
-        public ObservableCollection<TaskItemGroup> OpenWindows
-        {
-            get => openWindows;
-            set => openWindows = value;
-        }
+        public ObservableCollection<TaskItemGroup> OpenWindows { get; set; } = new ObservableCollection<TaskItemGroup>();
 
         public MainWindow()
         {
             InitializeComponent();
             Left = 0;
-            Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            Top = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Bottom - Height;
+            Top = SystemParameters.PrimaryScreenHeight - Height;
+            Width = SystemParameters.PrimaryScreenWidth;
             InitialPopulate();
             ProgramWindow.WindowOpened += InsertCreatedWindow;
             //ProgramWindow.WindowClosed += RemoveClosedWindow;
@@ -55,7 +49,7 @@ namespace Superbar
                         IntPtr active = WinApi.GetForegroundWindow();
                         foreach (TaskItemGroup grp in OpenWindows)
                         {
-                            bool containsActive = false;
+                            var containsActive = false;
                             foreach (ProgramWindow win in grp.Windows)
                             {
                                 if (win.Hwnd == active)
@@ -76,7 +70,7 @@ namespace Superbar
             };
         }
 
-        private void QuadContentWindow_Loaded(object sender, RoutedEventArgs e)
+        private void QuadContentWindow_Loaded(Object sender, RoutedEventArgs e)
         {
             activeWindowTimer.Start();
         }
@@ -84,9 +78,9 @@ namespace Superbar
         public void InitialPopulate()
         {
             ObservableCollection<TaskItemGroup> groups = new ObservableCollection<TaskItemGroup>();
-            List<string> processNames = new List<string>();
+            List<String> processNames = new List<String>();
             //1
-            foreach (var wind in ProgramWindow.UserPerceivedProgramWindows)
+            foreach (var wind in ProgramWindow.ProgramWindows)
             {
                 try
                 {
@@ -101,7 +95,7 @@ namespace Superbar
                 }
             }
 
-            foreach (string s in processNames)
+            foreach (var s in processNames)
             {
                 TaskItemGroup group = new TaskItemGroup(s);
                 groups.Add(group);
@@ -128,11 +122,11 @@ namespace Superbar
             OpenWindows = groups;
         }
 
-        public void InsertCreatedWindow(object sender, WindowEventArgs e)
+        public void InsertCreatedWindow(Object sender, WindowEventArgs e)
         {
             Dispatcher.Invoke(new Action(() => {
                 {
-                    bool addedToExistingGroup = false;
+                    var addedToExistingGroup = false;
                     foreach (TaskItemGroup t in OpenWindows)
                     {
                         try
@@ -167,7 +161,7 @@ namespace Superbar
             }));
         }
 
-        public void RemoveClosedWindow(object sender, WindowEventArgs e)
+        public void RemoveClosedWindow(Object sender, WindowEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -194,7 +188,7 @@ namespace Superbar
             }));
         }
 
-        private void Clock_Loaded(object sender, RoutedEventArgs e)
+        private void Clock_Loaded(Object sender, RoutedEventArgs e)
         {
             var clockTimer = new Timer(1);
             clockTimer.Elapsed += (o, args) => Dispatcher.Invoke(new Action(
@@ -203,17 +197,18 @@ namespace Superbar
             clockTimer.Start();
         }
 
-        private void ShowDesktopButton_Click(object sender, RoutedEventArgs e)
+        public static RoutedCommand SubmittedCommand = new RoutedCommand();
+        private void ShowDesktopButton_Click(Object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void ClockButton_Click(object sender, RoutedEventArgs e)
+        private void ClockButton_Click(Object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void TrayFlyoutToggleButton_Click(object sender, RoutedEventArgs e)
+        private void TrayFlyoutToggleButton_Click(Object sender, RoutedEventArgs e)
         {
 
         }/*
@@ -249,7 +244,7 @@ namespace Superbar
             Double finalValue = TaskBandScrollViewer.HorizontalOffset - (e.Delta * 2);
         }*/
 
-        private void TaskbandScrollBar_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void TaskbandScrollBar_MouseWheel(Object sender, MouseWheelEventArgs e)
         {
             if (e.Delta > 0)
             {
@@ -261,8 +256,8 @@ namespace Superbar
             }
         }
 
-        double offset = 0;
-        private void TaskbandScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        Double offset = 0;
+        private void TaskbandScrollBar_ValueChanged(Object sender, RoutedPropertyChangedEventArgs<Double> e)
         {
             var pad = TaskbandListView.Margin;
             if ((e.NewValue > e.OldValue) & (pad.Top <= 0))
@@ -279,11 +274,32 @@ namespace Superbar
             Debug.WriteLine(TaskbandListView.Margin.Top + "    " + (TaskbandListView.ActualHeight - offset));
         }
 
-        private void TaskItemButton_Click(object sender, RoutedEventArgs e)
+        private void TaskItemButton_Click(Object sender, RoutedEventArgs e)
         {
             //Debug.WriteLine((sender as ToggleButton).Tag.GetType().ToString());
             new ProgramWindow((IntPtr)(sender as ToggleButton).Tag).Show();
             Debug.WriteLine("");
+        }
+
+        private void SearchButton_Click(Object sender, RoutedEventArgs e)
+        {
+            SuperbarAddIn.Instance.Host.SendMessage(new Message(DBNull.Value, ((SuperbarMessageContract) SuperbarAddIn.Instance.MessageContract).SearchClickedEntry));
+        }
+
+        private void Start_Click(Object sender, RoutedEventArgs e)
+        {
+            SuperbarAddIn.Instance.Host.SendMessage(new Message(DBNull.Value, ((SuperbarMessageContract) SuperbarAddIn.Instance.MessageContract).StartClickedEntry));
+
+        }
+
+        private void TaskView_Click(Object sender, RoutedEventArgs e)
+        {
+            SuperbarAddIn.Instance.Host.SendMessage(new Message(DBNull.Value, ((SuperbarMessageContract) SuperbarAddIn.Instance.MessageContract).TaskViewClickedEntry));
+        }
+
+        private void CommandBinding_Executed(Object sender, ExecutedRoutedEventArgs e)
+        {
+            SuperbarAddIn.Instance.Host.SendMessage(new Message(SearchBox.Text, ((SuperbarMessageContract)SuperbarAddIn.Instance.MessageContract).SearchInvokedEntry));
         }
     }
     //pls

@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using Start9.Api;
+using Start9.Api.DiskItems;
 using Start9.Api.Programs;
 using Start9.Api.Tools;
 
@@ -18,16 +19,16 @@ namespace Superbar
     public class TaskItemGroup : INotifyPropertyChanged
     {
         public enum TabMode
-        {
+        {   
             None,
             Single,
             Double,
             NotRunning
         }
 
-        bool _combineItems = false;
+        Boolean _combineItems = false;
 
-        public bool CombineItems
+        public Boolean CombineItems
         {
             get => _combineItems;
             set
@@ -94,9 +95,9 @@ namespace Superbar
             }
         }
 
-        bool _isActiveWindow = false;
+        Boolean _isActiveWindow = false;
 
-        public bool IsActiveWindow
+        public Boolean IsActiveWindow
         {
             get
             {
@@ -121,34 +122,23 @@ namespace Superbar
 
         /*public static readonly DependencyProperty GroupTabModeProperty =
             DependencyProperty.Register("GroupTabMode", typeof(TabMode), typeof(TaskItemGroup), new FrameworkPropertyMetadata(TabMode.None, FrameworkPropertyMetadataOptions.AffectsRender));*/
-        string _executableName = "";
-        public string ExecutableName
+        String _executableName = "";
+        public String ExecutableName
         {
             get => _executableName;
             set
             {
                 _executableName = value;
-                NotifyPropertyChanged("ExecutableName");
+                NotifyPropertyChanged(nameof(ExecutableName));
             }
         }
 
 
-        public ImageBrush Icon
-        {
-            get
-            {
-                if (File.Exists(ExecutableName))
-                {
-                    return new ImageBrush(MiscTools.GetIconFromFilePath(ExecutableName, 32, 32, (uint)(0x00000000 | 0x100)));
-                }
-                else
-                {
-                    return new ImageBrush();
-                }
-            }
-        }
+        public ImageBrush Icon => File.Exists(ExecutableName)
+                    ? (ImageBrush)new DiskItemToIconImageBrushConverter().Convert(ExecutableName, null, 32, null)
+                    : new ImageBrush();
 
-        public TaskItemGroup(string name)
+        public TaskItemGroup(String name)
         {
             ExecutableName = name;
             //DataContext = this;
@@ -162,21 +152,20 @@ namespace Superbar
             BindingOperations.SetBinding(this, TaskItemGroup.WindowCountProperty, countBinding);*/
             Windows.CollectionChanged += (sneder, args) =>
             {
-                if (Windows.Count == 0)
+                switch (Windows.Count)
                 {
-                    GroupTabMode = TabMode.NotRunning;
-                }
-                else if (Windows.Count == 1)
-                {
-                    GroupTabMode = TabMode.None;
-                }
-                else if (Windows.Count == 2)
-                {
-                    GroupTabMode = TabMode.Single;
-                }
-                else
-                {
-                    GroupTabMode = TabMode.Double;
+                    case 0:
+                        GroupTabMode = TabMode.NotRunning;
+                        break;
+                    case 1:
+                        GroupTabMode = TabMode.None;
+                        break;
+                    case 2:
+                        GroupTabMode = TabMode.Single;
+                        break;
+                    default:
+                        GroupTabMode = TabMode.Double;
+                        break;
                 }
 
                 //Debug.WriteLine(Windows.Count);
@@ -190,7 +179,7 @@ namespace Superbar
             NotifyPropertyChanged("");
         }
         */
-        private void NotifyPropertyChanged(string propertyName)
+        private void NotifyPropertyChanged(String propertyName)
         {
             if (propertyName == "_activeWindowItem")
             {

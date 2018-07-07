@@ -18,6 +18,11 @@
             <apiobj:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         </ResourceDictionary>
     </local:QuadContentWindow.Resources>
+    <local:QuadContentWindow.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.SubmittedCommand}"
+                        Executed="CommandBinding_Executed"/>
+    </local:QuadContentWindow.CommandBindings>
+
     <local:QuadContentWindow.SecondContent>
         <!--ScrollViewer x:Name="TaskbandScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Visible" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" ScrollBar.Scroll="TaskbandScrollViewer_Scroll" Loaded="TaskbandScrollViewer_Loaded"-->
         <DockPanel>
@@ -38,9 +43,14 @@
         </StackPanel>
     </local:QuadContentWindow.ThirdContent>
     <StackPanel Orientation="Horizontal">
-        <ToggleButton x:Name="Start" Style="{DynamicResource StartStyle}"/>
-        <ToggleButton x:Name="SearchButton" Style="{DynamicResource SearchButtonStyle}"/>
-        <TextBox x:Name="SearchBox" Style="{DynamicResource SearchBoxStyle}" Visibility="Collapsed"/>
-        <ToggleButton x:Name="TaskView" Style="{DynamicResource TaskViewButtonStyle}"/>
+        <ToggleButton Click="Start_Click" x:Name="Start" Style="{DynamicResource StartStyle}"/>
+        <ToggleButton Click="SearchButton_Click" x:Name="SearchButton" Visibility="Collapsed" Style="{DynamicResource SearchButtonStyle}"/>
+        <TextBox x:Name="SearchBox" Style="{DynamicResource SearchBoxStyle}" Visibility="Visible">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{x:Static local:MainWindow.SubmittedCommand}" Key="Return" />
+                <KeyBinding Command="{x:Static local:MainWindow.SubmittedCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
+        <ToggleButton Click="TaskView_Click" x:Name="TaskView" Style="{DynamicResource TaskViewButtonStyle}"/>
     </StackPanel>
 </local:QuadContentWindow>

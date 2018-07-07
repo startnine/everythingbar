@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3E4A0781-D92B-4F66-90B2-28FD48DC2D6F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Superbar.Adapters</RootNamespace>
+    <AssemblyName>Superbar.Adapters</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(AppData)\Start9\Pipeline\AddInSideAdapters</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(AppData)\Start9\Pipeline\AddInSideAdapters</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Start9.Api.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Start9.Api.Contracts.1.0.0-CI00115\lib\net40\Start9.Api.Contracts.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AddIn" />
+    <Reference Include="System.AddIn.Contract" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IConfigurationAddInAdapter.g.cs" />
+    <Compile Include="IConfigurationContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IConfigurationEntryAddInAdapter.g.cs" />
+    <Compile Include="IConfigurationEntryContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IConfigurationEntryViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IConfigurationViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IHostAddInAdapter.g.cs" />
+    <Compile Include="IHostContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IHostViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IMessageAddInAdapter.g.cs" />
+    <Compile Include="IMessageContractAddInAdapter.g.cs" />
+    <Compile Include="IMessageContractContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IMessageContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IMessageContractViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IMessageEntryAddInAdapter.g.cs" />
+    <Compile Include="IMessageEntryContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IMessageEntryViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IMessageEventHandlerContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IMessageEventHandlerViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IMessageViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IModuleAddInAdapter.g.cs" />
+    <Compile Include="IModuleAssemblyAddInAdapter.g.cs" />
+    <Compile Include="IModuleAssemblyContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IModuleAssemblyViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IModuleContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IModuleInstanceAddInAdapter.g.cs" />
+    <Compile Include="IModuleInstanceContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IModuleInstanceViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IModuleViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IReceiverContractAddInAdapter.g.cs" />
+    <Compile Include="IReceiverContractContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IReceiverContractViewToContractAddInAdapter.g.cs" />
+    <Compile Include="IReceiverEntryAddInAdapter.g.cs" />
+    <Compile Include="IReceiverEntryContractToViewAddInAdapter.g.cs" />
+    <Compile Include="IReceiverEntryViewToContractAddInAdapter.g.cs" />
+    <Compile Include="MessageReceivedEventArgsAddInAdapter.g.cs" />
+    <Compile Include="MessageReceivedEventArgsContractToViewAddInAdapter.g.cs" />
+    <Compile Include="MessageReceivedEventArgsViewToContractAddInAdapter.g.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Superbar.Views\Superbar.Views.csproj">
+      <Project>{cdd51319-2904-48ec-9ba9-1004f230068b}</Project>
+      <Name>Superbar.Views</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

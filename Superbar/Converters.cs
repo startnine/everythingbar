@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 using System.Windows.Media;
+using Start9.Api;
 using Start9.Api.Tools;
 
 namespace Superbar
 {
     public class IconToImageBrushConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public Object Convert(Object value, Type targetType,
+            Object parameter, CultureInfo culture)
         {
             try
             {
@@ -27,24 +28,22 @@ namespace Superbar
             }
         }
 
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public Object ConvertBack(Object value, Type targetType,
+            Object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
     }
     public class HwndToIsActiveWindowConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public Object Convert(Object value, Type targetType,
+            Object parameter, CultureInfo culture)
         {
-            if ((IntPtr)(value) == WinApi.GetForegroundWindow())
-                return true;
-            else return false;
+            return (IntPtr) value == WinApi.GetForegroundWindow();
         }
 
-        public object ConvertBack(object value, Type targetType,
-            object parameter, CultureInfo culture)
+        public Object ConvertBack(Object value, Type targetType,
+            Object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
