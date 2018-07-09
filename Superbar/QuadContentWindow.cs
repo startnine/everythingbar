@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using Start9.Api.AppBar;
+using System.Windows;
 
 namespace Superbar
 {
-    public class QuadContentWindow : Window
+    public class QuadContentWindow : AppBarWindow
     {
         public QuadContentWindow()
         {
@@ -12,7 +13,7 @@ namespace Superbar
         public System.Object SecondContent
         {
             get => GetValue(SecondContentProperty);
-            set => SetValue(SecondContentProperty, (value));
+            set => SetValue(SecondContentProperty, value);
         }
 
         public static readonly DependencyProperty SecondContentProperty =
@@ -21,7 +22,7 @@ namespace Superbar
         public System.Object ThirdContent
         {
             get => GetValue(ThirdContentProperty);
-            set => SetValue(ThirdContentProperty, (value));
+            set => SetValue(ThirdContentProperty, value);
         }
 
         public static readonly DependencyProperty ThirdContentProperty =
@@ -30,7 +31,7 @@ namespace Superbar
         public System.Object FourthContent
         {
             get => GetValue(FourthContentProperty);
-            set => SetValue(FourthContentProperty, (value));
+            set => SetValue(FourthContentProperty, value);
         }
 
         public static readonly DependencyProperty FourthContentProperty =

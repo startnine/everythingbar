@@ -36,9 +36,8 @@ namespace Superbar
         public MainWindow()
         {
             InitializeComponent();
-            Left = 0;
-            Top = SystemParameters.PrimaryScreenHeight - Height;
-            Width = SystemParameters.PrimaryScreenWidth;
+            DockMode = Start9.Api.AppBar.AppBarDockMode.Bottom;
+            DockedWidthOrHeight = 40;
             InitialPopulate();
             ProgramWindow.WindowOpened += InsertCreatedWindow;
             //ProgramWindow.WindowClosed += RemoveClosedWindow;
