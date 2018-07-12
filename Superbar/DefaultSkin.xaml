@@ -255,9 +255,42 @@
                             <Grid x:Name="DisabledBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="0">
                             </Grid>
                             <ContentControl Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" IsTabStop="False" />
-                            <Border Width="22" Height="22" Background="#FF2E001F" BorderBrush="#FFFC25BC" BorderThickness="1" CornerRadius="2">
-                                <TextBlock FontFamily="Myriad Web Pro" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFFFD9F2" FontSize="12">Xd</TextBlock>
-                            </Border>
+                            <Canvas Width="13.500054199161586821763898920888" Height="24" Margin="0.5,0,-0.5,0">
+                                <Canvas.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Offset="0" Color="White" />
+                                            <GradientStop Offset="1" Color="#FFDFDFDF" />
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Canvas.Background>
+                                <Canvas.OpacityMask>
+                                    <VisualBrush TileMode="None" Viewport="0,0,1,1"
+                                                 ViewportUnits="RelativeToBoundingBox"
+                                                 Viewbox="0,0,144.00073,256.00027" ViewboxUnits="Absolute">
+                                        <VisualBrush.Visual>
+                                            <Canvas Name="svg8" Width="144.00073" Height="256.00027">
+                                                <Canvas.RenderTransform>
+                                                    <TranslateTransform X="0" Y="0" />
+                                                </Canvas.RenderTransform>
+                                                <Canvas Name="layer1">
+                                                    <Canvas.RenderTransform>
+                                                        <TranslateTransform X="-1.8930132e-5" Y="-40.999866" />
+                                                    </Canvas.RenderTransform>
+                                                    <Path Name="path4485" Fill="#FF000000" StrokeThickness="0.31324857" Stroke="#FF000000" StrokeLineJoin="Miter" StrokeStartLineCap="Flat" StrokeEndLineCap="Flat">
+                                                        <Path.Data>
+                                                            <PathGeometry Figures="M 0.38570981 108.65214 C 5.5479943 22.701762 116.12822 17.544525 141.23878 100.63075 52.19885 44.948872 33.173221 180.00833 143.83516 152.4612 142.17373 190.6451 119.6223 277.64656 13.367569 296.84602 51.063522 272.16844 77.598523 245.46586 78.925911 193.80218 c 0 0 -83.7024856 0.80034 -78.54020119 -85.15004 z" FillRule="NonZero" />
+                                                        </Path.Data>
+                                                    </Path>
+                                                </Canvas>
+                                            </Canvas>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Canvas.OpacityMask>
+                                <Canvas.Effect>
+                                    <DropShadowEffect x:Name="DropShadow" Color="Black" Direction="275" ShadowDepth="0.5" BlurRadius="2.5" Opacity="1" />
+                                </Canvas.Effect>
+                            </Canvas>
                             <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2">
                                 <Ellipse.Fill>
                                     <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="1.5" RadiusY="1.1875">
