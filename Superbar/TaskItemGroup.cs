@@ -19,7 +19,7 @@ namespace Superbar
     public class TaskItemGroup : INotifyPropertyChanged
     {
         public enum TabMode
-        {   
+        {
             None,
             Single,
             Double,
@@ -134,9 +134,27 @@ namespace Superbar
         }
 
 
-        public ImageBrush Icon => File.Exists(ExecutableName)
-                    ? (ImageBrush)new DiskItemToIconImageBrushConverter().Convert(ExecutableName, null, 32, null)
-                    : new ImageBrush();
+        /*public ImageBrush Icon => File.Exists(ExecutableName)
+                    ? (ImageBrush)(new DiskItemToIconImageBrushConverter().Convert(ExecutableName, null, 32, null))
+                    : new ImageBrush();*/
+
+        //TODO: Clean this logic up or something
+        public ImageBrush Icon
+        {
+            get
+            {
+                if (File.Exists(ExecutableName))
+                    try
+                    {
+                        return (ImageBrush)(new DiskItemToIconImageBrushConverter().Convert(ExecutableName, null, 32, null));
+                    }
+                    catch
+                    {
+                        return new ImageBrush();
+                    }
+                else return new ImageBrush();
+            }
+        }
 
         public TaskItemGroup(String name)
         {

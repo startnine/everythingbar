@@ -77,6 +77,7 @@
     <Compile Include="Converters.cs" />
     <Compile Include="SuperbarAddIn.cs" />
     <Compile Include="QuadContentWindow.cs" />
+    <Compile Include="TaskbandPanel.cs" />
     <Compile Include="TaskItemGroup.cs" />
     <Page Include="DefaultSkin.xaml">
       <SubType>Designer</SubType>
