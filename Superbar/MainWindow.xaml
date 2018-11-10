@@ -1,56 +1,72 @@
-﻿<local:QuadContentWindow x:Class="Superbar.MainWindow"
+﻿<local:TaskbarWindow x:Class="Superbar.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:prog="clr-namespace:Start9.Api.Programs;assembly=Start9.Api"
-        xmlns:apiobj="clr-namespace:Start9.Api.Objects;assembly=Start9.Api"
         xmlns:local="clr-namespace:Superbar"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:ui="clr-namespace:Start9.UI.Wpf;assembly=Start9.UI.Wpf"
+        xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="40" Width="800" Style="{DynamicResource WindowStyle}" Topmost="True" Background="#6B74B8FC" Loaded="QuadContentWindow_Loaded">
-    <local:QuadContentWindow.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Superbar;component/DefaultSkin.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <apiobj:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        </ResourceDictionary>
-    </local:QuadContentWindow.Resources>
-    <local:QuadContentWindow.CommandBindings>
-        <CommandBinding Command="{x:Static local:MainWindow.SubmittedCommand}"
-                        Executed="CommandBinding_Executed"/>
-    </local:QuadContentWindow.CommandBindings>
+        Title="Superbar" WindowStyle="None" ResizeMode="NoResize" Background="Transparent" Topmost="True" ShowInTaskbar="False" ShowActivated="False" Visibility="Visible" Style="{DynamicResource TaskbarWindowStyle}" DockMode="Bottom" DockedWidthOrHeight="40">
+    <local:TaskbarWindow.Resources>
+        <!--ResourceDictionary>
+            <Style x:Key="InnerListViewStyle" TargetType="{x:Type ListView}">
+                <EventSetter Event="SelectionChanged" Handler="TaskBandListView_SelectionChanged"/>
+                <EventSetter Event="ListBoxItem.Selected" Handler="TaskBandListViewItem_Selected"/>
+            </Style>
 
-    <local:QuadContentWindow.SecondContent>
-        <!--ScrollViewer x:Name="TaskbandScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Visible" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" ScrollBar.Scroll="TaskbandScrollViewer_Scroll" Loaded="TaskbandScrollViewer_Loaded"-->
-        <DockPanel>
-            <ScrollBar x:Name="TaskbandScrollBar" Orientation="Vertical" DockPanel.Dock="Right" MouseWheel="TaskbandScrollBar_MouseWheel" ValueChanged="TaskbandScrollBar_ValueChanged" />
-            <!--Maximum="{Binding ActualHeight, Source={x:Reference TaskbandListView}}"-->
-            <ListView x:Name="TaskbandListView" ItemsSource="{Binding OpenWindows, Mode=TwoWay}" MouseWheel="TaskbandScrollBar_MouseWheel" Style="{DynamicResource TaskbandStyle}" SelectionMode="Single"/>
-        </DockPanel>
-        <!--/ScrollViewer-->
-    </local:QuadContentWindow.SecondContent>
-    <local:QuadContentWindow.ThirdContent>
-        <StackPanel Orientation="Horizontal">
-            <ToggleButton x:Name="TrayFlyoutToggleButton" Style="{DynamicResource TrayFlyoutToggleButtonStyle}" Click="TrayFlyoutToggleButton_Click"/>
-            <StackPanel x:Name="SystemTrayStackPanel" Orientation="Horizontal"/>
-            <ToggleButton x:Name="ClockButton" Style="{DynamicResource ClockButtonStyle}" Click="ClockButton_Click">
-                <TextBlock Loaded="Clock_Loaded" Style="{DynamicResource ClockTextBlockStyle}"/>
-            </ToggleButton>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Superbar;component/Aero.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary-->
+    </local:TaskbarWindow.Resources>
+    <local:TaskbarWindow.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Toolbars">
+                <MenuItem x:Name="QuickLaunchMenuItem" Header="Quick Launch" IsCheckable="True" Checked="QuickLaunchMenuItem_Checked" Unchecked="QuickLaunchMenuItem_Unchecked"/>
+            </MenuItem>
+            <MenuItem x:Name="CascadeWindowsMenuItem" Header="Cascade windows" Click="CascadeWindowsMenuItem_Click"/>
+            <MenuItem x:Name="StackWindowsMenuItem" Header="Show windows stacked" Click="StackWindowsMenuItem_Click"/>
+            <MenuItem x:Name="ShowWindowsSideBySideMenuItem" Header="Show windows side by side" Click="ShowWindowsSideBySideMenuItem_Click"/>
+            <MenuItem x:Name="ShowDesktopMenuItem" Header="Show the desktop" Click="ShowDesktopButton_Click"/>
+            <Separator/>
+            <MenuItem x:Name="TaskManagerMenuItem" Header="Task manager" Click="TaskManagerMenuItem_Click"/>
+            <Separator/>
+            <MenuItem Header="Lock the Superbar" IsCheckable="True" IsChecked="{Binding IsLocked}"/>
+            <MenuItem x:Name="SettingsMenuItem" Header="Settings" Click="SettingsMenuItem_Click"/>
+        </ContextMenu>
+    </local:TaskbarWindow.ContextMenu>
+    <local:TaskbarWindow.TrayArea>
+        <StackPanel Orientation="{Binding Orientation}">
+            <ToolBarTray x:Name="TrayRegionToolBarTray"/>
+            <ToggleButton x:Name="ShowTrayFlyoutButton" Style="{DynamicResource ShowTrayFlyoutButtonStyle}"/>
+            <StackPanel Orientation="Horizontal"/>
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                <TextBlock x:Name="ClockTime" Style="{DynamicResource ClockStyle}"/>
+                <TextBlock x:Name="ClockDate" Style="{DynamicResource ClockStyle}"/>
+            </StackPanel>
             <Button x:Name="ShowDesktopButton" Style="{DynamicResource ShowDesktopButtonStyle}" Click="ShowDesktopButton_Click"/>
         </StackPanel>
-    </local:QuadContentWindow.ThirdContent>
-    <StackPanel Orientation="Horizontal">
-        <ToggleButton Click="Start_Click" x:Name="Start" Style="{DynamicResource StartStyle}"/>
-        <ToggleButton Click="SearchButton_Click" x:Name="SearchButton" Visibility="Collapsed" Style="{DynamicResource SearchButtonStyle}"/>
-        <TextBox x:Name="SearchBox" Style="{DynamicResource SearchBoxStyle}" Visibility="Visible">
-            <TextBox.InputBindings>
-                <KeyBinding Command="{x:Static local:MainWindow.SubmittedCommand}" Key="Return" />
-                <KeyBinding Command="{x:Static local:MainWindow.SubmittedCommand}" Key="Enter" />
-            </TextBox.InputBindings>
-        </TextBox>
-        <ToggleButton Click="TaskView_Click" x:Name="TaskView" Style="{DynamicResource TaskViewButtonStyle}"/>
-    </StackPanel>
-</local:QuadContentWindow>
+    </local:TaskbarWindow.TrayArea>
+    <local:TaskbarWindow.QuickLaunchArea>
+        <StackPanel Orientation="{Binding Orientation}">
+            <ToggleButton x:Name="StartButton" Style="{DynamicResource StartStyle}" Click="StartButton_Click">start</ToggleButton>
+            <ToolBarTray x:Name="StartRegionToolBarTray">
+                <ToolBar x:Name="QuickLaunch" Visibility="Collapsed">
+                    <ListView SelectionChanged="ToolbarListView_SelectionChanged"/>
+                </ToolBar>
+            </ToolBarTray>
+        </StackPanel>
+    </local:TaskbarWindow.QuickLaunchArea>
+    <Grid>
+        <!--UniformGrid x:Name="TaskBandCycleButtonGrid" Columns="1" Style="{DynamicResource TaskBandCycleButtonGridStyle}" DockPanel.Dock="Right">
+                <Button x:Name="TaskBandUpButton" Click="TaskBandUpButton_Click"/>
+                <Button x:Name="TaskBandDownButton" Click="TaskBandDownButton_Click"/>
+            </UniformGrid-->
+        <!--ScrollBar x:Name="TaskBandScrollBar" Orientation="Vertical" ValueChanged="TaskBandScrollBar_ValueChanged" DockPanel.Dock="Right" Visibility="{Binding ComputedVerticalScrollBarVisibility, ElementName=TaskBandScrollViewer}"/-->
+        <ScrollViewer x:Name="TaskBandScrollViewer" Style="{DynamicResource TaskBandScrollViewerStyle}" Margin="0" PreviewMouseWheel="ScrollViewer_MouseWheel">
+            <ListView x:Name="TaskBandListView" ItemsSource="{Binding OpenApplications}" Style="{DynamicResource TaskBandListViewStyle}" SelectionChanged="TaskBandListView_SelectionChanged"/>
+        </ScrollViewer>
+    </Grid>
+</local:TaskbarWindow>

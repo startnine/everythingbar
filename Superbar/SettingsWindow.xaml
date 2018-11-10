@@ -1,0 +1,78 @@
+﻿<win:DecoratableWindow x:Class="Superbar.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="clr-namespace:Start9.UI.Wpf;assembly=Start9.UI.Wpf"
+        xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
+        xmlns:local="clr-namespace:Superbar"
+        mc:Ignorable="d"
+        Title="Superbar Settings" Width="400" Height="525">
+    <DockPanel>
+        <Grid MinHeight="36" DockPanel.Dock="Bottom">
+            <UniformGrid HorizontalAlignment="Right" Columns="3" Margin="8">
+                <Button x:Name="OkButton">OK</Button>
+                <Button x:Name="CancelButton" IsCancel="True" Click="CancelButton_Click">Cancel</Button>
+                <Button x:Name="ApplyButton">Apply</Button>
+            </UniformGrid>
+        </Grid>
+        <TabControl>
+            <TabItem Header="Main UI">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox>Lock the Superbar</CheckBox>
+                    <CheckBox>Auto-hide the Superbar</CheckBox>
+                    <CheckBox>Use small Superbar buttons</CheckBox>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock MinWidth="175">Superbar location on screen:</TextBlock>
+                        <ComboBox MinWidth="175" SelectedIndex="0">
+                            <ComboBoxItem>Bottom</ComboBoxItem>
+                            <ComboBoxItem>Left</ComboBoxItem>
+                            <ComboBoxItem>Right</ComboBoxItem>
+                            <ComboBoxItem>Top</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock MinWidth="175">Superbar buttons:</TextBlock>
+                        <ComboBox MinWidth="175" SelectedIndex="0">
+                            <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
+                            <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
+                            <ComboBoxItem>Never combine</ComboBoxItem>
+                            <ComboBoxItem>Top</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock MinWidth="175">Clock display:</TextBlock>
+                        <ComboBox MinWidth="175" SelectedIndex="0">
+                            <ComboBoxItem>Always show the date</ComboBoxItem>
+                            <ComboBoxItem>Show the date when it fits comfortably onto the Superbar</ComboBoxItem>
+                            <ComboBoxItem>Never show the date</ComboBoxItem>
+                            <ComboBoxItem>Top</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock MinWidth="175">Notification area:</TextBlock>
+                        <Button>Manage</Button>
+                    </StackPanel>
+                    <CheckBox>Use Peek to preview the desktop when you move your mouse to the Show desktop button at the end of the Superbar</CheckBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Jump Lists">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel>
+                        <TextBox DockPanel.Dock="Right">7</TextBox>
+                        <TextBlock>Number of recent items to display in Jump Lists:</TextBlock>
+                    </DockPanel>
+                    <GroupBox Header="Privacy">
+                        <StackPanel Orientation="Vertical">
+                            <CheckBox>Store recently opened programs (does this even apply to the Taskbar???)</CheckBox>
+                            <CheckBox>Store recently opened items in Jump Lists</CheckBox>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Toolbars">
+                <ListView/>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</win:DecoratableWindow>

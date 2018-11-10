@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -12,294 +10,726 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.IO;
-
-using Start9.Api;
-using Start9.Api.Objects;
-using Start9.Api.Programs;
-
-using Timer = System.Timers.Timer;
-using System.Windows.Controls.Primitives;
-using Start9.Api.Tools;
+using System.Windows.Shapes;
+using System.Timers;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
+using System.Drawing;
+using System.Windows.Media.Animation;
+using Start9.UI.Wpf;
+using Start9.UI.Wpf.Windows;
+using WindowsSharp.Processes;
+using System.Collections.ObjectModel;
+using Start9.WCF;
+using System.ServiceModel;
+using WindowsSharp.DiskItems;
 
 namespace Superbar
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : QuadContentWindow
+    public partial class MainWindow : TaskbarWindow
     {
-        Timer activeWindowTimer = new Timer(1);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-        public ObservableCollection<TaskItemGroup> OpenWindows { get; set; } = new ObservableCollection<TaskItemGroup>();
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindow(IntPtr hWnd, GetWindowCmd uCmd);
+
+        [DllImport("dwmapi.dll")]
+        static extern void DwmEnableBlurBehindWindow(IntPtr hwnd, ref DWM_BLURBEHIND blurBehind);
+
+        //public ObservableCollection<ProcessWindowSet> OpenWindows { get; set; } = new ObservableCollection<ProcessWindowSet>();
+        public ObservableCollection<PinnedApplication> OpenApplications { get; set; } = new ObservableCollection<PinnedApplication>();
+        //public List<int> AddedProcesses = new List<int>();
+        //public Dictionary<Process, int> OpenProcesses { get; set; } = new Dictionary<Process, int>();
+
+        public bool CombineItems { get; set; } = false;
+
+        /*public ProcessWindow SetActiveWindow
+        {
+            get => ProcessWindow.ActiveWindow;
+            set => SelectWindow(value);
+        }*/
+
+        public double ResizeDistance
+        {
+            get => (double)GetValue(ResizeDistanceProperty);
+            set => SetValue(ResizeDistanceProperty, value);
+        }
+
+        public static readonly DependencyProperty ResizeDistanceProperty =
+            DependencyProperty.Register("ResizeDistance", typeof(double), typeof(MainWindow), new PropertyMetadata(40.0));
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct DWM_BLURBEHIND
+        {
+            public DWM_BB dwFlags;
+            public bool fEnable;
+            public IntPtr hRgnBlur;
+            public bool fTransitionOnMaximized;
+
+            public DWM_BLURBEHIND(bool enabled)
+            {
+                fEnable = enabled ? true : false;
+                hRgnBlur = IntPtr.Zero;
+                fTransitionOnMaximized = false;
+                dwFlags = DWM_BB.Enable;
+            }
+
+            public System.Drawing.Region Region
+            {
+                get { return System.Drawing.Region.FromHrgn(hRgnBlur); }
+            }
+
+            public bool TransitionOnMaximized
+            {
+                get { return fTransitionOnMaximized != false; }
+                set
+                {
+                    fTransitionOnMaximized = value ? true : false;
+                    dwFlags |= DWM_BB.TransitionMaximized;
+                }
+            }
+
+            public void SetRegion(System.Drawing.Graphics graphics, System.Drawing.Region region)
+            {
+                hRgnBlur = region.GetHrgn(graphics);
+                dwFlags |= DWM_BB.BlurRegion;
+            }
+        }
+
+        [Flags]
+        enum DWM_BB
+        {
+            Enable = 1,
+            BlurRegion = 2,
+            TransitionMaximized = 4
+        }
+
+        [Flags]
+        public enum ThumbnailFlags : int
+        {
+            RectDetination = 1,
+            RectSource = 2,
+            Opacity = 4,
+            Visible = 8,
+            SourceClientAreaOnly = 16
+        }
+
+        public enum GetWindowCmd : uint
+        {
+            First = 0,
+            Last = 1,
+            Next = 2,
+            Prev = 3,
+            Owner = 4,
+            Child = 5,
+            EnabledPopup = 6
+        }
+
+        const int GclHiconsm = -34;
+        const int GclHicon = -14;
+        const int IconSmall = 0;
+        const int IconBig = 1;
+        const int IconSmall2 = 2;
+        const int WmGeticon = 0x7F;
+        const int GWL_STYLE = -16;
+        const int GWL_EXSTYLE = -20;
+        const int TASKSTYLE = 0x10000000 | 0x00800000;
+        const int WS_EX_TOOLWINDOW = 0x00000080;
+
+        public IntPtr current = IntPtr.Zero;
+        public IntPtr handle = IntPtr.Zero;
+
+        public List<IntPtr> thumbs = new List<IntPtr>();
+
+
+        public static IntPtr GetWindowLong(HandleRef hWnd, int nIndex)
+        {
+            if (IntPtr.Size == 4)
+            {
+                return GetWindowLong32(hWnd, nIndex);
+            }
+            return GetWindowLongPtr64(hWnd, nIndex);
+        }
+
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong", CharSet = CharSet.Auto)]
+        private static extern IntPtr GetWindowLong32(HandleRef hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr", CharSet = CharSet.Auto)]
+        private static extern IntPtr GetWindowLongPtr64(HandleRef hWnd, int nIndex);
+
+        // 1. Change the function to call the Unicode variant, where applicable.
+        // 2. Ask the marshaller to alert you to any errors that occur.
+        // 3. Change the parameter types to make marshaling easier. 
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SystemParametersInfo(
+                                                        int uiAction,
+                                                        int uiParam,
+                                                        ref RECT pvParam,
+                                                        int fWinIni);
+
+        private const Int32 SPIF_SENDWININICHANGE = 2;
+        private const Int32 SPIF_UPDATEINIFILE = 1;
+        private const Int32 SPIF_change = SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE;
+        private const Int32 SPI_SETWORKAREA = 47;
+        private const Int32 SPI_GETWORKAREA = 48;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public Int32 Left;
+            public Int32 Top;   // top is before right in the native struct
+            public Int32 Right;
+            public Int32 Bottom;
+        }
+
+        //https://stackoverflow.com/questions/6267206/how-can-i-resize-the-desktop-work-area-using-the-spi-setworkarea-flag
+        private static bool SetWorkspace(RECT rect)
+        {
+            // Since you've declared the P/Invoke function correctly, you don't need to
+            // do the marshaling yourself manually. The .NET FW will take care of it.
+
+            bool result = SystemParametersInfo(SPI_SETWORKAREA,
+                                               0,
+                                               ref rect,
+                                               SPIF_change);
+            if (!result)
+            {
+                // Find out the error code
+                MessageBox.Show("The last error was: " +
+                                Marshal.GetLastWin32Error().ToString());
+            }
+
+            return result;
+        }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsWindow(IntPtr hWnd);
+
+        readonly Timer _activeWindowTimer = new Timer
+        {
+            Interval = 1
+        };
+
+        readonly Timer _clockTimer = new Timer
+        {
+            Interval = 1
+        };
+
+        public double ScrollAnimator
+        {
+            get => (double)GetValue(ScrollAnimatorProperty);
+            set => SetValue(ScrollAnimatorProperty, value);
+        }
+
+        ThumbnailsWindow _thumbnailsWindow = new ThumbnailsWindow();
+
+        public static readonly DependencyProperty ScrollAnimatorProperty = DependencyProperty.Register("ScrollAnimator",
+            typeof(double), typeof(MainWindow),
+            new FrameworkPropertyMetadata((double)0, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        Shell32.Shell _shell = new Shell32.Shell();
+
+        public List<ProcessWindow> Windows(Process process)
+        {
+            var list = new List<ProcessWindow>();
+            var windows = ProcessWindow.ProcessWindows;
+
+            foreach (ProcessWindow w in windows)
+            {
+                if (w.Process.Id == process.Id)
+                    list.Add(w);
+            }
+
+            return list;
+        }
 
         public MainWindow()
         {
             InitializeComponent();
-            DockMode = Start9.Api.AppBar.AppBarDockMode.Bottom;
-            DockedWidthOrHeight = 40;
-            InitialPopulate();
-            ProgramWindow.WindowOpened += InsertCreatedWindow;
-            //ProgramWindow.WindowClosed += RemoveClosedWindow;
-            activeWindowTimer.Elapsed += (sneder, args) =>
+            Application.Current.MainWindow = this;
+            /*OpenApplications.CollectionChanged += (sneder, args) =>
             {
-                Dispatcher.Invoke(new Action(() =>
+                TaskBandScrollBar.Visibility = TaskBandScrollViewer.ComputedVerticalScrollBarVisibility;
+            };*/
+            Populate();
+            //int windowCounter = 0;
+
+            /*foreach (KeyValuePair<Process, int> p in OpenProcesses)
+            {
+                foreach (ProcessWindow w in p.Key.Windows)
+                {
+                    OpenWindows.Add()
+                }
+            }*/
+
+            /*ProcessWindow.WindowOpened += (sneder, args) =>
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    var win = (args as WindowEventArgs).Window;
+                    if (!OpenProcesses.Keys.Contains(win.Process))
                     {
-                        IntPtr active = WinApi.GetForegroundWindow();
-                        foreach (TaskItemGroup grp in OpenWindows)
-                        {
-                            var containsActive = false;
-                            foreach (ProgramWindow win in grp.Windows)
-                            {
-                                if (win.Hwnd == active)
-                                {
-                                    Debug.WriteLine("ACTIVE WINDOW FOUND" + active);
-                                    containsActive = true;
-                                    grp.ActiveWindowItem = win;
-                                    grp.IsActiveWindow = true;
-                                }
-                            }
-                            if (!containsActive)
-                            {
-                                grp.ActiveWindowItem = null;
-                                grp.IsActiveWindow = false;
-                            }
-                        }
-                    }));
+
+                        OpenWindows.Add((args as WindowEventArgs).Window);
+                    }
+                }));
+            };*/
+
+            ProcessWindow.WindowOpened += (sneder, args) =>
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    AddWindow(args.Window);
+                }));
             };
-        }
 
-        private void QuadContentWindow_Loaded(Object sender, RoutedEventArgs e)
-        {
-            activeWindowTimer.Start();
-        }
-
-        public void InitialPopulate()
-        {
-            ObservableCollection<TaskItemGroup> groups = new ObservableCollection<TaskItemGroup>();
-            List<String> processNames = new List<String>();
-            //1
-            foreach (var wind in ProgramWindow.ProgramWindows)
+            ProcessWindow.ActiveWindowChanged += (sneder, args) =>
             {
-                try
+                Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    if (!processNames.Contains(wind.Process.MainModule.FileName))
+                    foreach (PinnedApplication a in OpenApplications)
                     {
-                        processNames.Add(wind.Process.MainModule.FileName);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Process not added to list\n" + ex);
-                }
-            }
+                        bool windowFound = false;
 
-            foreach (var s in processNames)
-            {
-                TaskItemGroup group = new TaskItemGroup(s);
-                groups.Add(group);
-            }
-
-            foreach (var wind in ProgramWindow.ProgramWindows)
-            {
-                foreach (TaskItemGroup t in groups)
-                {
-                    try
-                    {
-                        if (wind.Process.MainModule.FileName == t.ExecutableName)
+                        foreach (ProcessWindow w in a.OpenWindows)
                         {
-                            Debug.WriteLine(wind.Process.MainModule.FileName + "    " + t.ExecutableName);
-                            t.Windows.Add(wind);
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-            OpenWindows = groups;
-        }
-
-        public void InsertCreatedWindow(Object sender, WindowEventArgs e)
-        {
-            Dispatcher.Invoke(new Action(() => {
-                {
-                    var addedToExistingGroup = false;
-                    foreach (TaskItemGroup t in OpenWindows)
-                    {
-                        try
-                        {
-                            Debug.WriteLine(t.ExecutableName);
-                            if (e.Window.Process.MainModule.FileName == t.ExecutableName)
+                            if (w.Handle == args.Window.Handle)
                             {
-                                t.Windows.Add(e.Window);
-                                addedToExistingGroup = true;
+                                TaskBandListView.SelectedItem = a;
+                                windowFound = true;
                                 break;
                             }
                         }
-                        catch (Exception ex)
+
+                        if (windowFound)
+                            break;
+                    }
+                }));
+            };
+
+            ProcessWindow.WindowClosed += (sneder, args) =>
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    foreach (PinnedApplication a in OpenApplications)
+                    {
+                        bool windowFound = false;
+
+                        foreach (ProcessWindow w in a.OpenWindows)
                         {
-                            Debug.WriteLine(ex);
+                            if (w.Handle == args.Window.Handle)
+                            {
+                                //TaskBandListView.SelectedItem = a;
+                                windowFound = true;
+                                break;
+                            }
+                        }
+
+                        if (windowFound)
+                        {
+                            if ((a.OpenWindows.Count == 0) && (!a.IsPinned))
+                                OpenApplications.Remove(a);
+
+                            break;
                         }
                     }
+                }));
+            };
 
-                    if (!addedToExistingGroup)
-                    {
-                        TaskItemGroup group = new TaskItemGroup(e.Window.Process.MainModule.FileName);
-                        /*{
-                            Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x01, 0x0, 0x0, 0x0)),
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                            Margin = new Thickness(2, 0, 2, 0),
-                            Tag = e.Window.Process.MainModule.FileName
-                        };*/
-
-                        group.Windows.Add(e.Window);// ProgramStackPanel.ProgramWindowsList.Add(e.Window);
-                    }
-                }
-            }));
-        }
-
-        public void RemoveClosedWindow(Object sender, WindowEventArgs e)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
+            /*ProcessWindow.ActiveWindowChanged += (sneder, args) =>
                 {
-                    foreach (TaskItemGroup t in OpenWindows)
+                    //Debug.WriteLine("ActiveWindowChanged");
+                    Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        try
+                        foreach (ProcessWindowSet l in OpenWindows)
                         {
-                            foreach (ProgramWindow p in t.Windows)
+                            foreach (ProcessWindow p in l.Windows)
                             {
-                                if (p.Hwnd == e.Window.Hwnd)
+                                if (p.Handle == (args as WindowEventArgs).Window.Handle)
                                 {
-                                    t.Windows.Remove(p);
+                                    TaskBandListView.SelectedItem = p;
+                                    //((TreeViewItem)TaskBandListView.ItemContainerGenerator.ContainerFromIndex(l.IndexOf(p))).IsSelected = true;
                                     break;
                                 }
                             }
                         }
-                        catch (Exception ex)
+                    }));
+                };*/
+
+            /*ProcessWindow.WindowClosed += (sneder, args) =>
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    foreach (ProcessWindowSet l in OpenWindows)
+                    {
+                        foreach (ProcessWindow p in l.Windows)
                         {
-                            Debug.WriteLine(ex);
+                            if (p.Handle == (args as WindowEventArgs).Window.Handle)
+                            {
+                                l.Windows.Remove(p);
+                                break;
+                            }
                         }
                     }
+                }));
+            };*/
+
+            UpdateClockDateVisibility();
+
+            _clockTimer.Elapsed += delegate
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    ClockTime.Text = DateTime.Now.ToShortTimeString();
+                    if (ClockDate.IsVisible)
+                        ClockDate.Text = DateTime.Now.ToShortDateString();
+                }));
+            };
+            _clockTimer.Start();
+
+            SizeChanged += (sneder, args) =>
+            {
+                UpdateClockDateVisibility();
+            };
+            //TrayClockDateMode
+            //Loaded += MainWindow_Loaded;
+        }
+
+        public void Populate()
+        {
+            OpenApplications.Clear();
+            foreach (PinnedApplication a in Config.PinnedApps)
+            {
+                OpenApplications.Add(a);
+            }
+
+            foreach (ProcessWindow w in ProcessWindow.ProcessWindows)// Process p in Process.GetProcesses())
+            {
+                AddWindow(w);
+            }
+        }
+
+        void UpdateClockDateVisibility()
+        {
+            if (Config.TrayClockDateMode == Config.ClockDateMode.AlwaysShow)
+                ClockDate.Visibility = Visibility.Visible;
+            else if (Config.TrayClockDateMode == Config.ClockDateMode.NeverShow)
+                ClockDate.Visibility = Visibility.Collapsed;
+            else
+            {
+                if (DockedWidthOrHeight > ResizeIntervalDistance)
+                    ClockDate.Visibility = Visibility.Visible;
+                else
+                    ClockDate.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public void AddWindow(ProcessWindow window)
+        {
+            bool processAlreadyAdded = false;
+            foreach (PinnedApplication a in OpenApplications)
+            {
+                var item = GetApplicationByWindow(window);
+                if ((item != null) && (a.DiskApplication.ItemPath == item.DiskApplication.ItemPath))
+                {
+                    processAlreadyAdded = true;
+                    break;
                 }
-            }));
-        }
-
-        private void Clock_Loaded(Object sender, RoutedEventArgs e)
-        {
-            var clockTimer = new Timer(1);
-            clockTimer.Elapsed += (o, args) => Dispatcher.Invoke(new Action(
-                () => { (sender as TextBlock).Text = DateTime.Now.ToShortTimeString() + "\n" + DateTime.Now.ToShortDateString(); }
-            ));
-            clockTimer.Start();
-        }
-
-        public static RoutedCommand SubmittedCommand = new RoutedCommand();
-        private void ShowDesktopButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ClockButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TrayFlyoutToggleButton_Click(Object sender, RoutedEventArgs e)
-        {
-
-        }/*
-
-        double oldValue = 0;
-
-        private void TaskbandScrollViewer_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
-        {
-            double offset = TaskbandScrollViewer.VerticalOffset;
-            if (e.NewValue > oldValue)
-            {
-                TaskbandScrollViewer.ScrollToVerticalOffset(Math.Round(oldValue + 40, 0, MidpointRounding.AwayFromZero));
             }
-            else if (offset < oldValue)
+
+            if (!processAlreadyAdded)
             {
-                TaskbandScrollViewer.ScrollToVerticalOffset(Math.Round(oldValue - 40, 0, MidpointRounding.AwayFromZero));
+                try
+                {
+                    var pinnedApp = new PinnedApplication(new DiskItem(window.Process.MainModule.FileName));
+                    pinnedApp.LastWindowClosed += (sneder, args) =>
+                    {
+                        OpenApplications.Remove(pinnedApp);
+                    };
+                    pinnedApp.ThumbnailsRequested += PinnedApp_ThumbnailsRequested;
+                    OpenApplications.Add(pinnedApp);
+                    //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
-            oldValue = offset;
+            /*try
+            {
+                if (!AddedProcesses.Contains(p.Id))
+                {
+                    if (Windows(p).Count > 0)
+                    {
+                        Debug.WriteLine(p.ToString());
+                        ProcessWindowSet windows = new ProcessWindowSet(Windows(p), p);
+                        OpenWindows.Add(windows);
+                        Debug.WriteLine(windows.Windows.Count);
+                        AddedProcesses.Add(p.Id);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }*/
+            _thumbnailsWindow.SizeChanged += (sneder, args) =>
+            {
+                _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
+            };
         }
 
-        private void TaskbandScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        private void PinnedApp_ThumbnailsRequested(object sender, WindowEventArgs e)
         {
-            //(sender as ScrollViewer).
+            var app = sender as PinnedApplication;
+
+            /*if (app.AreThumbnailsShown)
+            {*/
+            //_thumbnailsWindow.SetSelection(e.Window);
+            _thumbnailsWindow.SelectedWindow = e.Window;
+            _thumbnailsWindow.OpenWindows = app.OpenWindows;
+            _thumbnailsWindow.Show();
+
+            //var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
+            /*var hitResult = System.Windows.Media.VisualTreeHelper.HitTest(TaskBandListView, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition);
+
+            if (hitResult != null)
+            {
+                var visualHit = hitResult.VisualHit;
+                while ((visualHit != null) && (VisualTreeHelper.GetParent(visualHit) != null) && (!(visualHit is ListViewItem)))
+                {
+                    visualHit = VisualTreeHelper.GetParent(visualHit);
+                }
+
+                /*var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
+                var hitResult = (System.Windows.Media.VisualTreeHelper.HitTest(item, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition)).VisualHit;
+                hitResult.*
+                //_thumbnailsWindow.Left = (visualHit as ListViewItem).PointToScreen(new System.Windows.Point(0, 0)).X - (_thumbnailsWindow.ActualWidth / 2);
+                _thumbnailsWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+                _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
+            }*/
+
+            double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+
+            IEasingFunction ease = null;
+            try
+            {
+                ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+
+            DoubleAnimation leftAnimation = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromMilliseconds(1000),
+                To = newLeft
+            };
+
+            if (ease != null)
+                leftAnimation.EasingFunction = ease;
+
+            leftAnimation.Completed += (sneder, args) =>
+            {
+                _thumbnailsWindow.Left = newLeft;
+                //_thumbnailsWindow.BeginAnimation(LeftProperty, null);
+            };
+
+            _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+            _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
+            //}
         }
 
-        private void TaskbandScrollBar_Loaded(object sender, RoutedEventArgs e)
+        public PinnedApplication GetApplicationByWindow(ProcessWindow window)
         {
-            TaskbandScrollBar.ValueChanged += TaskbandScrollBar_ValueChanged;
+            PinnedApplication app = null;
+            foreach (PinnedApplication a in OpenApplications)
+            {
+                foreach (ProcessWindow w in a.OpenWindows)
+                {
+                    if (w.Handle == window.Handle)
+                    {
+                        app = a;
+                        break;
+                    }
+                }
+            }
+            return app;
         }
 
-        private void TaskbandScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Double finalValue = TaskBandScrollViewer.HorizontalOffset - (e.Delta * 2);
-        }*/
 
-        private void TaskbandScrollBar_MouseWheel(Object sender, MouseWheelEventArgs e)
+        private void TaskItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            var programWindow = ((sender as Button).Tag as ProcessWindow);
+            programWindow.Show();
+        }
+
+        private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.Delta > 0)
+                TaskBandScrollViewer.ScrollToVerticalOffset(TaskBandScrollViewer.VerticalOffset - ResizeIntervalDistance);
+            else
+                TaskBandScrollViewer.ScrollToVerticalOffset(TaskBandScrollViewer.VerticalOffset + ResizeIntervalDistance);
+        }
+
+        bool _isChecked = false;
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
             {
-                TaskbandScrollBar.Value = TaskbandScrollBar.Value - 1;
+                //Debug.WriteLine("StartButton_Click");
+
+                int param1 = 0;
+                int param2 = 0;
+
+                if (DockMode == AppBarDockMode.Bottom)
+                    param2 = (int)SystemParameters.WorkArea.Bottom;
+                if (DockMode == AppBarDockMode.Right)
+                    param2 = (int)SystemParameters.WorkArea.Right;
+
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    (Application.Current as App).service.SendMessage(new Message(MessageCommand.Open)
+                    {
+                        Param1 = param1,
+                        Param2 = param2
+                    });
+                }));
+
+                if (!_isChecked)
+                {
+                    UpdateStartButtonState(true);
+                }
             }
-            else if (e.Delta < 0)
+            catch (Exception ex)
             {
-                TaskbandScrollBar.Value = TaskbandScrollBar.Value + 1;
+                Debug.WriteLine(ex);
             }
         }
 
-        Double offset = 0;
-        private void TaskbandScrollBar_ValueChanged(Object sender, RoutedPropertyChangedEventArgs<Double> e)
+        public void UpdateStartButtonState(bool value)
         {
-            var pad = TaskbandListView.Margin;
-            if ((e.NewValue > e.OldValue) & (pad.Top <= 0))
+            _isChecked = value;
+            StartButton.IsChecked = _isChecked;
+        }
+
+        private void TaskBandListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = TaskBandListView.SelectedItem;
+            if (item != null)
+                TaskBandListView.ScrollIntoView(item);
+        }
+
+        private void QuickLaunchMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            (QuickLaunch.Items[0] as ListView).ItemsSource = new DiskItem(Environment.ExpandEnvironmentVariables(@"%appdata%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")).SubItems;
+            QuickLaunch.Visibility = Visibility.Visible;
+        }
+
+        private void QuickLaunchMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            (QuickLaunch.Items[0] as ListView).ItemsSource = null;
+            QuickLaunch.Visibility = Visibility.Collapsed;
+        }
+
+        private void ToolbarListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            (e.AddedItems[0] as DiskItem).Open();
+        }
+
+        private void TaskManagerMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("taskmgr");
+        }
+
+        private void ShowDesktopButton_Click(object sender, RoutedEventArgs e)
+        {
+            _shell.ToggleDesktop();
+        }
+
+        private void CascadeWindowsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _shell.CascadeWindows();
+        }
+
+        private void StackWindowsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _shell.TileVertically();
+        }
+
+        private void ShowWindowsSideBySideMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _shell.TileHorizontally();
+        }
+
+        private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Config.SettingsWindow.Show();
+        }
+
+        private void TaskBandUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            TaskBandScrollViewer.ScrollToVerticalOffset(TaskBandScrollViewer.VerticalOffset - ResizeIntervalDistance);
+        }
+
+        private void TaskBandDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            TaskBandScrollViewer.ScrollToVerticalOffset(TaskBandScrollViewer.VerticalOffset + ResizeIntervalDistance);
+        }
+
+        bool _scrollAttachmentDirection = true;
+
+        private void TaskBandScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_scrollAttachmentDirection)
             {
-                TaskbandListView.Margin = new Thickness(pad.Left, pad.Top - 40, pad.Right, pad.Bottom);
-                offset = offset + 40;
+                if (e.NewValue > 0)
+                    TaskBandScrollViewer.ScrollToVerticalOffset(TaskBandScrollViewer.VerticalOffset + ResizeIntervalDistance);
+                else
+                    TaskBandScrollViewer.ScrollToVerticalOffset(TaskBandScrollViewer.VerticalOffset - ResizeIntervalDistance);
+
+                _scrollAttachmentDirection = false;
             }
-            else if (e.NewValue < e.OldValue)//((e.NewValue < e.OldValue) & ((pad.Top * -1) <= (TaskbandListView.ActualHeight - offset)))
+
+            //TaskBandScrollBar.Value = TaskBandScrollViewer.VerticalOffset;
+            _scrollAttachmentDirection = true;
+        }
+
+        private void TaskBandListView_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            ListViewItem item = null;
+            PinnedApplication app = null;
+
+            foreach (PinnedApplication a in OpenApplications)
             {
-                TaskbandListView.Margin = new Thickness(pad.Left, pad.Top + 40, pad.Right, pad.Bottom);
-                offset = offset - 40;
+                var listItem = TaskBandListView.ContainerFromElement(a) as ListViewItem;
+                if (listItem.IsMouseOver)
+                {
+                    item = listItem;
+                    app = a;
+                    break;
+                }
             }
-            offset = offset - 1;
-            Debug.WriteLine(TaskbandListView.Margin.Top + "    " + (TaskbandListView.ActualHeight - offset));
-        }
 
-        private void TaskItemButton_Click(Object sender, RoutedEventArgs e)
-        {
-            //Debug.WriteLine((sender as ToggleButton).Tag.GetType().ToString());
-            new ProgramWindow((IntPtr)(sender as ToggleButton).Tag).Show();
-            Debug.WriteLine("");
-        }
-
-        private void SearchButton_Click(Object sender, RoutedEventArgs e)
-        {
-            SuperbarAddIn.Instance.Host.SendMessage(new Message(DBNull.Value, ((SuperbarMessageContract) SuperbarAddIn.Instance.MessageContract).SearchClickedEntry));
-        }
-
-        private void Start_Click(Object sender, RoutedEventArgs e)
-        {
-            SuperbarAddIn.Instance.Host.SendMessage(new Message(DBNull.Value, ((SuperbarMessageContract) SuperbarAddIn.Instance.MessageContract).StartClickedEntry));
-
-        }
-
-        private void TaskView_Click(Object sender, RoutedEventArgs e)
-        {
-            SuperbarAddIn.Instance.Host.SendMessage(new Message(DBNull.Value, ((SuperbarMessageContract) SuperbarAddIn.Instance.MessageContract).TaskViewClickedEntry));
-        }
-
-        private void CommandBinding_Executed(Object sender, ExecutedRoutedEventArgs e)
-        {
-            SuperbarAddIn.Instance.Host.SendMessage(new Message(SearchBox.Text, ((SuperbarMessageContract)SuperbarAddIn.Instance.MessageContract).SearchInvokedEntry));
+            if (item != null)
+            {
+                var point = _thumbnailsWindow.PointToScreen(new System.Windows.Point(0, 0));
+                _thumbnailsWindow.Left = (point.X + (item.ActualWidth / 2)) - (_thumbnailsWindow.ActualWidth / 2);
+                _thumbnailsWindow.OpenWindows = app.OpenWindows;
+                _thumbnailsWindow.Show();
+            }
+            else if (!_thumbnailsWindow.IsMouseOver)
+                _thumbnailsWindow.Hide();
         }
     }
-    //pls
 }
