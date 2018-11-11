@@ -24,13 +24,14 @@ using System.Collections.ObjectModel;
 using Start9.WCF;
 using System.ServiceModel;
 using WindowsSharp.DiskItems;
+using System.ComponentModel;
 
 namespace Superbar
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : TaskbarWindow
+    public partial class MainWindow : TaskbarWindow, INotifyPropertyChanged
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
@@ -46,7 +47,48 @@ namespace Superbar
         //public List<int> AddedProcesses = new List<int>();
         //public Dictionary<Process, int> OpenProcesses { get; set; } = new Dictionary<Process, int>();
 
-        public bool CombineItems { get; set; } = false;
+        /*private bool _useSmallIcons = false;
+        public bool UseSmallIcons
+        {
+            get => _useSmallIcons;
+            set
+            {
+                _useSmallIcons = value;
+                NotifyPropertyChanged("UseSmallIcons");
+            }
+        }*/
+
+        public bool UseSmallIcons
+        {
+            get => (bool)GetValue(UseSmallIconsProperty);
+            set => SetValue(UseSmallIconsProperty, value);
+        }
+
+        public static readonly DependencyProperty UseSmallIconsProperty =
+            DependencyProperty.Register("UseSmallIcons", typeof(bool), typeof(MainWindow), new PropertyMetadata(Config.UseSmallIcons));
+
+        private Config.CombineMode _taskbarCombineMode = Config.TaskbarCombineMode;
+        public Config.CombineMode TaskbarCombineMode
+        {
+            get => _taskbarCombineMode;
+            set
+            {
+                _taskbarCombineMode = value;
+                NotifyPropertyChanged("TaskbarCombineMode");
+            }
+        }
+
+        //public Config.ClockDateMode TrayClockDateMode { get; set; } = Config.TrayClockDateMode;
+        /*private Config.ClockDateMode _trayClockDateMode = Config.TrayClockDateMode;
+        public Config.ClockDateMode TrayClockDateMode
+        {
+            get => _trayClockDateMode;
+            set
+            {
+                _trayClockDateMode = value;
+                NotifyPropertyChanged("TrayClockDateMode");
+            }
+        }*/
 
         /*public ProcessWindow SetActiveWindow
         {
@@ -54,14 +96,14 @@ namespace Superbar
             set => SelectWindow(value);
         }*/
 
-        public double ResizeDistance
+        /*public double ResizeDistance
         {
             get => (double)GetValue(ResizeDistanceProperty);
             set => SetValue(ResizeDistanceProperty, value);
         }
 
         public static readonly DependencyProperty ResizeDistanceProperty =
-            DependencyProperty.Register("ResizeDistance", typeof(double), typeof(MainWindow), new PropertyMetadata(40.0));
+            DependencyProperty.Register("ResizeDistance", typeof(double), typeof(MainWindow), new PropertyMetadata(40.0));*/
 
         [StructLayout(LayoutKind.Sequential)]
         struct DWM_BLURBEHIND
@@ -251,6 +293,13 @@ namespace Superbar
             return list;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string info)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -382,6 +431,9 @@ namespace Superbar
                 }));
             };*/
 
+            Config.ConfigUpdated += Config_ConfigUpdated;
+            Config_ConfigUpdated(null, null);
+
             UpdateClockDateVisibility();
 
             _clockTimer.Elapsed += delegate
@@ -401,6 +453,16 @@ namespace Superbar
             };
             //TrayClockDateMode
             //Loaded += MainWindow_Loaded;
+        }
+
+        private void Config_ConfigUpdated(object sender, EventArgs e)
+        {
+            IsLocked = Config.IsLocked;
+            DockMode = Config.DockMode;
+            UseSmallIcons = Config.UseSmallIcons;
+            TaskbarCombineMode = Config.TaskbarCombineMode;
+            //TrayClockDateMode = Config.TrayClockDateMode;
+            UpdateClockDateVisibility();
         }
 
         public void Populate()
@@ -425,10 +487,10 @@ namespace Superbar
                 ClockDate.Visibility = Visibility.Collapsed;
             else
             {
-                if (DockedWidthOrHeight > ResizeIntervalDistance)
-                    ClockDate.Visibility = Visibility.Visible;
-                else
+                if (UseSmallIcons && (DockedWidthOrHeight <= ResizeIntervalDistance))
                     ClockDate.Visibility = Visibility.Collapsed;
+                else
+                    ClockDate.Visibility = Visibility.Visible;
             }
         }
 
@@ -675,6 +737,8 @@ namespace Superbar
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Config.SettingsWindow.Show();
+            Config.SettingsWindow.Focus();
+            Config.SettingsWindow.Activate();
         }
 
         private void TaskBandUpButton_Click(object sender, RoutedEventArgs e)

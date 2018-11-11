@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start9.UI.Wpf.Windows;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -10,6 +11,29 @@ namespace Superbar
 {
     public static class Config
     {
+        static Config()
+        {
+            if (!File.Exists(_pinnedAppsPath))
+            {
+                string dir = Path.GetDirectoryName(_pinnedAppsPath);
+
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                File.WriteAllLines(_pinnedAppsPath, new List<string>()
+                {
+                }.ToArray());
+            }
+        }
+
+        public static bool IsLocked { get; set; } = true;
+
+        public static bool AutoHide { get; set; } = false;
+
+        public static bool UseSmallIcons { get; set; } = false;
+
+        public static AppBarWindow.AppBarDockMode DockMode { get; set; } = AppBarWindow.AppBarDockMode.Bottom;
+
         static string _pinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
 
         public static ObservableCollection<PinnedApplication> PinnedApps
@@ -41,23 +65,6 @@ namespace Superbar
             }
         }
 
-        static Config()
-        {
-            if (!File.Exists(_pinnedAppsPath))
-            {
-                string dir = Path.GetDirectoryName(_pinnedAppsPath);
-
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                File.WriteAllLines(_pinnedAppsPath, new List<string>()
-                    {
-                    }.ToArray());
-            }
-        }
-
-        public static SettingsWindow SettingsWindow = new SettingsWindow();
-
         public enum CombineMode
         {
             Always,
@@ -76,5 +83,15 @@ namespace Superbar
         }
 
         public static ClockDateMode TrayClockDateMode = ClockDateMode.Auto;
+
+
+        public static SettingsWindow SettingsWindow = new SettingsWindow();
+
+        public static event EventHandler<EventArgs> ConfigUpdated;
+
+        internal static void InvokeConfigUpdated(object sender, EventArgs e)
+        {
+            ConfigUpdated?.Invoke(sender, e);
+        }
     }
 }

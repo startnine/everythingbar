@@ -7,24 +7,24 @@
         xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
         xmlns:local="clr-namespace:Superbar"
         mc:Ignorable="d"
-        Title="Superbar Settings" Width="400" Height="525">
+        Title="Superbar Settings" Width="400" Height="525" ResizeMode="NoResize" IsVisibleChanged="SettingsWindow_IsVisibleChanged">
     <DockPanel>
         <Grid MinHeight="36" DockPanel.Dock="Bottom">
             <UniformGrid HorizontalAlignment="Right" Columns="3" Margin="8">
-                <Button x:Name="OkButton">OK</Button>
+                <Button x:Name="OkButton" Click="ApplyButton_Click">OK</Button>
                 <Button x:Name="CancelButton" IsCancel="True" Click="CancelButton_Click">Cancel</Button>
-                <Button x:Name="ApplyButton">Apply</Button>
+                <Button x:Name="ApplyButton" Click="ApplyButton_Click">Apply</Button>
             </UniformGrid>
         </Grid>
         <TabControl>
             <TabItem Header="Main UI">
                 <StackPanel Orientation="Vertical">
-                    <CheckBox>Lock the Superbar</CheckBox>
-                    <CheckBox>Auto-hide the Superbar</CheckBox>
-                    <CheckBox>Use small Superbar buttons</CheckBox>
+                    <CheckBox x:Name="LockBarCheckBox">Lock the Superbar</CheckBox>
+                    <CheckBox x:Name="AutoHideCheckBox">Auto-hide the Superbar</CheckBox>
+                    <CheckBox x:Name="SmallButtonsCheckBox">Use small Superbar buttons</CheckBox>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock MinWidth="175">Superbar location on screen:</TextBlock>
-                        <ComboBox MinWidth="175" SelectedIndex="0">
+                        <ComboBox x:Name="BarPositionComboBox" MinWidth="175" SelectedIndex="0">
                             <ComboBoxItem>Bottom</ComboBoxItem>
                             <ComboBoxItem>Left</ComboBoxItem>
                             <ComboBoxItem>Right</ComboBoxItem>
@@ -33,20 +33,18 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock MinWidth="175">Superbar buttons:</TextBlock>
-                        <ComboBox MinWidth="175" SelectedIndex="0">
+                        <ComboBox x:Name="TaskbarCombineModeComboBox" MinWidth="175" SelectedIndex="0">
                             <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
                             <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
                             <ComboBoxItem>Never combine</ComboBoxItem>
-                            <ComboBoxItem>Top</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock MinWidth="175">Clock display:</TextBlock>
-                        <ComboBox MinWidth="175" SelectedIndex="0">
+                        <ComboBox x:Name="TaskbarClockDateModeComboBox" MinWidth="175" SelectedIndex="0">
                             <ComboBoxItem>Always show the date</ComboBoxItem>
                             <ComboBoxItem>Show the date when it fits comfortably onto the Superbar</ComboBoxItem>
                             <ComboBoxItem>Never show the date</ComboBoxItem>
-                            <ComboBoxItem>Top</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">

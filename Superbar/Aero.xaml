@@ -29,7 +29,7 @@
 
     <Style x:Key="TaskbarWindowStyle" TargetType="{x:Type local:MainWindow}">
         <Setter Property="FontFamily" Value="Tahoma"/>
-        <Setter Property="ResizeDistance" Value="40"/>
+        <Setter Property="ResizeIntervalDistance" Value="40"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:MainWindow}">
@@ -124,6 +124,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="UseSmallIcons" Value="True">
+                <Setter Property="ResizeIntervalDistance" Value="30"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!--#endregion Window Styles-->
@@ -175,7 +180,7 @@
                 <Setter Property="OverridesDefaultStyle" Value="True"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Height" Value="{Binding ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                <Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
@@ -284,7 +289,7 @@
                     <Setter Property="OverridesDefaultStyle" Value="True"/>
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                     <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Height" Value="{Binding ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
@@ -378,7 +383,7 @@
                             </Setter>
                         </Style>
                     </DataTemplate.Resources>
-                    <Grid MinWidth="60" Height="{Binding ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+                    <Grid x:Name="PinnedAppRootGrid" MinWidth="60" Height="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}">
                         <ListView x:Name="ItemsListView" DataContext="{Binding}" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                             <ListView.Template>
                                 <ControlTemplate TargetType="{x:Type ListView}">
@@ -399,6 +404,11 @@
                                     <DataTemplate.Triggers>
                                         <DataTrigger Binding="{Binding SmallIcon}" Value="{x:Null}">
                                             <Setter TargetName="IconCanvas" Property="Background" Value="Black"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                            <!--Setter TargetName="IconCanvas" Property="Background" Value="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/-->
+                                            <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
+                                            <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
                                         </DataTrigger>
                                     </DataTemplate.Triggers>
                                 </DataTemplate>
@@ -500,7 +510,14 @@
                         </DockPanel>
                     </Grid>
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Source={x:Static local:Config.TaskbarCombineMode}}" Value="Always">
+                        <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                            <Setter TargetName="IconCanvas" Property="Background" Value="{Binding DiskApplication.ItemSmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/>
+                            <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
+                            <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
+                            <Setter TargetName="PinnedAppRootGrid" Property="MinWidth" Value="44"/>
+                            <Setter TargetName="IconDockPanel" Property="MinWidth" Value="44"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Always">
                             <Setter TargetName="ItemsListView" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="IconDockPanel" Property="Visibility" Value="Visible"/>
                         </DataTrigger>
@@ -519,7 +536,7 @@
                     </DataTemplate.Triggers>
                 </DataTemplate>
                 <!--DataTemplate DataType="{x:Type local:ProcessWindowSet}">
-                    <Grid MinWidth="60" Height="{Binding ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="0,-1">
+                    <Grid MinWidth="60" Height="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Margin="0,-1">
                         <ListView x:Name="ItemsListView" ItemsSource="{Binding Windows}" Visibility="Collapsed" Style="{DynamicResource InnerListViewStyle}" SelectedItem="{Binding SetActiveWindow, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}, Mode=OneWayToSource}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, FallbackValue=-1}">
                             <ListView.Template>
                                 <ControlTemplate TargetType="{x:Type ListView}">
@@ -528,7 +545,7 @@
                                             <Setter Property="OverridesDefaultStyle" Value="True"/>
                                             <Setter Property="HorizontalAlignment" Value="Stretch"/>
                                             <Setter Property="Background" Value="Transparent"/>
-                                            <Setter Property="Height" Value="{Binding ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                                            <Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                                             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -679,6 +696,7 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Width" Value="200"/>
         <Setter Property="CompositionState" Value="Alpha"/>
+        <Setter Property="FontFamily" Value="Tahoma"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type win:CompositingWindow}">
@@ -777,7 +795,7 @@
 
     <Style x:Key="TaskItemButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="60" />
-        <Setter Property="Height" Value="{Binding Path=ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MainWindow}}}"/>
+        <Setter Property="Height" Value="{Binding Path=ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MainWindow}}}"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Margin" Value="0" />
@@ -812,6 +830,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                <Setter Property="MinWidth" Value="44"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="TaskBandCycleButtonGridStyle" TargetType="{x:Type UniformGrid}">
@@ -993,6 +1016,9 @@
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="PressedBackground" Property="Visibility" Value="Visible"/>
                         </Trigger>
+                        <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                            <Setter Property="Height" Value="30"/>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -1013,7 +1039,7 @@
                         <Setter Property="HorizontalAlignment" Value="Stretch"/>
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Mode=Self}}"/>
-                        <!--Setter Property="Height" Value="{Binding ResizeDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/-->
+                        <!--Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/-->
                         <Setter Property="Height" Value="40"/>
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
