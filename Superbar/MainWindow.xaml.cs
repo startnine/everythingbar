@@ -25,6 +25,7 @@ using Start9.WCF;
 using System.ServiceModel;
 using WindowsSharp.DiskItems;
 using System.ComponentModel;
+using System.IO;
 
 namespace Superbar
 {
@@ -272,6 +273,7 @@ namespace Superbar
         }
 
         ThumbnailsWindow _thumbnailsWindow = new ThumbnailsWindow();
+        JumpListWindow _jumpListWindow = new JumpListWindow();
 
         public static readonly DependencyProperty ScrollAnimatorProperty = DependencyProperty.Register("ScrollAnimator",
             typeof(double), typeof(MainWindow),
@@ -468,15 +470,55 @@ namespace Superbar
         public void Populate()
         {
             OpenApplications.Clear();
-            foreach (PinnedApplication a in Config.PinnedApps)
-            {
-                OpenApplications.Add(a);
-            }
 
             foreach (ProcessWindow w in ProcessWindow.ProcessWindows)// Process p in Process.GetProcesses())
             {
                 AddWindow(w);
             }
+
+            List<string> pinnedApps = File.ReadAllLines(Config.PinnedAppsPath).ToList();
+            List<bool> areAppsAlreadyPresent = new List<bool>();
+            int counter = 0;
+
+            foreach (string s in pinnedApps)
+            {
+                bool isAppAlreadyPresent = false;
+                foreach (PinnedApplication a in OpenApplications)
+                {
+                    /*(File.Exists(Environment.ExpandEnvironmentVariables(s)))
+                        &&*/
+                    if (a.DiskApplication.ItemPath == s)
+                    {
+                        a.IsPinned = true;
+                        isAppAlreadyPresent = true;
+
+                        OpenApplications.Move(OpenApplications.IndexOf(a), counter);
+                        //OpenApplications.Insert(counter, a);
+                        counter++;
+
+                        break;
+                    }
+                    /*OpenApplications.Add(new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(s)))
+                    {
+                        IsPinned = true
+                    });*/
+                }
+                areAppsAlreadyPresent.Add(isAppAlreadyPresent);
+            }
+
+            pinnedApps.Reverse();
+            areAppsAlreadyPresent.Reverse();
+
+            for (int i = 0; i < areAppsAlreadyPresent.Count; i++)
+            {
+                if (!areAppsAlreadyPresent[i])
+                {
+                    OpenApplications.Insert(0, new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(pinnedApps[i]))));
+                }
+            }
+
+            //OpenApplications.Insert(0, new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(@"%windir%\Explorer.exe"))));
+            //OpenApplications.RemoveAt(0);
         }
 
         void UpdateClockDateVisibility()
@@ -517,6 +559,8 @@ namespace Superbar
                         OpenApplications.Remove(pinnedApp);
                     };
                     pinnedApp.ThumbnailsRequested += PinnedApp_ThumbnailsRequested;
+                    pinnedApp.JumpListRequested += PinnedApp_JumpListRequested;
+                    pinnedApp.IsPinnedChanged += PinnedApp_IsPinnedChanged;
                     OpenApplications.Add(pinnedApp);
                     //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
                 }
@@ -543,72 +587,109 @@ namespace Superbar
             {
 
             }*/
-            _thumbnailsWindow.SizeChanged += (sneder, args) =>
+            _thumbnailsWindow.SizeChanged += FlyoutWindow_SizeChanged;
+            _jumpListWindow.SizeChanged += FlyoutWindow_SizeChanged;
+        }
+
+        private void PinnedApp_IsPinnedChanged(object sender, EventArgs e)
+        {
+            var app = sender as PinnedApplication;
+            if ((!app.IsPinned) && (app.OpenWindows.Count == 0))
             {
-                _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
-            };
+                foreach (PinnedApplication a in OpenApplications)
+                    if (app.DiskApplication.ItemPath == a.DiskApplication.ItemPath)
+                    {
+                        OpenApplications.Remove(a);
+                        break;
+                    }
+            }
+        }
+
+        private void FlyoutWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var win = sender as Window; //_thumbnailsWindow
+            if (DockMode == AppBarDockMode.Left)
+                win.Left = Left + ActualWidth;
+            else if (DockMode == AppBarDockMode.Top)
+                win.Top = Top + ActualHeight;
+            else if (DockMode == AppBarDockMode.Right)
+                win.Left = Left - win.ActualWidth;
+            else
+                win.Top = Top - win.ActualHeight;
         }
 
         private void PinnedApp_ThumbnailsRequested(object sender, WindowEventArgs e)
         {
-            var app = sender as PinnedApplication;
-
-            /*if (app.AreThumbnailsShown)
-            {*/
-            //_thumbnailsWindow.SetSelection(e.Window);
-            _thumbnailsWindow.SelectedWindow = e.Window;
-            _thumbnailsWindow.OpenWindows = app.OpenWindows;
-            _thumbnailsWindow.Show();
-
-            //var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
-            /*var hitResult = System.Windows.Media.VisualTreeHelper.HitTest(TaskBandListView, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition);
-
-            if (hitResult != null)
+            if (!_jumpListWindow.IsVisible)
             {
-                var visualHit = hitResult.VisualHit;
-                while ((visualHit != null) && (VisualTreeHelper.GetParent(visualHit) != null) && (!(visualHit is ListViewItem)))
+                var app = sender as PinnedApplication;
+
+                /*if (app.AreThumbnailsShown)
+                {*/
+                //_thumbnailsWindow.SetSelection(e.Window);
+                _thumbnailsWindow.SelectedWindow = e.Window;
+                _thumbnailsWindow.OpenWindows = app.OpenWindows;
+                _thumbnailsWindow.Show();
+
+                //var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
+                /*var hitResult = System.Windows.Media.VisualTreeHelper.HitTest(TaskBandListView, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition);
+
+                if (hitResult != null)
                 {
-                    visualHit = VisualTreeHelper.GetParent(visualHit);
+                    var visualHit = hitResult.VisualHit;
+                    while ((visualHit != null) && (VisualTreeHelper.GetParent(visualHit) != null) && (!(visualHit is ListViewItem)))
+                    {
+                        visualHit = VisualTreeHelper.GetParent(visualHit);
+                    }
+
+                    /*var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
+                    var hitResult = (System.Windows.Media.VisualTreeHelper.HitTest(item, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition)).VisualHit;
+                    hitResult.*
+                    //_thumbnailsWindow.Left = (visualHit as ListViewItem).PointToScreen(new System.Windows.Point(0, 0)).X - (_thumbnailsWindow.ActualWidth / 2);
+                    _thumbnailsWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+                    _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
+                }*/
+
+                double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+
+                IEasingFunction ease = null;
+                try
+                {
+                    ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
                 }
 
-                /*var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
-                var hitResult = (System.Windows.Media.VisualTreeHelper.HitTest(item, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition)).VisualHit;
-                hitResult.*
-                //_thumbnailsWindow.Left = (visualHit as ListViewItem).PointToScreen(new System.Windows.Point(0, 0)).X - (_thumbnailsWindow.ActualWidth / 2);
-                _thumbnailsWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
-                _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
-            }*/
+                DoubleAnimation leftAnimation = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromMilliseconds(1000),
+                    To = newLeft
+                };
 
-            double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+                if (ease != null)
+                    leftAnimation.EasingFunction = ease;
 
-            IEasingFunction ease = null;
-            try
-            {
-                ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-
-            DoubleAnimation leftAnimation = new DoubleAnimation()
-            {
-                Duration = TimeSpan.FromMilliseconds(1000),
-                To = newLeft
-            };
-
-            if (ease != null)
-                leftAnimation.EasingFunction = ease;
-
-            leftAnimation.Completed += (sneder, args) =>
-            {
-                _thumbnailsWindow.Left = newLeft;
+                leftAnimation.Completed += (sneder, args) =>
+                {
+                    _thumbnailsWindow.Left = newLeft;
                 //_thumbnailsWindow.BeginAnimation(LeftProperty, null);
             };
 
-            _thumbnailsWindow.BeginAnimation(LeftProperty, null);
-            _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
-            //}
+                _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
+                //}
+            }
+        }
+
+        private void PinnedApp_JumpListRequested(object sender, WindowEventArgs e)
+        {
+            if (_thumbnailsWindow.IsVisible)
+                _thumbnailsWindow.Hide();
+
+            _jumpListWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_jumpListWindow.ActualWidth / 2);
+            _jumpListWindow.ShowWindow(sender as PinnedApplication, e.Window);
         }
 
         public PinnedApplication GetApplicationByWindow(ProcessWindow window)
@@ -794,6 +875,77 @@ namespace Superbar
             }
             else if (!_thumbnailsWindow.IsMouseOver)
                 _thumbnailsWindow.Hide();
+        }
+
+        private void TaskViewButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ActionCenterButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SearchBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void SearchMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (MenuItem m in SearchMenuItem.Items)
+            {
+                if (m == sender)
+                    m.IsChecked = true;
+                else
+                    m.IsChecked = false;
+            }
+
+            if (sender == SearchHiddenMenuItem)
+            {
+                SearchBox.Visibility = Visibility.Collapsed;
+                SearchButton.Visibility = Visibility.Collapsed;
+            }
+            else if (sender == SearchBoxMenuItem)
+            {
+                SearchBox.Visibility = Visibility.Visible;
+                SearchButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                SearchBox.Visibility = Visibility.Collapsed;
+                SearchButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void TaskViewMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+                TaskViewButton.Visibility = Visibility.Visible;
+        }
+
+        private void TaskViewMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+                TaskViewButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void ActionCenterMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+                ActionCenterButton.Visibility = Visibility.Visible;
+        }
+
+        private void ActionCenterMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+                ActionCenterButton.Visibility = Visibility.Collapsed;
         }
     }
 }

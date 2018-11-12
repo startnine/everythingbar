@@ -26,6 +26,13 @@
             <MenuItem Header="Toolbars">
                 <MenuItem x:Name="QuickLaunchMenuItem" Header="Quick Launch" IsCheckable="True" Checked="QuickLaunchMenuItem_Checked" Unchecked="QuickLaunchMenuItem_Unchecked"/>
             </MenuItem>
+            <MenuItem x:Name="SearchMenuItem" Header="Search">
+                <MenuItem x:Name="SearchHiddenMenuItem" Header="Hidden" IsCheckable="True" Click="SearchMenuItem_Click"/>
+                <MenuItem x:Name="SearchIconMenuItem" Header="Show Search icon" IsCheckable="True" IsChecked="True" Click="SearchMenuItem_Click"/>
+                <MenuItem x:Name="SearchBoxMenuItem" Header="Show search box" IsCheckable="True" Click="SearchMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="TaskViewMenuItem" Header="Show Task View button" IsCheckable="True" IsChecked="True" Checked="TaskViewMenuItem_Checked" Unchecked="TaskViewMenuItem_Unchecked"/>
+            <MenuItem x:Name="ActionCenterMenuItem" Header="Show Action Center button" IsCheckable="True" IsChecked="True" Checked="ActionCenterMenuItem_Checked" Unchecked="ActionCenterMenuItem_Unchecked"/>
             <MenuItem x:Name="CascadeWindowsMenuItem" Header="Cascade windows" Click="CascadeWindowsMenuItem_Click"/>
             <MenuItem x:Name="StackWindowsMenuItem" Header="Show windows stacked" Click="StackWindowsMenuItem_Click"/>
             <MenuItem x:Name="ShowWindowsSideBySideMenuItem" Header="Show windows side by side" Click="ShowWindowsSideBySideMenuItem_Click"/>
@@ -42,16 +49,22 @@
             <ToolBarTray x:Name="TrayRegionToolBarTray"/>
             <ToggleButton x:Name="ShowTrayFlyoutButton" Style="{DynamicResource ShowTrayFlyoutButtonStyle}"/>
             <StackPanel Orientation="Horizontal"/>
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <TextBlock x:Name="ClockTime" Style="{DynamicResource ClockStyle}"/>
-                <TextBlock x:Name="ClockDate" Style="{DynamicResource ClockStyle}"/>
-            </StackPanel>
+            <ToggleButton Style="{DynamicResource ClockToggleButtonStyle}">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock x:Name="ClockTime" Style="{DynamicResource ClockStyle}"/>
+                    <TextBlock x:Name="ClockDate" Style="{DynamicResource ClockStyle}"/>
+                </StackPanel>
+            </ToggleButton>
+            <ToggleButton x:Name="ActionCenterButton" Style="{DynamicResource ActionCenterToggleButtonStyle}" Click="ActionCenterButton_Click"/>
             <Button x:Name="ShowDesktopButton" Style="{DynamicResource ShowDesktopButtonStyle}" Click="ShowDesktopButton_Click"/>
         </StackPanel>
     </local:TaskbarWindow.TrayArea>
     <local:TaskbarWindow.QuickLaunchArea>
         <StackPanel Orientation="{Binding Orientation}">
-            <ToggleButton x:Name="StartButton" Style="{DynamicResource StartStyle}" Click="StartButton_Click">start</ToggleButton>
+            <ToggleButton x:Name="StartButton" Style="{DynamicResource StartToggleButtonStyle}" Click="StartButton_Click">start</ToggleButton>
+            <TextBox x:Name="SearchBox" Style="{DynamicResource SearchTextBoxStyle}" PreviewMouseLeftButtonDown="SearchBox_PreviewMouseLeftButtonDown" Visibility="Collapsed"/>
+            <ToggleButton x:Name="SearchButton" Style="{DynamicResource SearchToggleButtonStyle}" Click="SearchButton_Click"/>
+            <ToggleButton x:Name="TaskViewButton" Style="{DynamicResource TaskViewToggleButtonStyle}" Click="TaskViewButton_Click"/>
             <ToolBarTray x:Name="StartRegionToolBarTray">
                 <ToolBar x:Name="QuickLaunch" Visibility="Collapsed">
                     <ListView SelectionChanged="ToolbarListView_SelectionChanged"/>

@@ -13,14 +13,14 @@ namespace Superbar
     {
         static Config()
         {
-            if (!File.Exists(_pinnedAppsPath))
+            if (!File.Exists(PinnedAppsPath))
             {
-                string dir = Path.GetDirectoryName(_pinnedAppsPath);
+                string dir = Path.GetDirectoryName(PinnedAppsPath);
 
                 if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
-                File.WriteAllLines(_pinnedAppsPath, new List<string>()
+                File.WriteAllLines(PinnedAppsPath, new List<string>()
                 {
                 }.ToArray());
             }
@@ -34,9 +34,9 @@ namespace Superbar
 
         public static AppBarWindow.AppBarDockMode DockMode { get; set; } = AppBarWindow.AppBarDockMode.Bottom;
 
-        static string _pinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
+        public static string PinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
 
-        public static ObservableCollection<PinnedApplication> PinnedApps
+        /*public static ObservableCollection<PinnedApplication> PinnedApps
         {
             get
             {
@@ -63,7 +63,7 @@ namespace Superbar
 
                 File.WriteAllLines(_pinnedAppsPath, strings.ToArray());
             }
-        }
+        }*/
 
         public enum CombineMode
         {

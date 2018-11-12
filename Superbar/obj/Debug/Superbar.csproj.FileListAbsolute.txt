@@ -41,3 +41,7 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\ThumbnailsWindow.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\SettingsWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\SettingsWindow.baml
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.Aero2.dll
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Universal.baml
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\JumpListWindow.g.cs
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\JumpListWindow.baml

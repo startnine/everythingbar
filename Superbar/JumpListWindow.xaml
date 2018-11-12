@@ -1,0 +1,25 @@
+﻿<win:CompositingWindow x:Class="Superbar.JumpListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
+        xmlns:local="clr-namespace:Superbar"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="JumpListWindow" Style="{DynamicResource JumpListWindowStyle}" Topmost="True" SizeToContent="WidthAndHeight" Deactivated="JumpListWindow_Deactivated" ShowInTaskbar="False">
+    <win:CompositingWindow.Resources>
+        <sys:String x:Key="JumpListApplicationNameText">a</sys:String>
+        <sys:String x:Key="JumpListPinApplicationText">Pin to Superbar</sys:String>
+        <sys:Boolean x:Key="JumpListIsUnpinning">False</sys:Boolean>
+    </win:CompositingWindow.Resources>
+    <StackPanel Orientation="Vertical">
+        <ListView x:Name="BottomSegmentListView" SelectionMode="Single" Style="{DynamicResource JumpListBottomSegmentListViewStyle}" SelectionChanged="BottomSegmentListView_SelectionChanged">
+            <ListViewItem x:Name="ApplicationListViewItem" Style="{DynamicResource JumpListApplicationListViewItemStyle}"/>
+            <ListViewItem x:Name="PinOrUnpinListViewItem" Style="{DynamicResource JumpListPinListViewItemStyle}"/>
+            <ListViewItem x:Name="CloseWindowsListViewItem" Style="{DynamicResource JumpListCloseWindowsListViewItemStyle}"/>
+            <!--ListViewItem x:Name="DummyListViewItem" Height="0" Opacity="0" Margin="0" Padding="0"/-->
+        </ListView>
+        <Button IsCancel="True" Height="0" Opacity="0" Click="HideJumpListButton_Click"/>
+    </StackPanel>
+</win:CompositingWindow>

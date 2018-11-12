@@ -14,7 +14,17 @@ namespace Superbar
 {
     public class PinnedApplication : DependencyObject, INotifyPropertyChanged
     {
-        public bool IsPinned { get; set; } = false;
+        bool _isPinned = false;
+        public bool IsPinned
+        {
+            get => _isPinned;
+            set
+            {
+                _isPinned = value;
+                NotifyPropertyChanged("IsPinned");
+                IsPinnedChanged?.Invoke(this, new EventArgs());
+            }
+        }
         public DiskItem DiskApplication { get; set; }
         public ObservableCollection<ProcessWindow> OpenWindows { get; set; } = new ObservableCollection<ProcessWindow>();
 
@@ -44,9 +54,17 @@ namespace Superbar
                 _selectedWindow = value;
                 NotifyPropertyChanged("SelectedWindow");
                 //Debug.WriteLine("Selected Window changed");
-                if (_selectedWindow != null)
-                    _selectedWindow.Show();
+                ShowWindow(_selectedWindow);
             }
+        }
+
+        private async void ShowWindow(ProcessWindow window)
+        {
+            await Task.Run(() =>
+            {
+                if (window != null)
+                    window.Show();
+            });
         }
 
         bool _isApplicationActive = false;
@@ -64,12 +82,33 @@ namespace Superbar
                 {
                     if (OpenWindows.Count == 1)
                     {
-                        OpenWindows[0].Show();
+                        ShowWindow(OpenWindows[0]);
                     }
                     _isApplicationActive = true;
                 }
                 NotifyPropertyChanged("IsApplicationActive");
             }
+        }
+
+        bool _isJumpListOpen = false;
+        public bool IsJumpListOpen
+        {
+            get => _isJumpListOpen;
+            set
+            {
+                _isJumpListOpen = value;
+                NotifyPropertyChanged("IsJumpListOpen");
+
+                if (_isJumpListOpen == true)
+                {
+                    InvokeJumpList();
+                }
+            }
+        }
+
+        private void InvokeJumpList()
+        {
+            JumpListRequested?.Invoke(this, new WindowEventArgs(SelectedWindow));
         }
 
         bool GetContainsActiveWindow()
@@ -102,6 +141,9 @@ namespace Superbar
             ProcessWindow.WindowClosed += ProcessWindow_WindowClosed;
 
             _isApplicationActive = GetContainsActiveWindow();
+
+            //IsJumpListOpen = true;
+            //IsJumpListOpen = false;
         }
 
         private void NotifyPropertyChanged(string info)
@@ -113,7 +155,11 @@ namespace Superbar
 
         public event EventHandler<WindowEventArgs> ThumbnailsRequested;
 
+        public event EventHandler<WindowEventArgs> JumpListRequested;
+
         public event EventHandler<EventArgs> LastWindowClosed;
+
+        public event EventHandler<EventArgs> IsPinnedChanged;
 
         private void ProcessWindow_WindowOpened(object sender, WindowEventArgs e)
         {
