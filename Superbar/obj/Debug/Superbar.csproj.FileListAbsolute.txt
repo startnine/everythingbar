@@ -11,7 +11,6 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Superbar.exe
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Superbar.pdb
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\PresentationFramework.Classic.dll
-C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Start9.UI.Wpf.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\WindowsSharp.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Start9.UI.Wpf.pdb
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\WindowsSharp.pdb
@@ -35,7 +34,6 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Start9.WCF.pdb
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\Interop.Shell32.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\Superbar.csproj.ResolveComReference.cache
-C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\Aero.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\ThumbnailsWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\App.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\ThumbnailsWindow.baml
@@ -45,3 +43,8 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Universal.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\JumpListWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\JumpListWindow.baml
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Luna.baml
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.Aero.dll
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.AeroLite.dll
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.Luna.dll
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.Royale.dll

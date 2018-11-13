@@ -73,20 +73,20 @@ namespace Superbar
         {
             get
             {
-                _isApplicationActive = GetContainsActiveWindow();
+                //_isApplicationActive = GetContainsActiveWindow();
                 return _isApplicationActive;
             }
             set
             {
+                _isApplicationActive = value;
+                NotifyPropertyChanged("IsApplicationActive");
                 if (value == true)
                 {
                     if (OpenWindows.Count == 1)
-                    {
                         ShowWindow(OpenWindows[0]);
-                    }
-                    _isApplicationActive = true;
+                    else if (AreThumbnailsShown == true)
+                        ThumbnailsRequested?.Invoke(this, new WindowEventArgs(SelectedWindow));
                 }
-                NotifyPropertyChanged("IsApplicationActive");
             }
         }
 
@@ -128,19 +128,26 @@ namespace Superbar
 
             foreach (ProcessWindow win in ProcessWindow.ProcessWindows)
             {
-                //Debug.WriteLine(win.Process.MainModule.FileName + "    " + DiskApplication.ItemRealName);
-                if (win.Process.MainModule.FileName == DiskApplication.ItemPath)
+                /*try
+                {*/
+                    //Debug.WriteLine(win.Process.MainModule.FileName + "    " + DiskApplication.ItemRealName);
+                    if (win.Process.MainModule.FileName == DiskApplication.ItemPath)
+                    {
+                        OpenWindows.Add(win);
+                        //Debug.WriteLine("WINDOW: " + win.Title);
+                    }
+                /*}
+                catch (Exception ex)
                 {
-                    OpenWindows.Add(win);
-                    //Debug.WriteLine("WINDOW: " + win.Title);
-                }
+                    Debug.WriteLine(ex);
+                }*/
             }
 
             ProcessWindow.WindowOpened += ProcessWindow_WindowOpened;
             ProcessWindow.ActiveWindowChanged += ProcessWindow_ActiveWindowChanged;
             ProcessWindow.WindowClosed += ProcessWindow_WindowClosed;
 
-            _isApplicationActive = GetContainsActiveWindow();
+            IsApplicationActive = GetContainsActiveWindow();
 
             //IsJumpListOpen = true;
             //IsJumpListOpen = false;
@@ -198,7 +205,7 @@ namespace Superbar
                     if (w.Handle == e.Window.Handle)
                     {
                         window = w;
-                        IsApplicationActive = IsApplicationActive;
+                        IsApplicationActive = true;
                         break;
                     }
 

@@ -36,13 +36,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationFramework.Aero2">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationFramework.AeroLite">
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework.Classic">
       <Private>True</Private>
     </Reference>
-    <Reference Include="PresentationFramework.Luna" />
+    <Reference Include="PresentationFramework.Luna">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationFramework.Royale">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Start9.UI.Wpf">
       <HintPath>..\..\start9-ui\Start9.UI.Wpf\bin\Debug\Start9.UI.Wpf.dll</HintPath>
     </Reference>
@@ -62,7 +73,9 @@
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="WindowsSharp">
       <HintPath>..\..\windows-sharp\WindowsSharp\bin\Debug\WindowsSharp.dll</HintPath>
     </Reference>
@@ -85,7 +98,7 @@
     <Compile Include="ThumbnailsWindow.xaml.cs">
       <DependentUpon>ThumbnailsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Aero.xaml">
+    <Page Include="Luna.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="JumpListWindow.xaml">

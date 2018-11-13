@@ -415,13 +415,47 @@
                             </ListView.ItemTemplate>
                         </ListView>
                         <DockPanel x:Name="IconDockPanel" MaxWidth="60" Margin="0" Visibility="Collapsed">
+                            <DockPanel.ToolTip>
+                                <ToolTip IsOpen="{Binding Path=AreThumbnailsShown, Mode=OneWayToSource, FallbackValue=True}" IsHitTestVisible="False" Opacity="0">Test</ToolTip>
+                            </DockPanel.ToolTip>
+                            <DockPanel.ContextMenu>
+                                <ContextMenu x:Name="JumpListDummyContextMenu" IsEnabled="True" IsOpen="{Binding Path=IsJumpListOpen, Mode=OneWayToSource, FallbackValue=True}" IsHitTestVisible="False" Opacity="0">
+                                    <ContextMenu.Style>
+                                        <Style TargetType="{x:Type ContextMenu}">
+                                            <Style.Triggers>
+                                                <EventTrigger RoutedEvent="Opened">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsEnabled">
+                                                                <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:0.1"/>
+                                                            </BooleanAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="Closed">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsEnabled">
+                                                                <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0.1"/>
+                                                            </BooleanAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="IsOpen" Value="False"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="True">
+                                                    <Setter Property="IsOpen" Value="{Binding Path=IsJumpListOpen, Mode=OneWayToSource, FallbackValue=True}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContextMenu.Style>
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
                             <Control x:Name="OuterGroupTab" Style="{DynamicResource GroupTabStyle}" Opacity="0.5" DockPanel.Dock="Right"/>
                             <Control x:Name="InnerGroupTab" Style="{DynamicResource GroupTabStyle}" Opacity="0.75" DockPanel.Dock="Right"/>
                             <Grid>
                                 <ToggleButton x:Name="IconToggleButton" IsChecked="{Binding IsApplicationActive, Mode=TwoWay,FallbackValue=false}" IsThreeState="False">-
-                                    <ToggleButton.ToolTip>
-                                        <ToolTip IsOpen="{Binding Path=AreThumbnailsShown, Mode=OneWayToSource, FallbackValue=True}" IsHitTestVisible="False" Opacity="0">Test</ToolTip>
-                                    </ToggleButton.ToolTip>
                                     <!--IsMouseOver="{Binding IsApplicationActive, Mode=OneWayToSource}"-->
                                     <ToggleButton.Style>
                                         <Style TargetType="{x:Type ToggleButton}">
@@ -793,6 +827,158 @@
         </Setter>
     </Style>
 
+    <Style x:Key="JumpListWindowStyle" TargetType="{x:Type win:CompositingWindow}">
+        <Setter Property="BorderBrush" Value="#FF55A1FF"/>
+        <Setter Property="MinWidth" Value="200"/>
+        <Setter Property="CompositionState" Value="Acrylic"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="HideTransitionDuration" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type win:CompositingWindow}">
+                    <Border x:Name="RootBorder" Background="#FF3A83E3" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                        <Border.RenderTransform>
+                            <TranslateTransform X="0" Y="25"/>
+                        </Border.RenderTransform>
+                        <Grid>
+                            <Rectangle Width="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="#FF83B1ED"/>
+                            <Border Background="White" BorderBrush="#FF2D7CE2" BorderThickness="4,0,0,0" Margin="2,0,0,0">
+                                <ContentPresenter Content="{TemplateBinding Content}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsWindowVisible" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RootBorder" Storyboard.TargetProperty="RenderTransform.Y" From="25" To="0" Duration="0:0:0.25">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="RootBorder" Storyboard.TargetProperty="RenderTransform.Y" To="0" Duration="0:0:0">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="JumpListEntryListViewItemStyle" TargetType="{x:Type ListViewItem}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Background" Value="#01000000"/>
+        <Setter Property="MinHeight" Value="30"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="PART_ContentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="0" Visibility="Hidden" />
+                            <GridViewRowPresenter x:Name="PART_GridViewRowPesenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="0" Visibility="Visible" />
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="GridView.ColumnCollection" Value="{x:Null}">
+                            <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_GridViewRowPesenter" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FF316AC5"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="JumpListBottomSegmentListViewStyle" TargetType="{x:Type ListView}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListView}">
+                    <ControlTemplate.Resources>
+                        <!--Style x:Key="{x:Type ListViewItem}" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource JumpListEntryListViewItemStyle}"/-->
+
+                        <Style x:Key="JumpListApplicationListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource JumpListEntryListViewItemStyle}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Rectangle VerticalAlignment="Center" Width="16" Height="16" Fill="Red" Margin="0,0,12,0"/>
+                                        <!--Fill="{Binding {DynamicResource JumpListApplicationIcon}, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/-->
+                                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource JumpListApplicationNameText}"/>
+                                    </StackPanel>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style x:Key="JumpListPinListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource JumpListEntryListViewItemStyle}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Canvas VerticalAlignment="Center" Width="16" Height="8" Margin="0,0,12,0">
+                                            <Rectangle Width="6" Height="1" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}" Canvas.Top="4"/>
+                                            <!--Path Data="M 0 0 L 3 2 L 8 2 L 10 1 L 10 8 L 8 7 L 3 7 L 0 9 Z" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}" StrokeThickness="1" Canvas.Left="6"/-->
+                                            <Path Data="M 0 0 L 3 2 L 8 2 L 10 1 L 10 8 L 8 7 L 3 7 L 0 9 Z" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}" StrokeThickness="1" Canvas.Left="6" SnapsToDevicePixels="True"/>
+                                            <!--Path Data="M 0 0 L 3 2 L 8 2 L 10 1 L 10 6 L 8 5 L 3 5 L 0 7 Z" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}" StrokeThickness="1" Canvas.Left="6"/-->
+                                        </Canvas>
+                                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource JumpListPinApplicationText}"/>
+                                    </StackPanel>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPinned, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:JumpListWindow}}}" Value="False">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Rectangle VerticalAlignment="Center" Width="16" Height="8" Fill="Red" Margin="0,0,12,0"/>
+                                                <TextBlock VerticalAlignment="Center" Text="{DynamicResource JumpListPinApplicationText}"/>
+                                            </StackPanel>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+
+                        <Style x:Key="JumpListCloseWindowsListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource JumpListEntryListViewItemStyle}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Path VerticalAlignment="Center" Data="M 0 0 L 12 12 M 12 0 L 0 12" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}" StrokeThickness="1" Margin="0,0,12,0"/>
+                                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource JumpListCloseWindowsText}"/>
+                                    </StackPanel>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <StackPanel Background="Transparent" IsItemsHost="True"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="TaskItemButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="60" />
         <Setter Property="Height" Value="{Binding Path=ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MainWindow}}}"/>
@@ -852,7 +1038,7 @@
     <Style x:Key="StartToggleButtonStyle" TargetType="{x:Type ToggleButton}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Margin" Value="0,-1,0,0" />
+        <Setter Property="Margin" Value="0,-1,4,0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -1025,6 +1211,321 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SearchTaskViewBaseToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Width" Value="48"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid Background="#01000000">
+                        <Border x:Name="HoverBackground" BorderBrush="#FF2C5FB2" BorderThickness="1" CornerRadius="2" Margin="0,3,0,2" ClipToBounds="True" Visibility="Collapsed">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0" Color="#FF8EC6FF"/>
+                                    <GradientStop Offset="0.25" Color="#FF69AFFF"/>
+                                    <GradientStop Offset="0.875" Color="#FF55A0FF"/>
+                                    <GradientStop Offset="1" Color="#7F2A81FF"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border CornerRadius="1">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Offset="0" Color="#FF8EC6FF"/>
+                                        <GradientStop Offset="0.25" Color="#2069AFFF"/>
+                                        <GradientStop Offset="0.875" Color="#2055A0FF"/>
+                                        <GradientStop Offset="1" Color="#7F2A81FF"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Border>
+                        <ContentPresenter x:Name="PART_ContentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="HoverBackground" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                <Setter Property="Width" Value="36"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SearchToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource SearchTaskViewBaseToggleButtonStyle}">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Control>
+                    <Control.Style>
+                        <Style TargetType="{x:Type Control}">
+                            <Setter Property="Width" Value="18"/>
+                            <Setter Property="Height" Value="20"/>
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Control}">
+                                        <Grid x:Name="RootGrid">
+                                            <Grid.Effect>
+                                                <DropShadowEffect Color="Black" Direction="315" BlurRadius="3" ShadowDepth="1" Opacity="0.375"/>
+                                            </Grid.Effect>
+                                            <Path Data="M 0 9 L 9 0" StrokeThickness="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
+                                                <Path.Stroke>
+                                                    <LinearGradientBrush StartPoint="0.4,0.4" EndPoint="0.6,0.6">
+                                                        <GradientStop Offset="0" Color="#FFFFBE5A"/>
+                                                        <GradientStop Offset="0.375" Color="#FFF69F40"/>
+                                                        <GradientStop Offset="0.75" Color="#FFBE714A"/>
+                                                        <GradientStop Offset="1" Color="#FF9B7A8C"/>
+                                                    </LinearGradientBrush>
+                                                </Path.Stroke>
+                                            </Path>
+                                            <Grid Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                                <Ellipse Stroke="#FF869AC4" StrokeThickness="1" Fill="#FFBBE7F6"/>
+                                                <Ellipse Margin="1">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush Center="0.25,0.25" GradientOrigin="0.25,0.25">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="0.25" Color="Transparent"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                                <Ellipse Margin="1">
+                                                    <Ellipse.Fill>
+                                                        <RadialGradientBrush Center="0.75,0.75" GradientOrigin="0.75,0.75">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="0.625" Color="#00FFFFFF"/>
+                                                            <GradientStop Offset="0.875" Color="#FFA4D7FE"/>
+                                                            <GradientStop Offset="1" Color="#00BBE7F6"/>
+                                                        </RadialGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                            </Grid>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                                <Setter TargetName="RootGrid" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Control.Style>
+                </Control>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TaskViewToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource SearchTaskViewBaseToggleButtonStyle}">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Control>
+                    <Control.Style>
+                        <Style TargetType="{x:Type Control}">
+                            <Setter Property="Width" Value="20"/>
+                            <Setter Property="Height" Value="20"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Control}">
+                                        <Grid>
+                                            <Grid.Effect>
+                                                <DropShadowEffect Color="Black" Direction="315" BlurRadius="3" ShadowDepth="1" Opacity="0.375"/>
+                                            </Grid.Effect>
+                                            <Border Margin="6,0,0,6" BorderBrush="#FF2C7AE0" BorderThickness="1" CornerRadius="1" Background="#FF2C7AE0">
+                                                <Border Margin="0,1,0,0" Background="White"/>
+                                            </Border>
+                                            <Border Margin="0,6,6,0" BorderBrush="#FF2C7AE0" BorderThickness="1" CornerRadius="1" Background="#FF2C7AE0">
+                                                <Border Margin="0,1,0,0" Background="White"/>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                                <Setter Property="Width" Value="16"/>
+                                                <Setter Property="Height" Value="16"/>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Control.Style>
+                </Control>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ActionCenterClockToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid Background="#01000000">
+                        <Grid x:Name="HoverBackground" Background="{TemplateBinding Background}" Visibility="Collapsed" Margin="0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Rectangle x:Name="ShadowRectangle" Width="2" Margin="-2,0,0,0" Opacity="0.5">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#00000000"/>
+                                            <GradientStop Offset="1" Color="Black"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Rectangle x:Name="ShineRectangle" Width="5">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#FF19B9F3"/>
+                                            <GradientStop Offset="1" Color="#0019B9F3"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Rectangle x:Name="RightShadowRectangle" Width="2" Opacity="0.5">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#00000000"/>
+                                            <GradientStop Offset="1" Color="Black"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Rectangle x:Name="RightShineRectangle" Width="5" Margin="0,0,-2,0">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Offset="0" Color="#FF19B9F3"/>
+                                            <GradientStop Offset="1" Color="#0019B9F3"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <!--Rectangle x:Name="RightShineRectangle" Width="5">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                                            <GradientStop Offset="0" Color="#FF19B9F3"/>
+                                            <GradientStop Offset="1" Color="#0019B9F3"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Rectangle x:Name="RightShadowRectangle" Width="2" Margin="0,0,-2,0" Opacity="0.5">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                                            <GradientStop Offset="0" Color="#00000000"/>
+                                            <GradientStop Offset="1" Color="Black"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle-->
+                            </StackPanel>
+                        </Grid>
+                        <ContentControl Content="{TemplateBinding Content}" VerticalAlignment="Center" FontWeight="Bold" FontSize="11"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="HoverBackground" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="#40000000"/>
+                            <Setter TargetName="ShadowRectangle" Property="Opacity" Value="1"/>
+                            <Setter TargetName="RightShadowRectangle" Property="Opacity" Value="1"/>
+                            <Setter TargetName="ShineRectangle" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="RightShineRectangle" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="HoverBackground" Property="Margin" Value="0,0,3,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ActionCenterToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ActionCenterClockToggleButtonStyle}">
+        <!--Setter Property="Width" Value="40"/-->
+        <Setter Property="Width" Value="48"/>
+        <!--Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="10,0"/-->
+        <Setter Property="Content">
+            <Setter.Value>
+                <Control>
+                    <Control.Style>
+                        <Style TargetType="{x:Type Control}">
+                            <Setter Property="UseLayoutRounding" Value="True"/>
+                            <Setter Property="Width" Value="20"/>
+                            <Setter Property="Height" Value="20"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Control}">
+                                        <ControlTemplate.Resources>
+                                            <PathFigureCollection x:Key="BubblePathFigures">M 9 16 Q 0,8 10,0 Q 20,8 12,16 M 12 20 Z</PathFigureCollection>
+                                        </ControlTemplate.Resources>
+                                        <Grid>
+                                            <Grid.Effect>
+                                                <DropShadowEffect Color="Black" Direction="315" BlurRadius="3" ShadowDepth="1" Opacity="0.375"/>
+                                            </Grid.Effect>
+                                            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush>
+                                                        <VisualBrush.Visual>
+                                                            <Path Stroke="Black" Data="M 9 16 Q 0,8 10,0 Q 20,8 12,16 L 12 20 Z"/>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Fill>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Offset="0" Color="White"/>
+                                                        <GradientStop Offset="1" Color="#FFB9DCFE"/>
+                                                    </LinearGradientBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                            <!--ContentControl OpacityMask="{DynamicResource BubbleBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <Rectangle Fill="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Rectangle.Effect>
+                                                        <DropShadowEffect Color="Black" Direction="180" BlurRadius="3" ShadowDepth="2" Opacity="0.375"/>
+                                                    </Rectangle.Effect>
+                                                    <Rectangle.Clip>
+                                                        <GeometryGroup>
+                                                            <RectangleGeometry Rect="-2048 -2048 4096 4096" />
+                                                            <PathGeometry Figures="M 9 16 Q 0,8 10,0 Q 20,8 12,16 M 12 20 Z"/>
+                                                        </GeometryGroup>
+                                                    </Rectangle.Clip>
+                                                </Rectangle>
+                                            </ContentControl-->
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                    <Setter Property="Width" Value="16"/>
+                                    <Setter Property="Height" Value="16"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Control.Style>
+                </Control>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                <Setter Property="Width" Value="30"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="{x:Type ToolBarTray}" TargetType="{x:Type ToolBarTray}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="IsLocked" Value="{Binding IsLocked,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:MainWindow}}}"/>
@@ -1040,7 +1541,7 @@
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Mode=Self}}"/>
                         <!--Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/-->
-                        <Setter Property="Height" Value="40"/>
+                        <Setter Property="Height" Value="30"/>
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
@@ -1278,6 +1779,11 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Margin" Value="15,0"/>
         <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="ClockToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource ActionCenterClockToggleButtonStyle}">
+        <Setter Property="Margin" Value="5,0"/>
+        <Setter Property="Padding" Value="5,0"/>
     </Style>
 
     <Style x:Key="ShowDesktopButtonStyle" TargetType="Button">

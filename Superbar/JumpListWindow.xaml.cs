@@ -40,11 +40,14 @@ namespace Superbar
         public void ShowWindow(PinnedApplication app, ProcessWindow window)
         {
             _app = app;
-            _window = window;
 
             if (_app != null)
             {
-                Show();
+                _window = window;
+
+                if (!IsVisible)
+                    Show();
+
                 Focus();
                 Activate();
 

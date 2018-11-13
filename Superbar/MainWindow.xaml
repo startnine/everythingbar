@@ -8,7 +8,7 @@
         xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="Superbar" WindowStyle="None" Background="Transparent" Topmost="True" ShowInTaskbar="False" ShowActivated="False" Visibility="Visible" Style="{DynamicResource TaskbarWindowStyle}">
+        Title="Superbar" WindowStyle="None" Background="Transparent" Topmost="True" ShowInTaskbar="False" ShowActivated="False" Visibility="Visible" Style="{DynamicResource TaskbarWindowStyle}" Loaded="MainWindow_Loaded">
     <local:TaskbarWindow.Resources>
         <!--ResourceDictionary>
             <Style x:Key="InnerListViewStyle" TargetType="{x:Type ListView}">

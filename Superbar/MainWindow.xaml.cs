@@ -306,6 +306,10 @@ namespace Superbar
         {
             InitializeComponent();
             Application.Current.MainWindow = this;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
             /*OpenApplications.CollectionChanged += (sneder, args) =>
             {
                 TaskBandScrollBar.Visibility = TaskBandScrollViewer.ComputedVerticalScrollBarVisibility;
@@ -454,7 +458,6 @@ namespace Superbar
                 UpdateClockDateVisibility();
             };
             //TrayClockDateMode
-            //Loaded += MainWindow_Loaded;
         }
 
         private void Config_ConfigUpdated(object sender, EventArgs e)
@@ -787,7 +790,11 @@ namespace Superbar
 
         private void ToolbarListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            (e.AddedItems[0] as DiskItem).Open();
+            if (e.AddedItems.Count > 0)
+            {
+                (e.AddedItems[0] as DiskItem).Open();
+                (sender as ListView).SelectedItem = null;
+            }
         }
 
         private void TaskManagerMenuItem_Click(object sender, RoutedEventArgs e)
