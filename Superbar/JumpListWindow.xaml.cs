@@ -1,4 +1,5 @@
-﻿using Start9.UI.Wpf.Windows;
+﻿using Start9.UI.Wpf.Converters;
+using Start9.UI.Wpf.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Superbar
     /// </summary>
     public partial class JumpListWindow : CompositingWindow
     {
+        IconToImageBrushConverter iconConverter = new IconToImageBrushConverter();
+
         string _closeOneWindowText = "Close window";
         string _closeAllWindowsText = "Close all windows";
 
@@ -50,6 +53,11 @@ namespace Superbar
 
                 Focus();
                 Activate();
+
+                Resources["JumpListSmallIconImageBrush"] = iconConverter.Convert(_app.DiskApplication.ItemSmallIcon, null, "16", null);
+                Resources["JumpListLargeIconImageBrush"] = iconConverter.Convert(_app.DiskApplication.ItemLargeIcon, null, "32", null);
+                Resources["JumpListExtraLargeIconImageBrush"] = iconConverter.Convert(_app.DiskApplication.ItemExtraLargeIcon, null, "48", null);
+                Resources["JumpListJumboIconImageBrush"] = iconConverter.Convert(_app.DiskApplication.ItemJumboIcon, null, "256", null);
 
                 Resources["JumpListApplicationNameText"] = _app.DiskApplication.ItemDisplayName;
                 Resources["JumpListApplicationIcon"] = _app.DiskApplication.ItemSmallIcon;
@@ -142,6 +150,12 @@ namespace Superbar
                 else if (e.AddedItems[0] == CloseWindowsListViewItem)
                     CloseWindowsListViewItem_Click(sender, null);
             }
+        }
+
+        new public void Hide()
+        {
+            _app.IsJumpListOpen = false;
+            base.Hide();
         }
     }
 }

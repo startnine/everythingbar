@@ -112,7 +112,7 @@ namespace Superbar
             base.OnSourceInitialized(e);
         }*/
 
-        public bool IsMouseWithin(FrameworkElement target)
+        public static bool IsMouseWithin(FrameworkElement target)
         {
             var targetPoint = target.PointToScreen(new Point(0, 0));
             var cur = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition;

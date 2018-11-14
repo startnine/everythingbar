@@ -78,15 +78,19 @@ namespace Superbar
             }
             set
             {
-                _isApplicationActive = value;
-                NotifyPropertyChanged("IsApplicationActive");
-                if (value == true)
+                if (!Config.IsDraggingPinnedApplication)
                 {
-                    if (OpenWindows.Count == 1)
-                        ShowWindow(OpenWindows[0]);
-                    else if (AreThumbnailsShown == true)
-                        ThumbnailsRequested?.Invoke(this, new WindowEventArgs(SelectedWindow));
+                    _isApplicationActive = value;
+                    if (value == true)
+                    {
+
+                        if (OpenWindows.Count == 1)
+                            ShowWindow(OpenWindows[0]);
+                        else if (AreThumbnailsShown == true)
+                            ThumbnailsRequested?.Invoke(this, new WindowEventArgs(SelectedWindow));
+                    }
                 }
+                NotifyPropertyChanged("IsApplicationActive");
             }
         }
 
@@ -185,7 +189,15 @@ namespace Superbar
                             }
 
                         if (proceed)
+                        {
                             OpenWindows.Add(e.Window);
+                            //ExamineActiveWindow(e.Window);
+                            if ((e.Window != null) && (ProcessWindow.ActiveWindow.Handle == e.Window.Handle))
+                            {
+                                SelectedWindow = e.Window;
+                                IsApplicationActive = true;
+                            }
+                        }
                     }
                 }
                 catch (Exception ex)

@@ -95,9 +95,14 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TaskbarWindow.cs" />
+    <Compile Include="TaskItemDragBehavior.cs" />
+    <Compile Include="TaskItemMiddleClickBehavior.cs" />
     <Compile Include="ThumbnailsWindow.xaml.cs">
       <DependentUpon>ThumbnailsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Aero.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Luna.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

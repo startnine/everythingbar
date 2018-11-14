@@ -48,3 +48,5 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.AeroLite.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.Luna.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\PresentationFramework.Royale.dll
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Aero.baml
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\Start9.UI.Wpf.dll

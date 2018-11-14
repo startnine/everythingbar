@@ -26,6 +26,8 @@ namespace Superbar
             }
         }
 
+        public static bool IsDraggingPinnedApplication = false;
+
         public static bool IsLocked { get; set; } = true;
 
         public static bool AutoHide { get; set; } = false;
