@@ -14,6 +14,9 @@ namespace Superbar
 {
     public class PinnedApplication : DependencyObject, INotifyPropertyChanged
     {
+        public DiskItem DiskApplication { get; set; }
+        public ObservableCollection<ProcessWindow> OpenWindows { get; set; } = new ObservableCollection<ProcessWindow>();
+
         bool _isPinned = false;
         public bool IsPinned
         {
@@ -22,11 +25,10 @@ namespace Superbar
             {
                 _isPinned = value;
                 NotifyPropertyChanged("IsPinned");
+                Debug.WriteLine("IsPinned updated: " + _isPinned.ToString());
                 IsPinnedChanged?.Invoke(this, new EventArgs());
             }
         }
-        public DiskItem DiskApplication { get; set; }
-        public ObservableCollection<ProcessWindow> OpenWindows { get; set; } = new ObservableCollection<ProcessWindow>();
 
         bool _areThumbnailsShown = false;
         public bool AreThumbnailsShown
@@ -84,7 +86,9 @@ namespace Superbar
                     if (value == true)
                     {
 
-                        if (OpenWindows.Count == 1)
+                        if (OpenWindows.Count == 0)
+                            DiskApplication.Open();
+                        else if (OpenWindows.Count == 1)
                             ShowWindow(OpenWindows[0]);
                         else if (AreThumbnailsShown == true)
                             ThumbnailsRequested?.Invoke(this, new WindowEventArgs(SelectedWindow));
@@ -135,7 +139,7 @@ namespace Superbar
                 /*try
                 {*/
                     //Debug.WriteLine(win.Process.MainModule.FileName + "    " + DiskApplication.ItemRealName);
-                    if (win.Process.MainModule.FileName == DiskApplication.ItemPath)
+                    if (win.Process.MainModule.FileName.ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
                     {
                         OpenWindows.Add(win);
                         //Debug.WriteLine("WINDOW: " + win.Title);
@@ -178,7 +182,7 @@ namespace Superbar
             {
                 try
                 {
-                    if (e.Window.Process.MainModule.FileName == DiskApplication.ItemPath)
+                    if (e.Window.Process.MainModule.FileName.ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
                     {
                         bool proceed = true;
                         foreach (ProcessWindow w in OpenWindows)
@@ -236,8 +240,13 @@ namespace Superbar
                     if (w.Handle == e.Window.Handle)
                     {
                         OpenWindows.Remove(w);
-                        if ((OpenWindows.Count == 0) && (!IsPinned))
+
+                        if ((OpenWindows.Count == 0) & (!this.IsPinned))
+                        {
+                            Debug.WriteLine("IsPinned: " + this.IsPinned.ToString() + ", invoking LastWindowClosed");
                             LastWindowClosed?.Invoke(this, new EventArgs());
+                        }
+
                         break;
                     }
                 }

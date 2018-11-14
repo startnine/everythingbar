@@ -76,10 +76,10 @@ namespace Superbar
 
                 if (CloseWindowsListViewItem.IsVisible)
                 {
-                    if (_app.OpenWindows.Count == 1)
-                        Resources["JumpListCloseWindowsText"] = _closeOneWindowText;
-                    else
+                    if (_app.OpenWindows.Count > 1)
                         Resources["JumpListCloseWindowsText"] = _closeAllWindowsText;
+                    else
+                        Resources["JumpListCloseWindowsText"] = _closeOneWindowText;
                 }
             }
         }
@@ -96,7 +96,8 @@ namespace Superbar
         {
             if (_app != null)
             {
-                if (_app.IsPinned)
+                bool pinned = _app.IsPinned;
+                if (pinned)
                     _app.IsPinned = false;
                 else
                     _app.IsPinned = true;
@@ -141,13 +142,13 @@ namespace Superbar
 
         private void BottomSegmentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
+            if (BottomSegmentListView.SelectedItem != null)
             {
-                if (e.AddedItems[0] == ApplicationListViewItem)
+                if (BottomSegmentListView.SelectedItem == ApplicationListViewItem)
                     ApplicationListViewItem_Click(sender, null);
-                else if (e.AddedItems[0] == PinOrUnpinListViewItem)
+                else if (BottomSegmentListView.SelectedItem == PinOrUnpinListViewItem)
                     PinOrUnpinListViewItem_Click(sender, null);
-                else if (e.AddedItems[0] == CloseWindowsListViewItem)
+                else if (BottomSegmentListView.SelectedItem == CloseWindowsListViewItem)
                     CloseWindowsListViewItem_Click(sender, null);
             }
         }

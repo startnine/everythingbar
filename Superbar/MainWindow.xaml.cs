@@ -388,13 +388,13 @@ namespace Superbar
                             }
                         }
 
-                        if (windowFound)
+                        /*if (windowFound)
                         {
                             if ((a.OpenWindows.Count == 0) && (!a.IsPinned))
                                 OpenApplications.Remove(a);
 
                             break;
-                        }
+                        }*/
                     }
                 }));
             };
@@ -482,17 +482,17 @@ namespace Superbar
             List<string> pinnedApps = File.ReadAllLines(Config.PinnedAppsPath).ToList();
             List<bool> areAppsAlreadyPresent = new List<bool>();
             int counter = 0;
+            int insertCounter = 0;
 
             foreach (string s in pinnedApps)
             {
                 bool isAppAlreadyPresent = false;
                 foreach (PinnedApplication a in OpenApplications)
                 {
-                    /*(File.Exists(Environment.ExpandEnvironmentVariables(s)))
-                        &&*/
-                    if (a.DiskApplication.ItemPath == s)
+                    if (a.DiskApplication.ItemPath.ToLowerInvariant() == s.ToLowerInvariant())
                     {
                         a.IsPinned = true;
+                        Debug.WriteLine("IsAlreadyPresent, IsPinned: " + a.IsPinned.ToString() + ", " + a.DiskApplication.ItemRealName);
                         isAppAlreadyPresent = true;
 
                         OpenApplications.Move(OpenApplications.IndexOf(a), counter);
@@ -506,22 +506,40 @@ namespace Superbar
                         IsPinned = true
                     });*/
                 }
-                areAppsAlreadyPresent.Add(isAppAlreadyPresent);
-            }
 
-            pinnedApps.Reverse();
-            areAppsAlreadyPresent.Reverse();
-
-            for (int i = 0; i < areAppsAlreadyPresent.Count; i++)
-            {
-                if (!areAppsAlreadyPresent[i])
+                if (!isAppAlreadyPresent)
                 {
-                    OpenApplications.Insert(0, new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(pinnedApps[i]))));
+                    PinnedApplication app = new PinnedApplication(new DiskItem(s))
+                    {
+                        IsPinned = true
+                    };
+                    SetAppEventHandlers(app);
+                    OpenApplications.Insert(insertCounter, app);
+                    Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
+                    insertCounter++;
                 }
+                //areAppsAlreadyPresent.Add(isAppAlreadyPresent);
             }
 
-            //OpenApplications.Insert(0, new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(@"%windir%\Explorer.exe"))));
-            //OpenApplications.RemoveAt(0);
+            /*pinnedApps.Reverse();
+                areAppsAlreadyPresent.Reverse();
+
+                for (int i = 0; i < areAppsAlreadyPresent.Count; i++)
+                {
+                    if (!areAppsAlreadyPresent[i])
+                    {
+                        PinnedApplication app = new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(pinnedApps[i])))
+                        {
+                            IsPinned = true
+                        };
+                        OpenApplications.Insert(insertCounter, app);
+                        Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
+                        insertCounter++;
+                    }
+                }
+
+                //OpenApplications.Insert(0, new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(@"%windir%\Explorer.exe"))));
+                //OpenApplications.RemoveAt(0);*/
         }
 
         void UpdateClockDateVisibility()
@@ -539,13 +557,21 @@ namespace Superbar
             }
         }
 
+        public void SetAppEventHandlers(PinnedApplication pinnedApp)
+        {
+            pinnedApp.LastWindowClosed += PinnedApp_LastWindowClosed;
+            pinnedApp.ThumbnailsRequested += PinnedApp_ThumbnailsRequested;
+            pinnedApp.JumpListRequested += PinnedApp_JumpListRequested;
+            pinnedApp.IsPinnedChanged += PinnedApp_LastWindowClosed;
+        }
+
         public void AddWindow(ProcessWindow window)
         {
             bool processAlreadyAdded = false;
             foreach (PinnedApplication a in OpenApplications)
             {
                 var item = GetApplicationByWindow(window);
-                if ((item != null) && (a.DiskApplication.ItemPath == item.DiskApplication.ItemPath))
+                if ((item != null) && (a.DiskApplication.ItemPath.ToLowerInvariant() == item.DiskApplication.ItemPath.ToLowerInvariant()))
                 {
                     processAlreadyAdded = true;
                     break;
@@ -557,13 +583,8 @@ namespace Superbar
                 try
                 {
                     var pinnedApp = new PinnedApplication(new DiskItem(window.Process.MainModule.FileName));
-                    pinnedApp.LastWindowClosed += (sneder, args) =>
-                    {
-                        OpenApplications.Remove(pinnedApp);
-                    };
-                    pinnedApp.ThumbnailsRequested += PinnedApp_ThumbnailsRequested;
-                    pinnedApp.JumpListRequested += PinnedApp_JumpListRequested;
-                    pinnedApp.IsPinnedChanged += PinnedApp_IsPinnedChanged;
+                    SetAppEventHandlers(pinnedApp);
+                    //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
                     OpenApplications.Add(pinnedApp);
                     //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
                 }
@@ -594,17 +615,13 @@ namespace Superbar
             _jumpListWindow.SizeChanged += FlyoutWindow_SizeChanged;
         }
 
-        private void PinnedApp_IsPinnedChanged(object sender, EventArgs e)
+        private void PinnedApp_LastWindowClosed(object sender, EventArgs e)
         {
-            var app = sender as PinnedApplication;
-            if ((!app.IsPinned) && (app.OpenWindows.Count == 0))
+            var sned = (sender as PinnedApplication);
+            if ((!sned.IsPinned) && (sned.OpenWindows.Count == 0))
             {
-                foreach (PinnedApplication a in OpenApplications)
-                    if (app.DiskApplication.ItemPath == a.DiskApplication.ItemPath)
-                    {
-                        OpenApplications.Remove(a);
-                        break;
-                    }
+                Debug.WriteLine("IsPinned: " + sned.IsPinned.ToString() + "\nName: " + sned.DiskApplication.ItemRealName + "\nOpenWindows.Count: " + sned.OpenWindows.Count.ToString() + "\nRemoving app");
+                OpenApplications.Remove(sned);
             }
         }
 

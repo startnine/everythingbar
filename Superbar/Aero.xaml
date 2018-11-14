@@ -768,7 +768,7 @@
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                         <Grid Background="#01000000">
-                                                            <Grid Margin="0,4,0,0">
+                                                            <Grid x:Name="RootGrid" Margin="0,4,0,0">
                                                                 <Border x:Name="IdleOuterBorder" BorderBrush="Black" Background="#4D000000" BorderThickness="1,1,1,0" CornerRadius="6,0,0,0">
                                                                     <Border x:Name="IdleInnerBorder" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="5,0,0,0"/>
                                                                 </Border>
@@ -828,6 +828,26 @@
                                                             </Grid>
                                                         </Grid>
                                                         <ControlTemplate.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
+                                                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="False"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                                <MultiDataTrigger.ExitActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.ExitActions>
+                                                            </MultiDataTrigger>
                                                             <MultiTrigger>
                                                                 <MultiTrigger.Conditions>
                                                                     <Condition Property="IsMouseOver" Value="True"/>
@@ -873,7 +893,8 @@
                                                             <MultiDataTrigger>
                                                                 <MultiDataTrigger.Conditions>
                                                                     <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DockPanel}}}" Value="False"/>
-                                                                    <Condition Binding="{Binding IsJumpListOpen}" Value="False"/>
+                                                                    <!--Condition Binding="{Binding IsJumpListOpen}" Value="False"/-->
+                                                                    <Condition Binding="{Binding Opacity, ElementName=JumpListToggleButton}" Value="0"/>
                                                                 </MultiDataTrigger.Conditions>
                                                                 <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,6,0,0"/>
                                                                 <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,5,0,0"/>
@@ -1682,7 +1703,7 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource TaskbarGlyphIdleBrush}" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="0" />
@@ -1692,11 +1713,63 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <Grid Background="{TemplateBinding Background}">
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"/>
+                    <Grid Background="#01000000">
+                        <Grid Margin="0,2">
+                            <Grid x:Name="HoverBackground" Opacity="1">
+                                <Border x:Name="HoverOuterBorder" BorderBrush="Black" Background="#4D000000" BorderThickness="1" CornerRadius="3" Opacity="0">
+                                    <Border x:Name="HoverInnerBorder" BorderBrush="#40406F74" BorderThickness="1" CornerRadius="2">
+                                        <Grid>
+                                            <Rectangle Height="10" VerticalAlignment="Bottom" Margin="1,-1">
+                                                <Rectangle.Fill>
+                                                    <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1">
+                                                        <GradientStop Offset="0" Color="#FF89C2C8"/>
+                                                        <GradientStop Offset="1" Color="#0089C2C8"/>
+                                                    </RadialGradientBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                        </Grid>
+                                    </Border>
+                                </Border>
+                            </Grid>
+                            <Border x:Name="PressedOuterBorder" BorderBrush="Transparent" Background="#B8000000" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverOuterBorder}" Opacity="0">
+                                <Border x:Name="PressedInnerBorder" BorderBrush="#F7030303" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverInnerBorder}">
+                                    <Grid>
+                                        <Rectangle Width="5" HorizontalAlignment="Left">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Offset="0" Color="#40000000"/>
+                                                    <GradientStop Offset="1" Color="#00000000"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Rectangle Width="5" HorizontalAlignment="Right">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                                                    <GradientStop Offset="0" Color="#40000000"/>
+                                                    <GradientStop Offset="1" Color="#00000000"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Rectangle Height="7" VerticalAlignment="Top">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Offset="0" Color="#40000000"/>
+                                                    <GradientStop Offset="1" Color="#00000000"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Grid>
+                                </Border>
+                            </Border>
+                        </Grid>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" UseLayoutRounding="True">
+                            <ContentPresenter.Effect>
+                                <DropShadowEffect Color="Black" Direction="315" BlurRadius="3" ShadowDepth="2" Opacity="0.375"/>
+                            </ContentPresenter.Effect>
+                        </ContentPresenter>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <MultiTrigger>
+                        <!--MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
                                 <Condition Property="IsChecked" Value="False"/>
@@ -1709,6 +1782,47 @@
                         <Trigger Property="IsChecked" Value="True">
                             <Setter Property="Background" Value="#60FFFFFF"/>
                             <Setter Property="Foreground" Value="{x:Static SystemParameters.WindowGlassBrush}"/>
+                        </Trigger-->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="False"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                        <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.EnterActions>
+                            <MultiTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                        <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiTrigger.ExitActions>
+                        </MultiTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="HoverOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="HoverOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource TaskbarGlyphPressedBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1721,13 +1835,32 @@
         </Style.Triggers>
     </Style>
 
+    <!--LinearGradientBrush x:Key="TaskbarGlyphBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#FF3B7CC8"/>
+        <GradientStop Offset="1" Color="#FF356D9D"/>
+    </LinearGradientBrush-->
+
+    <SolidColorBrush x:Key="TaskbarGlyphIdleBrush">#FF898989</SolidColorBrush>
+
+    <SolidColorBrush x:Key="TaskbarGlyphPressedBrush">#FF636363</SolidColorBrush>
+
+    <SolidColorBrush x:Key="TaskbarGlyphFillBrush">#7F7FA0C0</SolidColorBrush>
+
     <Style x:Key="SearchToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource SearchTaskViewBaseToggleButtonStyle}">
         <Setter Property="Content">
             <Setter.Value>
-                <Canvas Width="16" Height="16">
-                    <Path Data="M 0 7 L 7 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Canvas.Top="9"/>
-                    <Ellipse Width="11" Height="11" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Canvas.Left="5"/>
-                </Canvas>
+                <!--Grid Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RenderTransform>
+                        <TranslateTransform X="0" Y="3"/>
+                    </Grid.RenderTransform>
+                    <Path Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="#C0FFFFFF" StrokeThickness="2.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Path x:Name="SearchIconPath" Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="{DynamicResource TaskbarGlyphBrush}" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid-->
+                <Path Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Fill="{DynamicResource TaskbarGlyphFillBrush}" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Path.RenderTransform>
+                        <TranslateTransform X="0" Y="3"/>
+                    </Path.RenderTransform>
+                </Path>
             </Setter.Value>
         </Setter>
     </Style>
@@ -1738,31 +1871,89 @@
                 <Control>
                     <Control.Style>
                         <Style TargetType="{x:Type Control}">
-                            <Setter Property="Width" Value="24"/>
-                            <Setter Property="Height" Value="14"/>
+                            <Setter Property="Width" Value="28"/>
+                            <Setter Property="Height" Value="18"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Control}">
-                                        <Grid ClipToBounds="True">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="5"/>
-                                                <ColumnDefinition Width="14"/>
-                                                <ColumnDefinition Width="5"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid ClipToBounds="True" Grid.Column="0">
-                                                <Rectangle x:Name="LeftRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="0,2" ClipToBounds="True">
-                                                    <Rectangle.RenderTransform>
-                                                        <TranslateTransform X="2" Y="0"/>
-                                                    </Rectangle.RenderTransform>
-                                                </Rectangle>
-                                            </Grid>
-                                            <Rectangle Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="1,0" ClipToBounds="True" Grid.Column="1"/>
-                                            <Grid ClipToBounds="True" Grid.Column="2">
-                                                <Rectangle x:Name="RightRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="0,2" ClipToBounds="True">
-                                                    <Rectangle.RenderTransform>
-                                                        <TranslateTransform X="-2" Y="0"/>
-                                                    </Rectangle.RenderTransform>
-                                                </Rectangle>
+                                        <!--Grid>
+                                            <Rectangle x:Name="ThirdEdgeRectangle" Margin="2" Fill="White">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush Visual="{Binding ElementName=GlyphRectangle}"/>
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Effect>
+                                                    <BlurEffect Radius="2"/>
+                                                </Rectangle.Effect>
+                                            </Rectangle>
+                                            <Rectangle x:Name="SecondEdgeRectangle" Margin="2" Fill="White">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush Visual="{Binding ElementName=GlyphRectangle}"/>
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Effect>
+                                                    <BlurEffect Radius="2"/>
+                                                </Rectangle.Effect>
+                                            </Rectangle>
+                                            <Rectangle x:Name="EdgeRectangle" Margin="2" Fill="White">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush Visual="{Binding ElementName=GlyphRectangle}"/>
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Effect>
+                                                    <BlurEffect Radius="2"/>
+                                                </Rectangle.Effect>
+                                            </Rectangle>
+                                            <Rectangle x:Name="GlyphRectangle" Margin="2" Fill="{DynamicResource TaskbarGlyphBrush}">
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush>
+                                                        <VisualBrush.Visual>
+                                                            <Grid Width="24" Height="14" ClipToBounds="True" Background="#01000000">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="5"/>
+                                                                    <ColumnDefinition Width="14"/>
+                                                                    <ColumnDefinition Width="5"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Grid ClipToBounds="True" Grid.Column="0">
+                                                                    <Rectangle x:Name="LeftRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="0,2" ClipToBounds="True">
+                                                                        <Rectangle.RenderTransform>
+                                                                            <TranslateTransform X="2" Y="0"/>
+                                                                        </Rectangle.RenderTransform>
+                                                                    </Rectangle>
+                                                                </Grid>
+                                                                <Rectangle Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="1,0" ClipToBounds="True" Grid.Column="1"/>
+                                                                <Grid ClipToBounds="True" Grid.Column="2">
+                                                                    <Rectangle x:Name="RightRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="0,2" ClipToBounds="True">
+                                                                        <Rectangle.RenderTransform>
+                                                                            <TranslateTransform X="-2" Y="0"/>
+                                                                        </Rectangle.RenderTransform>
+                                                                    </Rectangle>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Rectangle.OpacityMask>
+                                            </Rectangle>
+                                        </Grid-->
+                                        <Grid>
+                                            <Grid Width="24" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="True" Background="#01000000">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="5"/>
+                                                    <ColumnDefinition Width="14"/>
+                                                    <ColumnDefinition Width="5"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid ClipToBounds="True" Grid.Column="0">
+                                                    <Rectangle x:Name="LeftRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Fill="{DynamicResource TaskbarGlyphFillBrush}" StrokeThickness="2" Margin="0,2" ClipToBounds="True">
+                                                        <Rectangle.RenderTransform>
+                                                            <TranslateTransform X="2" Y="0"/>
+                                                        </Rectangle.RenderTransform>
+                                                    </Rectangle>
+                                                </Grid>
+                                                <Rectangle Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Fill="{DynamicResource TaskbarGlyphFillBrush}" StrokeThickness="2" Margin="1,0" ClipToBounds="True" Grid.Column="1"/>
+                                                <Grid ClipToBounds="True" Grid.Column="2">
+                                                    <Rectangle x:Name="RightRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Fill="{DynamicResource TaskbarGlyphFillBrush}" StrokeThickness="2" Margin="0,2" ClipToBounds="True">
+                                                        <Rectangle.RenderTransform>
+                                                            <TranslateTransform X="-2" Y="0"/>
+                                                        </Rectangle.RenderTransform>
+                                                    </Rectangle>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
                                         <ControlTemplate.Triggers>
@@ -1818,8 +2009,8 @@
             <Setter.Value>
                 <!--Path Data="M 0 0 L 16 0 L 16 12 L 10 12 L 8 14 L 6 12 L 0 12 Z" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1"/-->
                 <Grid Width="16" Height="16">
-                    <Border BorderBrush="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" BorderThickness="1,1,1,0" Margin="0,0,0,3"/>
-                    <Path Data="M 0 0 L 6 0 L 8 2 L 10 0 L 16 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" VerticalAlignment="Bottom"/>
+                    <Border BorderBrush="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Background="{DynamicResource TaskbarGlyphFillBrush}" BorderThickness="2,2,2,0" Margin="0,0,0,3"/>
+                    <Path Data="M 0 0 L 6 0 L 8 2 L 10 0 L 16 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="2" VerticalAlignment="Bottom" UseLayoutRounding="True"/>
                 </Grid>
             </Setter.Value>
         </Setter>
@@ -1989,38 +2180,82 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource TaskbarGlyphIdleBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Width" Value="24"/>
-        <Setter Property="Height" Value="24"/>
         <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Grid Background="#01000000">
-                        <Border x:Name="HoverBackground" Background="#30FFFFFF" Visibility="Collapsed"/>
-                        <Grid x:Name="PressedBackground" Background="#60FFFFFF" Visibility="Collapsed"/>
-                        <Path HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 6 L 6 0 L 12 6" Stroke="White" StrokeThickness="1"/>
+                        <Grid Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Ellipse x:Name="HoverBackground" Opacity="0">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0" Color="#FF242424"/>
+                                        <GradientStop Offset="1" Color="#FF040404"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <StackPanel x:Name="ArrowsStackPanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                                <StackPanel.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </StackPanel.RenderTransform>
+                                <Path x:Name="ArrowPath" Data="M 0 3 L 3 0 L 6 3" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" SnapsToDevicePixels="True"/>
+                                <Path Data="{Binding Data, ElementName=ArrowPath}" Stroke="{TemplateBinding Foreground}" StrokeThickness="{Binding StrokeThickness, ElementName=ArrowPath}" SnapsToDevicePixels="True" Margin="0,1,0,0"/>
+                            </StackPanel>
+                            <Grid x:Name="PressedBackground" Background="#60FFFFFF" Visibility="Collapsed"/>
+                            <!--Path HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 6 L 6 0 L 12 6" Stroke="White" StrokeThickness="1"/-->
+                        </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="HoverBackground" Property="Visibility" Value="Visible"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource TaskbarGlyphPressedBrush}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="PressedBackground" Property="Visibility" Value="Visible"/>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowsStackPanel" Storyboard.TargetProperty="RenderTransform.Angle" To="180" Duration="0:0:0.125">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ArrowsStackPanel" Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.125">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
-                        <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Horizontal">
-                            <Setter Property="VerticalAlignment" Value="Stretch"/>
-                            <Setter Property="Height" Value="Auto"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Vertical">
-                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                            <Setter Property="Width" Value="Auto"/>
-                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

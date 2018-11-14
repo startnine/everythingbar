@@ -108,27 +108,8 @@ namespace Superbar
                                 ListViewItem hoverItem = visualOwner.Children[list.Items.IndexOf(p)] as ListViewItem;
                                 if (IsMouseWithin(hoverItem) && (Application != p))
                                 {
-                                    int index = visualOwner.Children.IndexOf(_item);
+                                    //int index = visualOwner.Children.IndexOf(_item);
                                     int hoverIndex = list.Items.IndexOf(p);
-                                    if (false)
-                                    {
-                                        //bool validate = false;
-                                        if (hoverIndex > index)
-                                        {
-                                            (list.ItemsSource as ObservableCollection<PinnedApplication>).Remove(p);
-                                            (list.ItemsSource as ObservableCollection<PinnedApplication>).Insert(index, p);
-                                            //validate = true;
-                                            break;
-                                        }
-                                        else if /*((!validate) && */(hoverIndex < index)//)
-                                        {
-                                            (list.ItemsSource as ObservableCollection<PinnedApplication>).Remove(p);
-                                            (list.ItemsSource as ObservableCollection<PinnedApplication>).Insert(index, p);
-                                            break;
-                                        }
-                                    }
-
-                                    //var targetItem = (list.ItemsSource as ObservableCollection<PinnedApplication>).ElementAt(index);
                                     (list.ItemsSource as ObservableCollection<PinnedApplication>).Remove(Application);
                                     (list.ItemsSource as ObservableCollection<PinnedApplication>).Insert(hoverIndex, Application);
                                     break;

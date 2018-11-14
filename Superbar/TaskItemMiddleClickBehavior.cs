@@ -36,7 +36,7 @@ namespace Superbar
 
         private void _item_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if ((!_pressed) && (e.ChangedButton == MouseButton.Middle))
+            if ((!_pressed) && (e.ChangedButton == MouseButton.Middle) && (e.MiddleButton == MouseButtonState.Pressed) && (Mouse.MiddleButton == MouseButtonState.Pressed))
             {
                 Debug.WriteLine("Opening app...");
                 Panel visualOwner = VisualTreeHelper.GetParent(_item) as Panel;
