@@ -492,7 +492,7 @@ namespace Superbar
                     if (a.DiskApplication.ItemPath.ToLowerInvariant() == s.ToLowerInvariant())
                     {
                         a.IsPinned = true;
-                        Debug.WriteLine("IsAlreadyPresent, IsPinned: " + a.IsPinned.ToString() + ", " + a.DiskApplication.ItemRealName);
+                        //Debug.WriteLine("IsAlreadyPresent, IsPinned: " + a.IsPinned.ToString() + ", " + a.DiskApplication.ItemRealName);
                         isAppAlreadyPresent = true;
 
                         OpenApplications.Move(OpenApplications.IndexOf(a), counter);
@@ -515,7 +515,7 @@ namespace Superbar
                     };
                     SetAppEventHandlers(app);
                     OpenApplications.Insert(insertCounter, app);
-                    Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
+                    //Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
                     insertCounter++;
                 }
                 //areAppsAlreadyPresent.Add(isAppAlreadyPresent);
@@ -582,7 +582,7 @@ namespace Superbar
             {
                 try
                 {
-                    var pinnedApp = new PinnedApplication(new DiskItem(window.Process.MainModule.FileName));
+                    var pinnedApp = new PinnedApplication(new DiskItem(Config.GetExecutablePath(window.Process)));
                     SetAppEventHandlers(pinnedApp);
                     //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
                     OpenApplications.Add(pinnedApp);
@@ -620,7 +620,7 @@ namespace Superbar
             var sned = (sender as PinnedApplication);
             if ((!sned.IsPinned) && (sned.OpenWindows.Count == 0))
             {
-                Debug.WriteLine("IsPinned: " + sned.IsPinned.ToString() + "\nName: " + sned.DiskApplication.ItemRealName + "\nOpenWindows.Count: " + sned.OpenWindows.Count.ToString() + "\nRemoving app");
+                //Debug.WriteLine("IsPinned: " + sned.IsPinned.ToString() + "\nName: " + sned.DiskApplication.ItemRealName + "\nOpenWindows.Count: " + sned.OpenWindows.Count.ToString() + "\nRemoving app");
                 OpenApplications.Remove(sned);
             }
         }

@@ -23,6 +23,7 @@
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <conv:IconToImageBrushConverter x:Key="IconToImageBrushConverter"/>
+    <conv:ListViewItemIndexToBoolConverter x:Key="ListViewItemIndexToBoolConverter"/>
 
     <!--#endregion Converters-->
 
@@ -358,17 +359,67 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ListViewItem}">
-                            <Grid x:Name="RootGrid" Background="#01000000" Margin="2,0">
-                                <Border x:Name="HoverBackground" Background="#30FFFFFF" Margin="{TemplateBinding Padding}" ClipToBounds="True" RenderTransformOrigin="0,1" Visibility="Collapsed">
-                                    <Border.RenderTransform>
-                                        <ScaleTransform ScaleX="1" ScaleY="0"/>
-                                    </Border.RenderTransform>
-                                </Border>
-                                <Border x:Name="PressedBackground" Background="#60FFFFFF" Margin="{TemplateBinding Padding}" ClipToBounds="True" Visibility="Collapsed"/>
-                                <Border BorderBrush="{x:Static SystemParameters.WindowGlassBrush}" Margin="{TemplateBinding Padding}" BorderThickness="0,0,0,2" IsHitTestVisible="False"/>
-                                <Grid x:Name="ContentGrid" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="2,0">
-                                    <ContentPresenter x:Name="PART_ContentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="4,0" Visibility="Hidden" />
-                                    <GridViewRowPresenter x:Name="PART_GridViewRowPesenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="4,0" Visibility="Visible" />
+                            <Grid Background="#01000000">
+                                <Grid x:Name="RootGrid" Margin="0,4,0,0">
+                                    <Border x:Name="IdleOuterBorder" BorderBrush="Black" Background="#4D000000" BorderThickness="1,1,0,0" CornerRadius="0">
+                                        <Border x:Name="IdleInnerBorder" BorderBrush="#40FFFFFF" BorderThickness="1,1,0,1" CornerRadius="0"/>
+                                    </Border>
+                                    <Border x:Name="PressedOuterBorder" BorderBrush="Transparent" Background="#B8000000" BorderThickness="{Binding BorderThickness, ElementName=IdleOuterBorder}" CornerRadius="{Binding CornerRadius, ElementName=IdleOuterBorder}" Opacity="0">
+                                        <Border x:Name="PressedInnerBorder" BorderBrush="#F7030303" BorderThickness="{Binding BorderThickness, ElementName=IdleInnerBorder}" CornerRadius="{Binding CornerRadius, ElementName=IdleInnerBorder}">
+                                            <Grid>
+                                                <Rectangle Width="5" HorizontalAlignment="Left">
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                            <GradientStop Offset="0" Color="#40000000"/>
+                                                            <GradientStop Offset="1" Color="#00000000"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Rectangle Width="5" HorizontalAlignment="Right">
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                                                            <GradientStop Offset="0" Color="#40000000"/>
+                                                            <GradientStop Offset="1" Color="#00000000"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Rectangle Height="7" VerticalAlignment="Top">
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="#40000000"/>
+                                                            <GradientStop Offset="1" Color="#00000000"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                            </Grid>
+                                        </Border>
+                                    </Border>
+                                    <Grid x:Name="HoverBackground" Opacity="0" Margin="2,2,2,0">
+                                        <Rectangle Height="20" VerticalAlignment="Bottom" Margin="0,0,0,1">
+                                            <Rectangle.Fill>
+                                                <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1">
+                                                    <GradientStop Offset="0" Color="White"/>
+                                                    <GradientStop Offset="0.25" Color="#7F99D9DF"/>
+                                                    <GradientStop Offset="1" Color="#0099D9DF"/>
+                                                </RadialGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Rectangle Height="1" VerticalAlignment="Bottom" Margin="5,0">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Offset="0" Color="#0099D9DF"/>
+                                                    <GradientStop Offset="0.375" Color="#EC99D9DF"/>
+                                                    <GradientStop Offset="0.5" Color="White"/>
+                                                    <GradientStop Offset="0.625" Color="#EC99D9DF"/>
+                                                    <GradientStop Offset="1" Color="#0099D9DF"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Grid>
+                                    <Grid x:Name="ContentGrid" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="2,0">
+                                        <ContentPresenter x:Name="PART_ContentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="4,0" Visibility="Hidden" />
+                                        <GridViewRowPresenter x:Name="PART_GridViewRowPesenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="4,0" Visibility="Visible" />
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <ControlTemplate.Triggers>
@@ -376,56 +427,81 @@
                                     <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible"/>
                                     <Setter TargetName="PART_GridViewRowPesenter" Property="Visibility" Value="Hidden"/>
                                 </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver" Value="True"/>
-                                        <Condition Property="IsSelected" Value="False"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter TargetName="HoverBackground" Property="Visibility" Value="Visible"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver" Value="False"/>
-                                        <Condition Property="IsSelected" Value="False"/>
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <!--ThicknessAnimation Storyboard.TargetProperty="Margin" To="2,0" Duration="0:0:0.0625"/-->
-                                                <ThicknessAnimation Storyboard.TargetName="ContentGrid" Storyboard.TargetProperty="Margin" To="2,0" Duration="0:0:0.0625"/>
-                                                <ThicknessAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Margin" To="2,0" Duration="0:0:0.0625"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.EnterActions>
-                                    <MultiTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <!--ThicknessAnimation Storyboard.TargetProperty="Margin" To="0" Duration="0:0:0.0625"/-->
-                                                <ThicknessAnimation Storyboard.TargetName="ContentGrid" Storyboard.TargetProperty="Margin" To="4,0" Duration="0:0:0.0625"/>
-                                                <ThicknessAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Margin" To="0" Duration="0:0:0.0625"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </MultiTrigger.ExitActions>
-                                </MultiTrigger>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="PressedBackground" Property="Visibility" Value="Visible"/>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:0.0625"/>
+                                                <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.EnterActions>
                                     <Trigger.ExitActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="RenderTransform.ScaleY" To="0" Duration="0:0:0.0625"/>
+                                                <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.ExitActions>
                                 </Trigger>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="last">
+                                            <MultiBinding.Bindings>
+                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding.Bindings>
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0,6,0,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0,5,0,0"/>
+                                    <Setter TargetName="IdleOuterBorder" Property="BorderThickness" Value="1,1,1,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="BorderThickness" Value="1"/>
+                                </DataTrigger>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="first">
+                                            <MultiBinding.Bindings>
+                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding.Bindings>
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,0,0,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,0,0,0"/>
+                                </DataTrigger>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="only">
+                                            <MultiBinding.Bindings>
+                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding.Bindings>
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,6,0,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,5,0,0"/>
+                                    <Setter TargetName="IdleOuterBorder" Property="BorderThickness" Value="1,1,1,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="BorderThickness" Value="1"/>
+                                </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -557,35 +633,7 @@
                             <local:TaskItemMiddleClickBehavior/>
                             <local:TaskItemDragBehavior Application="{Binding}"/>
                         </e:Interaction.Behaviors>
-                        <ListView x:Name="ItemsListView" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                            <ListView.Template>
-                                <ControlTemplate TargetType="{x:Type ListView}">
-                                    <WrapPanel x:Name="ItemsHostWrapPanel" IsItemsHost="True" MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" HorizontalAlignment="Left" Background="#01000000" Orientation="Horizontal" Margin="0"/>
-                                    <ControlTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
-                                            <Setter TargetName="ItemsHostWrapPanel" Property="Orientation" Value="vertical"/>
-                                        </DataTrigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </ListView.Template>
-                            <ListView.ItemTemplate>
-                                <DataTemplate DataType="{x:Type window:ProcessWindow}">
-                                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                        <Canvas x:Name="IconCanvas" Width="24" Height="24" VerticalAlignment="Center" Background="{Binding Icon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='24'}" DockPanel.Dock="Left"/>
-                                        <!--Button Width="{Binding ActualHeight,RelativeSource={RelativeSource Mode=Self}}" VerticalAlignment="Stretch" DockPanel.Dock="Right" Tag="{Binding}">X</Button-->
-                                        <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
-                                    </DockPanel>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
-                                            <!--Setter TargetName="IconCanvas" Property="Background" Value="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/-->
-                                            <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
-                                            <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <DockPanel x:Name="IconDockPanel" MaxWidth="74" Margin="0" Visibility="Collapsed" Background="#01000000">
+                        <DockPanel x:Name="IconDockPanel" Margin="0" Background="#01000000">
                             <DockPanel.ToolTip>
                                 <ToolTip IsOpen="{Binding AreThumbnailsShown, Mode=OneWayToSource, FallbackValue=True}" IsHitTestVisible="False" Opacity="0" Content="Test"/>
                             </DockPanel.ToolTip>
@@ -756,7 +804,35 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
                             <Grid>
-                                <ToggleButton x:Name="IconToggleButton" IsChecked="{Binding IsApplicationActive, Mode=TwoWay, FallbackValue=False}" IsThreeState="False">
+                                <ListView x:Name="ItemsListView" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <ListView.Template>
+                                        <ControlTemplate TargetType="{x:Type ListView}">
+                                            <WrapPanel x:Name="ItemsHostWrapPanel" IsItemsHost="True" MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" HorizontalAlignment="Left" Background="#01000000" Orientation="Horizontal" Margin="0"/>
+                                            <ControlTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
+                                                    <Setter TargetName="ItemsHostWrapPanel" Property="Orientation" Value="vertical"/>
+                                                </DataTrigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ListView.Template>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type window:ProcessWindow}">
+                                            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                                <Canvas x:Name="IconCanvas" Width="24" Height="24" VerticalAlignment="Center" Background="{Binding Icon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='24'}" DockPanel.Dock="Left"/>
+                                                <!--Button Width="{Binding ActualHeight,RelativeSource={RelativeSource Mode=Self}}" VerticalAlignment="Stretch" DockPanel.Dock="Right" Tag="{Binding}">X</Button-->
+                                                <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                                    <!--Setter TargetName="IconCanvas" Property="Background" Value="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/-->
+                                                    <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
+                                                    <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <ToggleButton x:Name="IconToggleButton" IsChecked="{Binding IsApplicationActive, Mode=TwoWay, FallbackValue=False}" IsThreeState="False" Visibility="Collapsed">
                                     <ToggleButton.Style>
                                         <Style TargetType="{x:Type ToggleButton}">
                                             <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -850,12 +926,6 @@
                                                             </MultiDataTrigger>
                                                             <MultiTrigger>
                                                                 <MultiTrigger.Conditions>
-                                                                    <Condition Property="IsMouseOver" Value="True"/>
-                                                                    <Condition Property="IsChecked" Value="False"/>
-                                                                </MultiTrigger.Conditions>
-                                                            </MultiTrigger>
-                                                            <MultiTrigger>
-                                                                <MultiTrigger.Conditions>
                                                                     <Condition Property="IsPressed" Value="False"/>
                                                                     <Condition Property="IsChecked" Value="False"/>
                                                                 </MultiTrigger.Conditions>
@@ -906,7 +976,7 @@
                                         </Style>
                                     </ToggleButton.Style>
                                 </ToggleButton>
-                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2,0,-2">
+                                <Grid x:Name="IconGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2,0,-2" Visibility="Collapsed">
                                     <Canvas x:Name="IconCanvas" Width="32" Height="32" Background="{Binding DiskApplication.ItemLargeIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='32'}" IsHitTestVisible="False"/>
                                     <Border x:Name="WindowCounterBorder" Background="#7F000000" BorderBrush="White" BorderThickness="1" CornerRadius="10" MinWidth="20" MinHeight="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-8,-1">
                                         <TextBlock Text="{Binding OpenWindows.Count}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -946,7 +1016,9 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Always">
                             <Setter TargetName="ItemsListView" Property="Visibility" Value="Collapsed"/>
-                            <Setter TargetName="IconDockPanel" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="IconToggleButton" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="74"/>
                         </DataTrigger>
                         <!--DataTrigger Binding="{Binding OpenWindows.Count}" Value="2">
                             <Setter TargetName="OuterGroupTab" Property="Visibility" Value="Collapsed"/>
@@ -967,6 +1039,28 @@
                         <DataTrigger Binding="{Binding OpenWindows.Count}" Value="0">
                             <Setter TargetName="WindowCounterBorder" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
+                        <!--DataTrigger Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="WhenFull">
+                            <Setter TargetName="WindowCounterBorder" Property="Visibility" Value="Collapsed"/>
+                        </>
+                        <DataTrigger Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Never">
+                            <Setter TargetName="WindowCounterBorder" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger-->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="WhenFull"/>
+                                <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="IconToggleButton" Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Never"/>
+                                <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="IconToggleButton" Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
                 <!--DataTemplate DataType="{x:Type local:ProcessWindowSet}">
@@ -1463,7 +1557,7 @@
 
     <Style x:Key="JumpListWindowStyle" TargetType="{x:Type win:ShadowedWindow}">
         <Setter Property="MinWidth" Value="246"/>
-        <Setter Property="CompositionState" Value="Alpha"/>
+        <Setter Property="CompositionState" Value="Glass"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="HideTransitionDuration" Value="2"/>
         <Setter Property="Opacity" Value="0"/>
@@ -1479,29 +1573,62 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Window">
-                                <Rectangle>
-                                    <Rectangle.OpacityMask>
-                                        <VisualBrush>
-                                            <VisualBrush.Visual>
-                                                <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16" />
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </Rectangle.OpacityMask>
-                                    <Rectangle.Fill>
-                                        <VisualBrush>
-                                            <VisualBrush.Visual>
-                                                <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
-                                                    <!--Rectangle Width="10" Height="10" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top"/-->
-                                                    <Border Margin="18,18,14,14" Background="#C0000000">
-                                                        <Border.Effect>
-                                                            <BlurEffect Radius="14"/>
-                                                        </Border.Effect>
-                                                    </Border>
-                                                </Grid>
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
+                                <!--Grid-->
+                                    <Rectangle x:Name="RootRect">
+                                        <!--Rectangle.RenderTransform>
+                                            <TranslateTransform X="0" Y="25"/>
+                                        </Rectangle.RenderTransform-->
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush>
+                                                <VisualBrush.Visual>
+                                                    <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16" />
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Rectangle.OpacityMask>
+                                        <Rectangle.Fill>
+                                            <VisualBrush>
+                                                <VisualBrush.Visual>
+                                                    <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
+                                                        <!--Rectangle Width="10" Height="10" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top"/-->
+                                                        <Border Margin="18,18,14,14" Background="#C0000000">
+                                                            <Border.Effect>
+                                                                <BlurEffect Radius="14"/>
+                                                            </Border.Effect>
+                                                        </Border>
+                                                    </Grid>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                <!--/Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="Opacity" Value="0">
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="RootRect" Storyboard.TargetProperty="RenderTransform.Y" From="25" To="0" Duration="0:0:0.25">
+                                                        <DoubleAnimation.EasingFunction>
+                                                            <CircleEase EasingMode="EaseOut"/>
+                                                        </DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                    <Trigger Property="Opacity" Value="1">
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="RootRect" Storyboard.TargetProperty="RenderTransform.Y" To="25" Duration="0:0:0">
+                                                        <DoubleAnimation.EasingFunction>
+                                                            <CircleEase EasingMode="EaseIn"/>
+                                                        </DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </ControlTemplate.Triggers-->
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>

@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +13,44 @@ namespace Superbar
 {
     public static class Config
     {
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool QueryFullProcessImageName(IntPtr hProcess, int dwFlags, StringBuilder lpExeName, out int lpdwSize);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr OpenProcess(int flags, bool inherit, int dwProcessId);
+
+        public static string GetExecutablePath(Process process)
+        {
+            string returnValue = "";
+            StringBuilder stringBuilder = new StringBuilder(1024);
+            IntPtr hprocess = OpenProcess(0x1000, false, process.Id);
+
+            if (hprocess != IntPtr.Zero)
+            {
+                try
+                {
+                    int size = stringBuilder.Capacity;
+
+                    if (QueryFullProcessImageName(hprocess, 0, stringBuilder, out size))
+                        returnValue = stringBuilder.ToString();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    try
+                    {
+                        returnValue = process.MainModule.FileName;
+                    }
+                    catch (Exception exc)
+                    {
+                        Debug.WriteLine(exc);
+                    }
+                }
+            }
+
+            return returnValue;
+        }
+
         static Config()
         {
             if (!File.Exists(PinnedAppsPath))
@@ -38,28 +78,82 @@ namespace Superbar
 
         public static string PinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
 
+        public static bool AddPinnedApp(string path)
+        {
+            var origStrings = PinnedApps;
+
+
+            bool add = true;
+
+            foreach (string t in origStrings)
+            {
+                if (Environment.ExpandEnvironmentVariables(path.ToLowerInvariant()) == Environment.ExpandEnvironmentVariables(t.ToLowerInvariant()))
+                {
+                    add = false;
+                    break;
+                }
+            }
+
+            if (add)
+            {
+                Debug.WriteLine("string: " + path);
+                origStrings.Add(path);
+            }
+
+            File.WriteAllLines(PinnedAppsPath, origStrings.ToArray());
+            return add;
+        }
+
+        public static bool RemovePinnedApp(string path)
+        {
+            var origStrings = PinnedApps;
+
+
+            bool remove = false;
+
+            foreach (string t in origStrings)
+            {
+                if (Environment.ExpandEnvironmentVariables(path.ToLowerInvariant()) == Environment.ExpandEnvironmentVariables(t.ToLowerInvariant()))
+                {
+                    origStrings.Remove(t);
+                    remove = false;
+                    break;
+                }
+            }
+
+            File.WriteAllLines(PinnedAppsPath, origStrings.ToArray());
+            return remove;
+        }
+
         public static List<string> PinnedApps
         {
             get => File.ReadAllLines(PinnedAppsPath).ToList();
-            set
+            /*set
             {
                 var origStrings = value;
-                var strings = origStrings;
+                var strings = new List<string>();
 
                 foreach (string s in origStrings)
                 {
+                    bool add = true;
                     foreach (string t in origStrings)
                     {
-                        if ((Environment.ExpandEnvironmentVariables(t.ToLowerInvariant()) == Environment.ExpandEnvironmentVariables(s.ToLowerInvariant()))
-                            && (origStrings.IndexOf(s) < origStrings.IndexOf(t)))
+                        if (Environment.ExpandEnvironmentVariables(t.ToLowerInvariant()) == Environment.ExpandEnvironmentVariables(s.ToLowerInvariant()))
                         {
-                            strings.Remove(t);
+                            add = false;
+                            break;
                         }
+                    }
+
+                    if (add)
+                    {
+                        Debug.WriteLine("string: " + s);
+                        strings.Add(s);
                     }
                 }
 
                 File.WriteAllLines(PinnedAppsPath, strings.ToArray());
-            }
+            }*/
         }
 
         /*public static ObservableCollection<PinnedApplication> PinnedApps

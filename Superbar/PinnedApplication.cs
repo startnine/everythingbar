@@ -24,13 +24,13 @@ namespace Superbar
             set
             {
                 _isPinned = value;
-                if (value)
-                    Config.PinnedApps.Add(DiskApplication.ItemPath);
-                else if (Config.PinnedApps.Contains(DiskApplication.ItemPath))
-                    Config.PinnedApps.Remove(DiskApplication.ItemPath);
+                if (value == true)
+                    Config.AddPinnedApp(DiskApplication.ItemPath);
+                else// if (Config.PinnedApps.Contains(DiskApplication.ItemPath))
+                    Config.RemovePinnedApp(DiskApplication.ItemPath);
 
                 NotifyPropertyChanged("IsPinned");
-                Debug.WriteLine("IsPinned updated: " + _isPinned.ToString());
+                //Debug.WriteLine("IsPinned updated: " + _isPinned.ToString());
                 IsPinnedChanged?.Invoke(this, new EventArgs());
             }
         }
@@ -144,7 +144,7 @@ namespace Superbar
                 /*try
                 {*/
                     //Debug.WriteLine(win.Process.MainModule.FileName + "    " + DiskApplication.ItemRealName);
-                    if (win.Process.MainModule.FileName.ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
+                    if (Config.GetExecutablePath(win.Process).ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
                     {
                         OpenWindows.Add(win);
                         //Debug.WriteLine("WINDOW: " + win.Title);
@@ -187,7 +187,7 @@ namespace Superbar
             {
                 try
                 {
-                    if (e.Window.Process.MainModule.FileName.ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
+                    if (Config.GetExecutablePath(e.Window.Process).ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
                     {
                         bool proceed = true;
                         foreach (ProcessWindow w in OpenWindows)
@@ -248,7 +248,7 @@ namespace Superbar
 
                         if ((OpenWindows.Count == 0) & (!this.IsPinned))
                         {
-                            Debug.WriteLine("IsPinned: " + this.IsPinned.ToString() + ", invoking LastWindowClosed");
+                            //Debug.WriteLine("IsPinned: " + this.IsPinned.ToString() + ", invoking LastWindowClosed");
                             LastWindowClosed?.Invoke(this, new EventArgs());
                         }
 

@@ -26,22 +26,22 @@ namespace Superbar
 
         public Icon SmallIcon
         {
-            get => new DiskItem(process.MainModule.FileName).ItemSmallIcon;
+            get => new DiskItem(Config.GetExecutablePath(process)).ItemSmallIcon;
         }
 
         public Icon LargeIcon
         {
-            get => new DiskItem(process.MainModule.FileName).ItemLargeIcon;
+            get => new DiskItem(Config.GetExecutablePath(process)).ItemLargeIcon;
         }
 
         public Icon ExtraLargeIcon
         {
-            get => new DiskItem(process.MainModule.FileName).ItemExtraLargeIcon;
+            get => new DiskItem(Config.GetExecutablePath(process)).ItemExtraLargeIcon;
         }
 
         public Icon JumboIcon
         {
-            get => new DiskItem(process.MainModule.FileName).ItemJumboIcon;
+            get => new DiskItem(Config.GetExecutablePath(process)).ItemJumboIcon;
         }
 
         public int SelectedIndex { get; set; } = -1;
