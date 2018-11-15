@@ -21,7 +21,7 @@ namespace Superbar
     /// <summary>
     /// Interaction logic for JumpListWindow.xaml
     /// </summary>
-    public partial class JumpListWindow : CompositingWindow
+    public partial class JumpListWindow : ShadowedWindow
     {
         IconToImageBrushConverter iconConverter = new IconToImageBrushConverter();
 

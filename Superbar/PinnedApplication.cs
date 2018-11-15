@@ -24,6 +24,11 @@ namespace Superbar
             set
             {
                 _isPinned = value;
+                if (value)
+                    Config.PinnedApps.Add(DiskApplication.ItemPath);
+                else if (Config.PinnedApps.Contains(DiskApplication.ItemPath))
+                    Config.PinnedApps.Remove(DiskApplication.ItemPath);
+
                 NotifyPropertyChanged("IsPinned");
                 Debug.WriteLine("IsPinned updated: " + _isPinned.ToString());
                 IsPinnedChanged?.Invoke(this, new EventArgs());

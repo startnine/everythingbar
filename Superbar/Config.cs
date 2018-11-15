@@ -38,6 +38,30 @@ namespace Superbar
 
         public static string PinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
 
+        public static List<string> PinnedApps
+        {
+            get => File.ReadAllLines(PinnedAppsPath).ToList();
+            set
+            {
+                var origStrings = value;
+                var strings = origStrings;
+
+                foreach (string s in origStrings)
+                {
+                    foreach (string t in origStrings)
+                    {
+                        if ((Environment.ExpandEnvironmentVariables(t.ToLowerInvariant()) == Environment.ExpandEnvironmentVariables(s.ToLowerInvariant()))
+                            && (origStrings.IndexOf(s) < origStrings.IndexOf(t)))
+                        {
+                            strings.Remove(t);
+                        }
+                    }
+                }
+
+                File.WriteAllLines(PinnedAppsPath, strings.ToArray());
+            }
+        }
+
         /*public static ObservableCollection<PinnedApplication> PinnedApps
         {
             get

@@ -1126,81 +1126,100 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ThumbnailsWindowStyle" TargetType="{x:Type win:CompositingWindow}">
+    <Style x:Key="ThumbnailsWindowStyle" TargetType="{x:Type win:ShadowedWindow}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Width" Value="200"/>
         <Setter Property="CompositionState" Value="Glass"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="Opacity" Value="0"/>
+        <Setter Property="ShadowOffsetThickness" Value="12,12,20,20"/>
         <Setter Property="HideTransitionDuration" Value="25"/>
+        <Setter Property="ShadowStyle">
+            <Setter.Value>
+                <Style TargetType="Window">
+                    <Setter Property="WindowStyle" Value="None"/>
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                    <Setter Property="AllowsTransparency" Value="True"/>
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Window">
+                                <Rectangle>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16">
+                                                    <Border VerticalAlignment="Bottom" BorderBrush="Black" BorderThickness="4" Margin="-4,-4,-4,0" CornerRadius="0,0,6,6"/>
+                                                </Border>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.OpacityMask>
+                                    <Rectangle.Fill>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
+                                                    <Border Margin="18,18,14,14" Background="#C0000000">
+                                                        <Border.Effect>
+                                                            <BlurEffect Radius="14"/>
+                                                        </Border.Effect>
+                                                    </Border>
+                                                </Grid>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type win:CompositingWindow}">
-                    <Grid x:Name="RootGrid" Margin="0,0,0,-16">
+                <ControlTemplate TargetType="{x:Type win:ShadowedWindow}">
+                    <Grid x:Name="RootGrid">
+                        <!--Margin="0,0,0,-16"-->
                         <Grid.RenderTransform>
                             <TranslateTransform X="0" Y="25"/>
                         </Grid.RenderTransform>
                         <Rectangle x:Name="SizingAidRectangle" Fill="#01000000"/>
-                        <Grid>
-                            <Rectangle>
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush>
-                                        <VisualBrush.Visual>
-                                            <Border Width="{Binding ActualWidth, ElementName=SizingAidRectangle}" Height="{Binding ActualHeight, ElementName=SizingAidRectangle}" Background="Transparent" BorderBrush="Black" BorderThickness="12,12,20,20" CornerRadius="12,16,20,16" />
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Rectangle.OpacityMask>
-                                <Rectangle.Fill>
-                                    <VisualBrush>
-                                        <VisualBrush.Visual>
-                                            <Grid Width="{Binding ActualWidth, ElementName=SizingAidRectangle}" Height="{Binding ActualHeight, ElementName=SizingAidRectangle}" Background="#01000000">
-                                                <Border Margin="18,18,14,14" Background="#C0000000">
-                                                    <Border.Effect>
-                                                        <BlurEffect Radius="14"/>
-                                                    </Border.Effect>
-                                                </Border>
-                                            </Grid>
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <Grid Margin="12,12,20,20">
-                                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Offset="0" Color="#99000000"/>
-                                            <GradientStop Offset="1" Color="#BD0C0C0C"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
-                                    <Border BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="5">
-                                        <Grid>
-                                            <Border CornerRadius="4">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                        <GradientStop Offset="0" Color="#64FFFFFF"/>
-                                                        <GradientStop Offset="1" Color="#01FFFFFF"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <Border.OpacityMask>
-                                                    <VisualBrush>
-                                                        <VisualBrush.Visual>
-                                                            <Rectangle Width="200" Height="{Binding ActualHeight, ElementName=SizingAidRectangle}" VerticalAlignment="Top">
-                                                                <Rectangle.Fill>
-                                                                    <LinearGradientBrush StartPoint="75,0" EndPoint="125,175" MappingMode="Absolute">
-                                                                        <GradientStop Offset="0.5" Color="Black"/>
-                                                                        <GradientStop Offset="0.51" Color="Transparent"/>
-                                                                    </LinearGradientBrush>
-                                                                </Rectangle.Fill>
-                                                            </Rectangle>
-                                                        </VisualBrush.Visual>
-                                                    </VisualBrush>
-                                                </Border.OpacityMask>
-                                            </Border>
-                                            <ContentPresenter Content="{TemplateBinding Content}" Margin="3"/>
-                                        </Grid>
-                                    </Border>
+                        <Grid Margin="0,0,0,4">
+                            <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0" Color="#99000000"/>
+                                        <GradientStop Offset="1" Color="#BD0C0C0C"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="5">
+                                    <Grid>
+                                        <Border CornerRadius="4">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Offset="0" Color="#64FFFFFF"/>
+                                                    <GradientStop Offset="1" Color="#01FFFFFF"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <Border.OpacityMask>
+                                                <VisualBrush>
+                                                    <VisualBrush.Visual>
+                                                        <Rectangle Width="200" Height="{Binding ActualHeight, ElementName=SizingAidRectangle}" VerticalAlignment="Top">
+                                                            <Rectangle.Fill>
+                                                                <LinearGradientBrush StartPoint="75,0" EndPoint="125,175" MappingMode="Absolute">
+                                                                    <GradientStop Offset="0.5" Color="Black"/>
+                                                                    <GradientStop Offset="0.51" Color="Transparent"/>
+                                                                </LinearGradientBrush>
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
+                                            </Border.OpacityMask>
+                                        </Border>
+                                        <ContentPresenter Content="{TemplateBinding Content}" Margin="3"/>
+                                    </Grid>
                                 </Border>
-                            </Grid>
+                            </Border>
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -1442,15 +1461,56 @@
         </Setter>
     </Style>
 
-    <Style x:Key="JumpListWindowStyle" TargetType="{x:Type win:CompositingWindow}">
+    <Style x:Key="JumpListWindowStyle" TargetType="{x:Type win:ShadowedWindow}">
         <Setter Property="MinWidth" Value="246"/>
-        <Setter Property="CompositionState" Value="Glass"/>
+        <Setter Property="CompositionState" Value="Alpha"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="HideTransitionDuration" Value="2"/>
         <Setter Property="Opacity" Value="0"/>
+        <Setter Property="ShadowOffsetThickness" Value="12,12,20,20"/>
+        <Setter Property="ShadowStyle">
+            <Setter.Value>
+                <Style TargetType="Window">
+                    <Setter Property="WindowStyle" Value="None"/>
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                    <Setter Property="AllowsTransparency" Value="True"/>
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Window">
+                                <Rectangle>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16" />
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.OpacityMask>
+                                    <Rectangle.Fill>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
+                                                    <!--Rectangle Width="10" Height="10" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top"/-->
+                                                    <Border Margin="18,18,14,14" Background="#C0000000">
+                                                        <Border.Effect>
+                                                            <BlurEffect Radius="14"/>
+                                                        </Border.Effect>
+                                                    </Border>
+                                                </Grid>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type win:CompositingWindow}">
+                <ControlTemplate TargetType="{x:Type win:ShadowedWindow}">
                     <Border x:Name="RootBorder" BorderBrush="#CC000000" BorderThickness="1" CornerRadius="6,6,0,0">
                         <Border.RenderTransform>
                             <TranslateTransform X="0" Y="25"/>
@@ -2199,17 +2259,110 @@
                         <Setter Property="VerticalAlignment" Value="Top"/>
                         <Setter Property="Width" Value="{Binding Height, RelativeSource={RelativeSource Mode=Self}}"/>
                         <Setter Property="Height" Value="30"/>
-                        <!--Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/-->
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
                         <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="Padding" Value="0,3,0,2"/>
+                        <Setter Property="Padding" Value="0"/>
                         <Setter Property="Margin" Value="0"/>
                         <Setter Property="Foreground" Value="White"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Grid Background="#01000000">
+                                        <Grid x:Name="HoverBackground" Opacity="1">
+                                            <Border x:Name="HoverOuterBorder" BorderBrush="Black" Background="#4D000000" BorderThickness="1" CornerRadius="3" Opacity="0">
+                                                <Border x:Name="HoverInnerBorder" BorderBrush="#40406F74" BorderThickness="1" CornerRadius="2">
+                                                    <Grid>
+                                                        <Rectangle Height="10" VerticalAlignment="Bottom" Margin="1,-1">
+                                                            <Rectangle.Fill>
+                                                                <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1">
+                                                                    <GradientStop Offset="0" Color="#FF89C2C8"/>
+                                                                    <GradientStop Offset="1" Color="#0089C2C8"/>
+                                                                </RadialGradientBrush>
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </Border>
+                                            </Border>
+                                        </Grid>
+                                        <Border x:Name="PressedOuterBorder" BorderBrush="Transparent" Background="#B8000000" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverOuterBorder}" Opacity="0">
+                                            <Border x:Name="PressedInnerBorder" BorderBrush="#F7030303" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverInnerBorder}">
+                                                <Grid>
+                                                    <Rectangle Width="5" HorizontalAlignment="Left">
+                                                        <Rectangle.Fill>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                <GradientStop Offset="0" Color="#40000000"/>
+                                                                <GradientStop Offset="1" Color="#00000000"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                    <Rectangle Width="5" HorizontalAlignment="Right">
+                                                        <Rectangle.Fill>
+                                                            <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                                                                <GradientStop Offset="0" Color="#40000000"/>
+                                                                <GradientStop Offset="1" Color="#00000000"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                    <Rectangle Height="7" VerticalAlignment="Top">
+                                                        <Rectangle.Fill>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                <GradientStop Offset="0" Color="#40000000"/>
+                                                                <GradientStop Offset="1" Color="#00000000"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </Grid>
+                                            </Border>
+                                        </Border>
+                                        <Grid x:Name="ContentGrid" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="2,0">
+                                            <ContentPresenter x:Name="PART_ContentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="4,0" Visibility="Hidden" />
+                                            <GridViewRowPresenter x:Name="PART_GridViewRowPesenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="4,0" Visibility="Visible" />
+                                        </Grid>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="GridView.ColumnCollection" Value="{x:Null}">
+                                            <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="PART_GridViewRowPesenter" Property="Visibility" Value="Hidden"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                        <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                        <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="HoverOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="HoverOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                                <!--ControlTemplate TargetType="{x:Type ListViewItem}">
                                     <Grid Background="#01000000">
                                         <Border x:Name="HoverBackground" Background="#30FFFFFF" Visibility="Collapsed"/>
                                         <Grid HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
@@ -2226,14 +2379,9 @@
                                             <Setter TargetName="HoverBackground" Property="Visibility" Value="Visible"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
-                                </ControlTemplate>
+                                </ControlTemplate-->
                             </Setter.Value>
                         </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Left">
-                                <Setter Property="Padding" Value="2,0,3,0"/>
-                            </DataTrigger>
-                        </Style.Triggers>
                     </Style>
                 </Style.Resources>
                 <Setter Property="Template">

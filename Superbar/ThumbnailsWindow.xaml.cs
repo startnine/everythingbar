@@ -24,7 +24,7 @@ namespace Superbar
     /// <summary>
     /// Interaction logic for ThumbnailsWindow.xaml
     /// </summary>
-    public partial class ThumbnailsWindow : CompositingWindow, INotifyPropertyChanged
+    public partial class ThumbnailsWindow : ShadowedWindow, INotifyPropertyChanged
     {
         ObservableCollection<ProcessWindow> _openWindows = new ObservableCollection<ProcessWindow>();
         public ObservableCollection<ProcessWindow> OpenWindows
