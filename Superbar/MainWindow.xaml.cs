@@ -644,62 +644,66 @@ namespace Superbar
             {
                 var app = sender as PinnedApplication;
 
-                /*if (app.AreThumbnailsShown)
-                {*/
-                //_thumbnailsWindow.SetSelection(e.Window);
-                _thumbnailsWindow.SelectedWindow = e.Window;
-                _thumbnailsWindow.OpenWindows = app.OpenWindows;
-                _thumbnailsWindow.Show();
-
-                //var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
-                /*var hitResult = System.Windows.Media.VisualTreeHelper.HitTest(TaskBandListView, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition);
-
-                if (hitResult != null)
+                if (app.OpenWindows.Count > 0)
                 {
-                    var visualHit = hitResult.VisualHit;
-                    while ((visualHit != null) && (VisualTreeHelper.GetParent(visualHit) != null) && (!(visualHit is ListViewItem)))
+
+                    /*if (app.AreThumbnailsShown)
+                    {*/
+                    //_thumbnailsWindow.SetSelection(e.Window);
+                    _thumbnailsWindow.SelectedWindow = e.Window;
+                    _thumbnailsWindow.OpenWindows = app.OpenWindows;
+                    _thumbnailsWindow.Show();
+
+                    //var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
+                    /*var hitResult = System.Windows.Media.VisualTreeHelper.HitTest(TaskBandListView, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition);
+
+                    if (hitResult != null)
                     {
-                        visualHit = VisualTreeHelper.GetParent(visualHit);
+                        var visualHit = hitResult.VisualHit;
+                        while ((visualHit != null) && (VisualTreeHelper.GetParent(visualHit) != null) && (!(visualHit is ListViewItem)))
+                        {
+                            visualHit = VisualTreeHelper.GetParent(visualHit);
+                        }
+
+                        /*var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
+                        var hitResult = (System.Windows.Media.VisualTreeHelper.HitTest(item, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition)).VisualHit;
+                        hitResult.*
+                        //_thumbnailsWindow.Left = (visualHit as ListViewItem).PointToScreen(new System.Windows.Point(0, 0)).X - (_thumbnailsWindow.ActualWidth / 2);
+                        _thumbnailsWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+                        _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
+                    }*/
+
+                    double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+
+                    IEasingFunction ease = null;
+                    try
+                    {
+                        ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
                     }
 
-                    /*var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
-                    var hitResult = (System.Windows.Media.VisualTreeHelper.HitTest(item, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition)).VisualHit;
-                    hitResult.*
-                    //_thumbnailsWindow.Left = (visualHit as ListViewItem).PointToScreen(new System.Windows.Point(0, 0)).X - (_thumbnailsWindow.ActualWidth / 2);
-                    _thumbnailsWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
-                    _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
-                }*/
+                    DoubleAnimation leftAnimation = new DoubleAnimation()
+                    {
+                        Duration = TimeSpan.FromMilliseconds(1000),
+                        To = newLeft
+                    };
 
-                double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+                    if (ease != null)
+                        leftAnimation.EasingFunction = ease;
 
-                IEasingFunction ease = null;
-                try
-                {
-                    ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+                    leftAnimation.Completed += (sneder, args) =>
+                    {
+                        _thumbnailsWindow.Left = newLeft;
+                        //_thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                    };
+
+                    _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                    _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
+                    //}
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-
-                DoubleAnimation leftAnimation = new DoubleAnimation()
-                {
-                    Duration = TimeSpan.FromMilliseconds(1000),
-                    To = newLeft
-                };
-
-                if (ease != null)
-                    leftAnimation.EasingFunction = ease;
-
-                leftAnimation.Completed += (sneder, args) =>
-                {
-                    _thumbnailsWindow.Left = newLeft;
-                //_thumbnailsWindow.BeginAnimation(LeftProperty, null);
-            };
-
-                _thumbnailsWindow.BeginAnimation(LeftProperty, null);
-                _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
-                //}
             }
         }
 

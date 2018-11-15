@@ -2,6 +2,7 @@
 using Start9.UI.Wpf.Windows;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,6 +90,7 @@ namespace Superbar
             if (_app != null)
                 _app.DiskApplication.Open();
 
+            Debug.WriteLine("Application");
             ResetSelection();
         }
 
@@ -102,13 +104,11 @@ namespace Superbar
                 else
                     _app.IsPinned = true;
             }
-
             ResetSelection();
         }
 
         private void CloseWindowsListViewItem_Click(object sender, RoutedEventArgs e)
         {
-
             if (Config.TaskbarCombineMode == Config.CombineMode.Always)
             {
                 if (_app != null)
@@ -120,7 +120,6 @@ namespace Superbar
                 if (_window != null)
                     _window.Close();
             }
-
             ResetSelection();
         }
 
@@ -142,14 +141,20 @@ namespace Superbar
 
         private void BottomSegmentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (BottomSegmentListView.SelectedItem != null)
+            if (BottomSegmentListView.SelectedIndex >= 0)
             {
-                if (BottomSegmentListView.SelectedItem == ApplicationListViewItem)
+                if (BottomSegmentListView.SelectedIndex == 0)
+                {
                     ApplicationListViewItem_Click(sender, null);
-                else if (BottomSegmentListView.SelectedItem == PinOrUnpinListViewItem)
+                }
+                else if (BottomSegmentListView.SelectedIndex == 1)
+                {
                     PinOrUnpinListViewItem_Click(sender, null);
-                else if (BottomSegmentListView.SelectedItem == CloseWindowsListViewItem)
+                }
+                else if (BottomSegmentListView.SelectedIndex == 2)
+                {
                     CloseWindowsListViewItem_Click(sender, null);
+                }
             }
         }
 

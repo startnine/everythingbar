@@ -1378,7 +1378,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                    <Grid>
+                    <Grid Background="{TemplateBinding Background}">
                         <Border x:Name="HoverBackground" BorderBrush="#7F99DDFD" BorderThickness="1" CornerRadius="3" Margin="0,1" Opacity="0">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -1432,6 +1432,9 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Red"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1603,6 +1606,11 @@
                         </Style>
                     </ControlTemplate.Resources>
                     <StackPanel Background="Transparent" IsItemsHost="True"/>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsWindowVisible, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:JumpListWindow}}}" Value="False">
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

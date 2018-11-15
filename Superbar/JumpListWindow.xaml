@@ -11,7 +11,7 @@
     <win:CompositingWindow.Resources>
         <sys:String x:Key="JumpListApplicationNameText">a</sys:String>
         <sys:String x:Key="JumpListPinApplicationText">Pin to Superbar</sys:String>
-        <sys:Boolean x:Key="JumpListIsUnpinning">False</sys:Boolean>
+        <!--sys:Boolean x:Key="JumpListIsUnpinning">False</sys:Boolean-->
         
         <ImageBrush x:Key="JumpListSmallIconImageBrush"/>
         <ImageBrush x:Key="JumpListLargeIconImageBrush"/>
@@ -19,7 +19,7 @@
         <ImageBrush x:Key="JumpListJumboIconImageBrush"/>
     </win:CompositingWindow.Resources>
     <StackPanel Orientation="Vertical">
-        <ListView x:Name="BottomSegmentListView" SelectionMode="Single" Style="{DynamicResource JumpListBottomSegmentListViewStyle}" SelectionChanged="BottomSegmentListView_SelectionChanged">
+        <ListView x:Name="BottomSegmentListView" Style="{DynamicResource JumpListBottomSegmentListViewStyle}" SelectionMode="Single" SelectionChanged="BottomSegmentListView_SelectionChanged">
             <ListViewItem x:Name="ApplicationListViewItem" Style="{DynamicResource JumpListApplicationListViewItemStyle}"/>
             <ListViewItem x:Name="PinOrUnpinListViewItem" Style="{DynamicResource JumpListPinListViewItemStyle}"/>
             <ListViewItem x:Name="CloseWindowsListViewItem" Style="{DynamicResource JumpListCloseWindowsListViewItemStyle}"/>
