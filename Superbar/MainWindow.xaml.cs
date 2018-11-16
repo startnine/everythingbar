@@ -612,7 +612,10 @@ namespace Superbar
 
             }*/
             _thumbnailsWindow.SizeChanged += FlyoutWindow_SizeChanged;
+            _thumbnailsWindow.LocationChanged += FlyoutWindow_LocationChanged;
+
             _jumpListWindow.SizeChanged += FlyoutWindow_SizeChanged;
+            _jumpListWindow.LocationChanged += FlyoutWindow_LocationChanged;
         }
 
         private void PinnedApp_LastWindowClosed(object sender, EventArgs e)
@@ -625,9 +628,18 @@ namespace Superbar
             }
         }
 
+        private void FlyoutWindow_LocationChanged(object sender, EventArgs e)
+        {
+            FlyoutWindow_BoundsChanged(sender as Window);
+        }
+
         private void FlyoutWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var win = sender as Window; //_thumbnailsWindow
+            FlyoutWindow_BoundsChanged(sender as Window);
+        }
+
+        private void FlyoutWindow_BoundsChanged(Window win)
+        {
             if (DockMode == AppBarDockMode.Left)
                 win.Left = Left + ActualWidth;
             else if (DockMode == AppBarDockMode.Top)
