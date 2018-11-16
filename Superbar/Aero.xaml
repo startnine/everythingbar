@@ -59,6 +59,12 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
+
+                        <GradientStopCollection x:Key="ShineGradientStops">
+                            <GradientStop Offset="0" Color="#B8FFFFFF"/>
+                            <GradientStop Offset="1" Color="#1CFFFFFF"/>
+                        </GradientStopCollection>
+                        
                     </ControlTemplate.Resources>
                     <Border x:Name="RootBorder">
                         <Border.RenderTransform>
@@ -67,29 +73,20 @@
                         <Grid x:Name="PART_DragMoveGrid" Background="#01000000">
                             <DockPanel LastChildFill="True">
                                 <Grid x:Name="Ql" DockPanel.Dock="Left">
-                                    <StackPanel HorizontalAlignment="Left" Width="60" Orientation="Vertical" VerticalAlignment="Top">
+                                    <Rectangle Fill="{DynamicResource DarkRegionBrush}" Margin="{Binding Margin, ElementName=DarkRectangle}" IsHitTestVisible="False"/>
+                                    <StackPanel x:Name="StartEdgeStackPanel" HorizontalAlignment="Left" Width="60" Orientation="Vertical" VerticalAlignment="{Binding VerticalAlignment, ElementName=EdgeStackPanel}" RenderTransformOrigin="{Binding RenderTransformOrigin, ElementName=EdgeStackPanel}" RenderTransform="{Binding RenderTransform, ElementName=EdgeStackPanel}" IsHitTestVisible="False">
                                         <Rectangle Fill="#C0000000" Height="1"/>
                                         <Rectangle Fill="#7FFFFFFF" Height="1"/>
                                     </StackPanel>
-                                    <Rectangle Fill="{DynamicResource DarkRegionBrush}" Margin="0,2,0,0"/>
-                                    <UniformGrid HorizontalAlignment="Left" Width="60" Columns="1" Margin="0,1" IsHitTestVisible="False">
-                                        <Rectangle IsHitTestVisible="False">
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                    <GradientStop Offset="0" Color="#B8FFFFFF"/>
-                                                    <GradientStop Offset="1" Color="#1CFFFFFF"/>
-                                                </LinearGradientBrush>
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                        <Rectangle Opacity="0" IsHitTestVisible="False"/>
-                                    </UniformGrid>
+                                    <Rectangle HorizontalAlignment="Left" Width="60" Height="20" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="0,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
                                     <ContentControl Content="{TemplateBinding QuickLaunchArea}"/>
                                 </Grid>
                                 <Separator Style="{DynamicResource TaskbandSeparatorStyle}" DockPanel.Dock="Left"/>
                                 <Grid x:Name="Tr" DockPanel.Dock="Right" Margin="0,0,15,0">
-                                    <Rectangle Fill="{DynamicResource DarkRegionBrush}" Margin="0,2,0,0"/>
-                                    <Separator Style="{DynamicResource TaskbandSeparatorStyle}" HorizontalAlignment="Right" Margin="0,0,-2,0"/>
+                                    <Rectangle x:Name="DarkRectangle" Fill="{DynamicResource DarkRegionBrush}" Margin="0,2,0,0" IsHitTestVisible="False"/>
+                                    <Separator Style="{DynamicResource TaskbandSeparatorStyle}" HorizontalAlignment="Right" Margin="0,0,-2,0" IsHitTestVisible="False"/>
                                     <ContentControl Content="{TemplateBinding TrayArea}" Margin="0,0,-15,0"/>
+                                    <Rectangle HorizontalAlignment="Right" Width="15" Height="20" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="0,1,-15,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
                                 </Grid>
                                 <Separator Style="{DynamicResource TaskbandSeparatorStyle}" DockPanel.Dock="Right"/>
                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -102,25 +99,20 @@
                                             </LinearGradientBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
+                                    <Rectangle x:Name="ShineRectangle" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="0,1" IsHitTestVisible="False">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" GradientStops="{DynamicResource ShineGradientStops}"/>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
                                     <ContentControl Content="{TemplateBinding Content}"/>
                                 </Grid>
                             </DockPanel>
-                            <StackPanel Margin="60,0,0,0" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                            <StackPanel x:Name="EdgeStackPanel" Margin="60,0,0,0" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
                                 <Rectangle Fill="#C0000000" Height="1"/>
                                 <Rectangle Fill="#7FFFFFFF" Height="1"/>
                             </StackPanel>
                             <Thumb x:Name="PART_ResizeThumb" Background="White" Cursor="SizeNS" Opacity="0.01" IsHitTestVisible="True"/>
-                            <UniformGrid Columns="1" Margin="60,1,0,1" IsHitTestVisible="False">
-                                <Rectangle IsHitTestVisible="False">
-                                    <Rectangle.Fill>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Offset="0" Color="#B8FFFFFF"/>
-                                            <GradientStop Offset="1" Color="#1CFFFFFF"/>
-                                        </LinearGradientBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                                <Rectangle Opacity="0" IsHitTestVisible="False"/>
-                            </UniformGrid>
+                            <Rectangle HorizontalAlignment="Stretch" Height="20" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="60,1,0,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -162,6 +154,19 @@
                         <Trigger Property="DockMode" Value="Top">
                             <Setter Property="Margin" Value="-3,-3,-3,0"/>
                             <Setter TargetName="PART_ResizeThumb" Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter TargetName="DarkRectangle" Property="Margin" Value="0,0,0,2"/>
+                            <Setter TargetName="ShineRectangle" Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter TargetName="ShineRectangle" Property="Fill">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,1" EndPoint="0,0" GradientStops="{DynamicResource ShineGradientStops}"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="EdgeStackPanel" Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter TargetName="EdgeStackPanel" Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <Trigger Property="DockMode" Value="Bottom">
                             <Setter TargetName="PART_ResizeThumb" Property="VerticalAlignment" Value="Top"/>
@@ -175,6 +180,10 @@
                             <Setter TargetName="Tr" Property="DockPanel.Dock" Value="Bottom"/>
                             <Setter TargetName="PART_ResizeThumb" Property="Width" Value="5"/>
                             <Setter Property="MinWidth" Value="120"/>
+                        </Trigger>
+                        <Trigger Property="IsGlassAvailable" Value="True">
+                            <Setter Property="CompositionState" Value="Alpha"/>
+                            <Setter TargetName="RootBorder" Property="Background" Value="Black"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1179,8 +1188,8 @@
                             <TranslateTransform X="0" Y="25"/>
                         </Grid.RenderTransform>
                         <Rectangle x:Name="SizingAidRectangle" Fill="#01000000"/>
-                        <Grid Margin="0,0,0,4">
-                            <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                        <Grid x:Name="BaseGrid" Margin="0,0,0,4">
+                            <Border x:Name="RootBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="6">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                         <GradientStop Offset="0" Color="#99000000"/>
@@ -1199,11 +1208,11 @@
                                             <Border.OpacityMask>
                                                 <VisualBrush>
                                                     <VisualBrush.Visual>
-                                                        <Rectangle Width="200" Height="{Binding ActualHeight, ElementName=SizingAidRectangle}" VerticalAlignment="Top">
+                                                        <Rectangle x:Name="ShineRectangle" Width="200" Height="{Binding ActualHeight, ElementName=SizingAidRectangle}" VerticalAlignment="Top">
                                                             <Rectangle.Fill>
                                                                 <LinearGradientBrush StartPoint="75,0" EndPoint="125,175" MappingMode="Absolute">
                                                                     <GradientStop Offset="0.5" Color="Black"/>
-                                                                    <GradientStop Offset="0.51" Color="Transparent"/>
+                                                                    <GradientStop Offset="0.51" Color="#40000000"/>
                                                                 </LinearGradientBrush>
                                                             </Rectangle.Fill>
                                                         </Rectangle>
@@ -1218,6 +1227,30 @@
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsGlassAvailable" Value="True">
+                            <Setter Property="CompositionState" Value="Alpha"/>
+                            <Setter TargetName="RootBorder" Property="Background" Value="#FF1B1B1B"/>
+                            <Setter TargetName="BaseGrid" Property="Margin" Value="0"/>
+                            <Setter TargetName="ShineRectangle" Property="Fill">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="75,0" EndPoint="125,175" MappingMode="Absolute">
+                                        <GradientStop Offset="0.25" Color="Black"/>
+                                        <GradientStop Offset="0.251" Color="#40000000"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ShadowStyle">
+                                <Setter.Value>
+                                    <Style TargetType="{x:Type Window}">
+                                        <Setter Property="WindowStyle" Value="None"/>
+                                        <Setter Property="ResizeMode" Value="NoResize"/>
+                                        <Setter Property="AllowsTransparency" Value="True"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
                         <Trigger Property="IsWindowVisible" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -1557,6 +1590,31 @@
                         </Border>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsGlassAvailable" Value="True">
+                            <Setter Property="CompositionState" Value="Alpha"/>
+                            <Setter TargetName="RootBorder" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Offset="0" Color="#FF5C5C5C"/>
+                                            <GradientStop Offset="0.375" Color="#FF353535"/>
+                                            <GradientStop Offset="1" Color="Black"/>
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ShadowStyle">
+                                <Setter.Value>
+                                    <Style TargetType="{x:Type Window}">
+                                        <Setter Property="WindowStyle" Value="None"/>
+                                        <Setter Property="ResizeMode" Value="NoResize"/>
+                                        <Setter Property="AllowsTransparency" Value="True"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
                         <Trigger Property="IsWindowVisible" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -1776,7 +1834,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Grid Background="#01000000">
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="44" Height="44" Margin="8,-7">
+                        <Grid x:Name="BaseGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Width="44" Height="44" Margin="8,-7">
                             <Ellipse StrokeThickness="1">
                                 <Ellipse.Fill>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -1791,7 +1849,7 @@
                                     </LinearGradientBrush>
                                 </Ellipse.Stroke>
                             </Ellipse>
-                            <Grid Margin="2,1,2,3">
+                            <Grid x:Name="OrbGrid" Margin="2,1,2,3">
                                 <Grid>
                                     <Grid x:Name="IdleBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="1">
                                         <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1">
@@ -1903,6 +1961,10 @@
                         </Popup>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Top">
+                            <Setter TargetName="BaseGrid" Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter TargetName="OrbGrid" Property="Margin" Value="2,3,2,1"/>
+                        </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -2077,11 +2139,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
-                <Setter Property="Width" Value="36"/>
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <!--LinearGradientBrush x:Key="TaskbarGlyphBrush" StartPoint="0,0" EndPoint="0,1">
@@ -2113,6 +2170,11 @@
                 </Path>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                <Setter Property="Width" Value="36"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="TaskViewToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource SearchTaskViewBaseToggleButtonStyle}">
@@ -2251,6 +2313,11 @@
                 </Control>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                <Setter Property="Width" Value="36"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="ActionCenterToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource SearchTaskViewBaseToggleButtonStyle}">
