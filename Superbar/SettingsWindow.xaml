@@ -7,24 +7,25 @@
         xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
         xmlns:local="clr-namespace:Superbar"
         mc:Ignorable="d"
-        Title="Superbar Settings" Width="400" Height="525" ResizeMode="NoResize" IsVisibleChanged="SettingsWindow_IsVisibleChanged">
+        Title="Superbar Settings" ResizeMode="NoResize" IsVisibleChanged="SettingsWindow_IsVisibleChanged">
     <DockPanel>
-        <Grid MinHeight="36" DockPanel.Dock="Bottom">
-            <UniformGrid HorizontalAlignment="Right" Columns="3" Margin="8">
+        <ContentControl Style="{DynamicResource FooterContentControlStyle}" DockPanel.Dock="Bottom">
+            <UniformGrid Columns="4">
+                <Button x:Name="Start9SettingsButton" Click="Start9SettingsButton_Click">Start9 Settings (NYI)</Button>
                 <Button x:Name="OkButton" Click="ApplyButton_Click">OK</Button>
                 <Button x:Name="CancelButton" IsCancel="True" Click="CancelButton_Click">Cancel</Button>
                 <Button x:Name="ApplyButton" Click="ApplyButton_Click">Apply</Button>
             </UniformGrid>
-        </Grid>
+        </ContentControl>
         <TabControl>
             <TabItem Header="Main UI">
                 <StackPanel Orientation="Vertical">
-                    <CheckBox x:Name="LockBarCheckBox">Lock the Superbar</CheckBox>
-                    <CheckBox x:Name="AutoHideCheckBox">Auto-hide the Superbar</CheckBox>
-                    <CheckBox x:Name="SmallButtonsCheckBox">Use small Superbar buttons</CheckBox>
+                    <ui:ToggleSwitch x:Name="LockBarCheckBox">Lock the Superbar</ui:ToggleSwitch>
+                    <ui:ToggleSwitch x:Name="AutoHideCheckBox">Auto-hide the Superbar</ui:ToggleSwitch>
+                    <ui:ToggleSwitch x:Name="SmallButtonsCheckBox">Use small Superbar buttons</ui:ToggleSwitch>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock MinWidth="175">Superbar location on screen:</TextBlock>
-                        <ComboBox x:Name="BarPositionComboBox" MinWidth="175" SelectedIndex="0">
+                        <TextBlock Width="175">Superbar location on screen:</TextBlock>
+                        <ComboBox x:Name="BarPositionComboBox" SelectedIndex="0">
                             <ComboBoxItem>Bottom</ComboBoxItem>
                             <ComboBoxItem>Left</ComboBoxItem>
                             <ComboBoxItem>Right</ComboBoxItem>
@@ -32,26 +33,26 @@
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock MinWidth="175">Superbar buttons:</TextBlock>
-                        <ComboBox x:Name="TaskbarCombineModeComboBox" MinWidth="175" SelectedIndex="0">
+                        <TextBlock Width="175">Superbar buttons:</TextBlock>
+                        <ComboBox x:Name="TaskbarCombineModeComboBox" SelectedIndex="0">
                             <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
                             <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
                             <ComboBoxItem>Never combine</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock MinWidth="175">Clock display:</TextBlock>
-                        <ComboBox x:Name="TaskbarClockDateModeComboBox" MinWidth="175" SelectedIndex="0">
+                        <TextBlock Width="175">Clock display:</TextBlock>
+                        <ComboBox x:Name="TaskbarClockDateModeComboBox" SelectedIndex="0">
                             <ComboBoxItem>Always show the date</ComboBoxItem>
                             <ComboBoxItem>Show the date when it fits comfortably onto the Superbar</ComboBoxItem>
                             <ComboBoxItem>Never show the date</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock MinWidth="175">Notification area:</TextBlock>
+                        <TextBlock Width="175">Notification area:</TextBlock>
                         <Button>Manage</Button>
                     </StackPanel>
-                    <CheckBox>Use Peek to preview the desktop when you move your mouse to the Show desktop button at the end of the Superbar</CheckBox>
+                    <ui:ToggleSwitch>Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Jump Lists">
@@ -62,8 +63,8 @@
                     </DockPanel>
                     <GroupBox Header="Privacy">
                         <StackPanel Orientation="Vertical">
-                            <CheckBox>Store recently opened programs (does this even apply to the Taskbar???)</CheckBox>
-                            <CheckBox>Store recently opened items in Jump Lists</CheckBox>
+                            <ui:ToggleSwitch>Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
+                            <ui:ToggleSwitch>Store recently opened items in Jump Lists</ui:ToggleSwitch>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

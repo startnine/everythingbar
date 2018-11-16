@@ -109,5 +109,10 @@ namespace Superbar
             if (sender == OkButton)
                 Close();
         }
+
+        private void Start9SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

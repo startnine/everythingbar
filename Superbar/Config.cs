@@ -96,7 +96,7 @@ namespace Superbar
 
             if (add)
             {
-                Debug.WriteLine("string: " + path);
+                //Debug.WriteLine("string: " + path);
                 origStrings.Add(path);
             }
 

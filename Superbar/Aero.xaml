@@ -31,118 +31,6 @@
     <!--#region Window Styles-->
 
     <Style x:Key="TaskbarWindowStyle" TargetType="{x:Type local:MainWindow}">
-        <Style.Resources>
-            <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
-                <Style.Resources>
-                    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
-                        <Setter Property="Height" Value="3"/>
-                        <Setter Property="Margin" Value="0,-2"/>
-                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                        <Setter Property="Background" Value="#FF767676"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Separator}">
-                                    <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="{TemplateBinding Background}" Margin="8,0,8,2"/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-
-                    <Style x:Key="{x:Type MenuItem}" TargetType="MenuItem">
-                        <Style.Resources>
-                            <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}" TargetType="MenuItem">
-                                <Border Name="Border" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{TemplateBinding Background}">
-                                    <Grid Margin="0,0,10,0">
-                                        <ContentPresenter Name="Content" Margin="{TemplateBinding Padding}" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                        <Path Margin="0" HorizontalAlignment="Right" VerticalAlignment="Center" Data="M 0 0 L 6 6 L 0 12" Stroke="{TemplateBinding Foreground}"/>
-                                        <Popup Name="Popup" Placement="Right" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
-                                            <Grid Margin="8,3,3,5">
-                                                <Border IsHitTestVisible="False" BorderThickness="1">
-                                                    <Border.Effect>
-                                                        <DropShadowEffect x:Name="DropShadow" Color="Black" Direction="230" ShadowDepth="3" BlurRadius="3" Opacity="0.375"/>
-                                                    </Border.Effect>
-                                                </Border>
-                                                <Border BorderThickness="1" Background="#FF2B2B2B" BorderBrush="#FF767676" CornerRadius="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" Margin="2,2,2,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                                                </Border>
-                                            </Grid>
-                                        </Popup>
-                                    </Grid>
-                                </Border>
-                            </ControlTemplate>
-
-                            <ControlTemplate x:Key="{x:Static MenuItem.TopLevelItemTemplateKey}" TargetType="MenuItem">
-                                <Border Name="Border" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{TemplateBinding Background}">
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Path x:Name="Check" Data="M 0 5 L 4 9 L 13 0" Stroke="{TemplateBinding Foreground}" StrokeThickness="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="9,0" Visibility="Collapsed"/>
-                                        <ContentPresenter Name="Content" Margin="{TemplateBinding Padding}" ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                    </Grid>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter TargetName="Check" Property="Visibility" Value="Visible"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Style.Resources>
-                        <Setter Property="OverridesDefaultStyle" Value="True"/>
-                        <Setter Property="Height" Value="22" />
-                        <Setter Property="MinWidth" Value="300"/>
-                        <Setter Property="Background" Value="#01000000" />
-                        <Setter Property="Foreground" Value="White" />
-                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="FontSize" Value="12" />
-                        <Setter Property="FontStyle" Value="Normal" />
-                        <Setter Property="FontWeight" Value="Normal" />
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="BorderBrush" Value="#01000000" />
-                        <Setter Property="Padding" Value="32,0" />
-                        <Setter Property="Margin" Value="0,0,0,2" />
-                        <Style.Triggers>
-                            <Trigger Property="Role" Value="TopLevelHeader">
-                                <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.TopLevelHeaderTemplateKey}}"/>
-                                <Setter Property="Grid.IsSharedSizeScope" Value="true"/>
-                            </Trigger>
-                            <Trigger Property="Role" Value="TopLevelItem">
-                                <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.TopLevelItemTemplateKey}}"/>
-                            </Trigger>
-                            <Trigger Property="Role" Value="SubmenuHeader">
-                                <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.TopLevelHeaderTemplateKey}}"/>
-                            </Trigger>
-                            <Trigger Property="Role" Value="SubmenuItem">
-                                <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.TopLevelItemTemplateKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsHighlighted" Value="True">
-                                <Setter Property="Background" Value="#FF404040"/>
-                            </Trigger>
-                            <DataTrigger Binding="{Binding Path=OpenedWithTouch, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ui:TouchableContextMenu}}, FallbackValue=True}" Value="True">
-                                <Setter Property="Height" Value="32" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Style.Resources>
-                <Setter Property="OverridesDefaultStyle" Value="True" />
-                <Setter Property="Grid.IsSharedSizeScope" Value="True" />
-                <Setter Property="Margin" Value="0"/>
-                <Setter Property="Padding" Value="2,2,2,0"/>
-                <Setter Property="HasDropShadow" Value="True"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ContextMenu">
-                            <Grid>
-                                <Border BorderThickness="1" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FF2B2B2B" BorderBrush="#FF767676" UseLayoutRounding="True">
-                                    <ScrollViewer SnapsToDevicePixels="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" ClipToBounds="True">
-                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                                    </ScrollViewer>
-                                </Border>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Style.Resources>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="ResizeIntervalDistance" Value="42"/>
         <Setter Property="CompositionState" Value="Glass"/>
@@ -348,6 +236,8 @@
                 <Setter Property="OverridesDefaultStyle" Value="True"/>
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Width" Value="{Binding Tag, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}, Mode=OneWay}"/>
+                <Setter Property="MaxWidth" Value="160"/>
                 <Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Stretch"/>
@@ -428,20 +318,20 @@
                                     <Setter TargetName="PART_GridViewRowPesenter" Property="Visibility" Value="Hidden"/>
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Trigger.ExitActions>
+                                    <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
                                                 <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
                                             </Storyboard>
                                         </BeginStoryboard>
-                                    </Trigger.ExitActions>
-                                    <Trigger.EnterActions>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
                                         <BeginStoryboard>
                                             <Storyboard>
                                                 <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
                                             </Storyboard>
                                         </BeginStoryboard>
-                                    </Trigger.EnterActions>
+                                    </Trigger.ExitActions>
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Trigger.EnterActions>
@@ -507,10 +397,6 @@
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Horizontal">
-                        <Setter Property="Width" Value="160"/>
-                        <Setter Property="MaxWidth" Value="160"/>
-                    </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
                         <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
                     </DataTrigger>
@@ -804,34 +690,53 @@
                                 </ToggleButton.Style>
                             </ToggleButton>
                             <Grid>
-                                <ListView x:Name="ItemsListView" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                                    <ListView.Template>
-                                        <ControlTemplate TargetType="{x:Type ListView}">
-                                            <WrapPanel x:Name="ItemsHostWrapPanel" IsItemsHost="True" MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" HorizontalAlignment="Left" Background="#01000000" Orientation="Horizontal" Margin="0"/>
-                                            <ControlTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
-                                                    <Setter TargetName="ItemsHostWrapPanel" Property="Orientation" Value="vertical"/>
-                                                </DataTrigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </ListView.Template>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type window:ProcessWindow}">
-                                            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                                <Canvas x:Name="IconCanvas" Width="24" Height="24" VerticalAlignment="Center" Background="{Binding Icon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='24'}" DockPanel.Dock="Left"/>
-                                                <!--Button Width="{Binding ActualHeight,RelativeSource={RelativeSource Mode=Self}}" VerticalAlignment="Stretch" DockPanel.Dock="Right" Tag="{Binding}">X</Button-->
-                                                <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
-                                            </DockPanel>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
-                                                    <!--Setter TargetName="IconCanvas" Property="Background" Value="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/-->
-                                                    <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
-                                                    <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                <Grid x:Name="ItemsGrid" HorizontalAlignment="Left">
+                                    <!--Content="{Binding ListViewControl, Mode=OneWayToSource}"-->
+                                    <Control HorizontalAlignment="Left" Width="{Binding ActualWidth, ElementName=ItemsListView, Mode=OneWay}" VerticalAlignment="Top" Opacity="{Binding ListSize, Mode=OneWayToSource}" Tag="{Binding ElementName=ItemsListView, Mode=OneWay}" Height="1">
+                                        <e:Interaction.Behaviors>
+                                            <local:ActualizerBehaviour/>
+                                        </e:Interaction.Behaviors>
+                                        <!--Rectangle Width="{Binding ActualWidth, ElementName=ItemsListView}"/-->
+                                    </Control>
+                                    <ListView x:Name="ItemsListView" HorizontalAlignment="Left" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" Tag="{Binding ItemSize, Mode=OneWay}">
+                                        <ListView.Template>
+                                            <ControlTemplate TargetType="{x:Type ListView}">
+                                                <Grid MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" HorizontalAlignment="Left">
+                                                    <!--Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ListSize, Mode=OneWayToSource}">
+                                                        <!-Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"->
+                                                        <Rectangle x:Name="SizingAid" Width="{TemplateBinding ActualWidth}"/>
+                                                        <Grid x:Name="SizingGrid" HorizontalAlignment="Left">
+                                                            <Rectangle HorizontalAlignment="Stretch" Width="{Binding Width, ElementName=SizingAid, Mode=OneWayToSource}"/>
+                                                            <!-Rectangle Width="{Binding ListSize, Mode=OneWayToSource}"/->
+                                                        </Grid>
+                                                    </Grid-->
+                                                    <WrapPanel x:Name="ItemsHostWrapPanel" IsItemsHost="True" HorizontalAlignment="Stretch" Background="#01000000" Orientation="Horizontal" Margin="0"/>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
+                                                        <Setter TargetName="ItemsHostWrapPanel" Property="Orientation" Value="Vertical"/>
+                                                    </DataTrigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </ListView.Template>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type window:ProcessWindow}">
+                                                <DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                                    <Canvas x:Name="IconCanvas" Width="24" Height="24" VerticalAlignment="Center" Background="{Binding Icon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='24'}" DockPanel.Dock="Left"/>
+                                                    <!--Button Width="{Binding ActualHeight,RelativeSource={RelativeSource Mode=Self}}" VerticalAlignment="Stretch" DockPanel.Dock="Right" Tag="{Binding}">X</Button-->
+                                                    <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
+                                                </DockPanel>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                                        <!--Setter TargetName="IconCanvas" Property="Background" Value="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/-->
+                                                        <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
+                                                        <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </Grid>
                                 <ToggleButton x:Name="IconToggleButton" IsChecked="{Binding IsApplicationActive, Mode=TwoWay, FallbackValue=False}" IsThreeState="False" Visibility="Collapsed">
                                     <ToggleButton.Style>
                                         <Style TargetType="{x:Type ToggleButton}">
@@ -986,6 +891,9 @@
                         </DockPanel>
                     </Grid>
                     <DataTemplate.Triggers>
+                        <!--DataTrigger Binding="{Binding TaskItemCombineMode}" Value="WhenFull">
+                            <Setter TargetName="SizingGrid" Property="Width" Value="{Binding ActualWidth, ElementName=ItemsListView}"/>
+                        </DataTrigger-->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition SourceName="IconDockPanel" Property="IsMouseOver" Value="False"/>
@@ -1014,8 +922,9 @@
                             <Setter TargetName="PinnedAppRootGrid" Property="MinWidth" Value="36"/>
                             <Setter TargetName="IconDockPanel" Property="MinWidth" Value="36"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Always">
-                            <Setter TargetName="ItemsListView" Property="Visibility" Value="Collapsed"/>
+                        <DataTrigger Binding="{Binding TaskItemCombineMode}" Value="Always">
+                            <!--Setter TargetName="ItemsGrid" Property="Visibility" Value="Collapsed"/-->
+                            <Setter TargetName="ItemsGrid" Property="Opacity" Value="0"/>
                             <Setter TargetName="IconToggleButton" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="74"/>
@@ -1047,15 +956,7 @@
                         </DataTrigger-->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="WhenFull"/>
-                                <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
-                            <Setter TargetName="IconToggleButton" Property="Visibility" Value="Visible"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=TaskbarCombineMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Never"/>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Never"/>
                                 <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
                             </MultiDataTrigger.Conditions>
                             <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
@@ -2846,4 +2747,37 @@
     </Style>
 
     <!--#endregion Tray Styles-->
+
+    <Style x:Key="{x:Type local:SettingsWindow}" TargetType="{x:Type local:SettingsWindow}" BasedOn="{StaticResource {x:Type win:DecoratableWindow}}">
+        <Style.Resources>
+            <!--{StaticResource {x:Type }}-->
+            <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource {x:Type TabControl}}">
+                <Setter Property="Margin" Value="6,7,6,0"/>
+            </Style>
+
+            <Style x:Key="FooterContentControlStyle" TargetType="{x:Type ContentControl}" BasedOn="{StaticResource {x:Type ContentControl}}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Height" Value="21"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="4,0"/>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="Height" Value="36"/>
+                <Setter Property="Margin" Value="2,0"/>
+            </Style>
+
+            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Margin" Value="0,2,0,3"/>
+                <Setter Property="Width" Value="175"/>
+            </Style>
+
+            <Style TargetType="{x:Type ui:ToggleSwitch}" BasedOn="{StaticResource {x:Type ui:ToggleSwitch}}">
+                <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ContentPresenter}}}"/>
+            </Style>
+        </Style.Resources>
+        <Setter Property="Width" Value="400"/>
+        <Setter Property="Height" Value="525"/>
+        <Setter Property="Background" Value="#FFF0F0F0"/>
+    </Style>
 </ResourceDictionary>

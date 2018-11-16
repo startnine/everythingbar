@@ -35,6 +35,119 @@ namespace Superbar
             }
         }
 
+        /*FrameworkElement _listViewControl;
+        public FrameworkElement ListViewControl
+        {
+            get => _listViewControl;
+            set
+            {
+                _listViewControl = value;
+                NotifyPropertyChanged("ListViewControl");
+                if ((App.Current.MainWindow as MainWindow).Orientation == System.Windows.Controls.Orientation.Vertical)
+                    ListSize = _listViewControl.ActualHeight;
+                else
+                    ListSize = _listViewControl.ActualWidth;
+            }
+        }*/
+
+        double _listSize;
+        public double ListSize
+        {
+            get => _listSize;
+            set
+            {
+                _listSize = value;
+                NotifyPropertyChanged("ListSize");
+            }
+        }
+
+        double _itemSize = 160;
+        public double ItemSize
+        {
+            get => _itemSize;
+            set
+            {
+                _itemSize = value;
+                NotifyPropertyChanged("ItemSize");
+                EvaluateItemCombining(false);
+            }
+        }
+
+        Config.CombineMode _taskItemCombineMode = Config.CombineMode.Always;
+        public Config.CombineMode TaskItemCombineMode
+        {
+            get => _taskItemCombineMode;
+            set
+            {
+                //var oldMode = _taskItemCombineMode;
+
+                _taskItemCombineMode = value;
+                NotifyPropertyChanged("TaskItemCombineMode");
+
+                /*if (oldMode != _taskItemCombineMode)
+                    EvaluateItemCombining();*/
+            }
+        }
+
+        public void EvaluateItemCombining()
+        {
+            EvaluateItemCombining(true);
+        }
+
+
+
+        public void EvaluateItemCombining(bool calculateItemSizes)
+        {
+            double max = ((App.Current.MainWindow as MainWindow).TaskBandScrollViewer.ActualWidth / 2);
+            double width = (ItemSize * OpenWindows.Count);
+
+            double size = 160;// (OpenWindows.Count / 160) / (max / ListSize); //(OpenWindows.Count * 0.25);
+                              /*if (size > 160)
+                                  size = 160;*/
+
+            if (calculateItemSizes)
+            {
+                if (Config.TaskbarCombineMode != Config.CombineMode.Always)
+                {
+                    double minMax = max * 1.25;
+                    //double totalSize = size * OpenWindows.Count;
+
+                    if (false) //width > minMax)
+                    {
+                        ////double reducedSize = size;// + (size / 160);
+                        /*while ((reducedSize * OpenWindows.Count) > minMax)
+                        {
+                            reducedSize -= 64;// (size / OpenWindows.Count); //((size / OpenWindows.Count) / 2);
+                        }*/
+
+
+
+                        size = minMax / OpenWindows.Count; //size - ((width - minMax) * OpenWindows.Count);//reducedSize;// 128; // 160 * (4 / 5);// reducedSize;
+                    }
+                    //if (size * OpenWindows.Count )
+                    /*if (size < 0)
+                        size = size * -1;*/
+
+                    ItemSize = size;
+                }
+            }
+
+            if (Config.TaskbarCombineMode == Config.CombineMode.WhenFull)
+            {
+                //Debug.WriteLine("Size: " + ListSize.ToString() + ", " + DiskApplication.ItemPath);
+                if (width <= max)
+                    TaskItemCombineMode = Config.CombineMode.Never;
+                else
+                    TaskItemCombineMode = Config.CombineMode.Always;
+            }
+            else
+                TaskItemCombineMode = Config.TaskbarCombineMode;
+
+
+            if (DiskApplication.ItemPath.Contains("moon"))
+                Debug.WriteLine("new ItemSize: " + ItemSize + ", new TaskItemCombineMode: " + TaskItemCombineMode.ToString() + ", new ListSize: " + ListSize.ToString() + ", " + DiskApplication.ItemPath);
+        }
+
         bool _areThumbnailsShown = false;
         public bool AreThumbnailsShown
         {
@@ -61,7 +174,10 @@ namespace Superbar
                 _selectedWindow = value;
                 NotifyPropertyChanged("SelectedWindow");
                 //Debug.WriteLine("Selected Window changed");
-                ShowWindow(_selectedWindow);
+                if (_selectedWindow != null)
+                    ShowWindow(_selectedWindow);
+                /*else
+                    Debug.WriteLine("_selectedWindow is null");*/
             }
         }
 
@@ -164,6 +280,15 @@ namespace Superbar
 
             //IsJumpListOpen = true;
             //IsJumpListOpen = false;
+
+            EvaluateItemCombining();
+
+            Config.ConfigUpdated += Config_ConfigUpdated;
+        }
+
+        private void Config_ConfigUpdated(object sender, EventArgs e)
+        {
+            EvaluateItemCombining();
         }
 
         private void NotifyPropertyChanged(string info)
@@ -208,6 +333,7 @@ namespace Superbar
                             }
                         }
                     }
+                    EvaluateItemCombining();
                 }
                 catch (Exception ex)
                 {
@@ -221,6 +347,7 @@ namespace Superbar
             //Debug.WriteLine("Active Window changed");
             Dispatcher.Invoke(new Action(() =>
             {
+                //bool found = false;
                 ProcessWindow window = null;
                 foreach (ProcessWindow w in OpenWindows)
                     if (w.Handle == e.Window.Handle)
@@ -231,8 +358,11 @@ namespace Superbar
                     }
 
                 SelectedWindow = window;
+
                 if (window == null)
+                {
                     IsApplicationActive = false;
+                }
             }));
         }
 
@@ -255,6 +385,7 @@ namespace Superbar
                         break;
                     }
                 }
+                EvaluateItemCombining();
             }));
         }
     }
