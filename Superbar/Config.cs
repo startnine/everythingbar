@@ -194,6 +194,8 @@ namespace Superbar
 
         public static CombineMode TaskbarCombineMode = CombineMode.Always;
 
+        public static bool ShowCombinedLabels { get; set; } = false;
+
 
         public enum ClockDateMode
         {

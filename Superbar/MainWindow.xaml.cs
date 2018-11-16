@@ -68,6 +68,15 @@ namespace Superbar
         public static readonly DependencyProperty UseSmallIconsProperty =
             DependencyProperty.Register("UseSmallIcons", typeof(bool), typeof(MainWindow), new PropertyMetadata(Config.UseSmallIcons));
 
+        public bool ShowCombinedLabels
+        {
+            get => (bool)GetValue(ShowCombinedLabelsProperty);
+            set => SetValue(ShowCombinedLabelsProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowCombinedLabelsProperty =
+            DependencyProperty.Register("ShowCombinedLabels", typeof(bool), typeof(MainWindow), new PropertyMetadata(Config.ShowCombinedLabels));
+
         private Config.CombineMode _taskbarCombineMode = Config.TaskbarCombineMode;
         public Config.CombineMode TaskbarCombineMode
         {
@@ -466,7 +475,7 @@ namespace Superbar
             DockMode = Config.DockMode;
             UseSmallIcons = Config.UseSmallIcons;
             TaskbarCombineMode = Config.TaskbarCombineMode;
-            //TrayClockDateMode = Config.TrayClockDateMode;
+            ShowCombinedLabels = Config.ShowCombinedLabels;
             UpdateClockDateVisibility();
         }
 
@@ -580,18 +589,18 @@ namespace Superbar
 
             if (!processAlreadyAdded)
             {
-                try
-                {
+                /*try
+                {*/
                     var pinnedApp = new PinnedApplication(new DiskItem(Config.GetExecutablePath(window.Process)));
                     SetAppEventHandlers(pinnedApp);
                     //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
                     OpenApplications.Add(pinnedApp);
                     //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
-                }
+                /*}
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
-                }
+                }*/
             }
             /*try
             {
@@ -658,7 +667,7 @@ namespace Superbar
 
                 if (app.OpenWindows.Count > 0)
                 {
-
+                    bool visible = _thumbnailsWindow.IsWindowVisible;
                     /*if (app.AreThumbnailsShown)
                     {*/
                     //_thumbnailsWindow.SetSelection(e.Window);
@@ -687,35 +696,42 @@ namespace Superbar
 
                     double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
 
-                    IEasingFunction ease = null;
-                    try
+                    if (visible)
                     {
-                        ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+                        IEasingFunction ease = null;
+                        try
+                        {
+                            ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                        }
+
+                        DoubleAnimation leftAnimation = new DoubleAnimation()
+                        {
+                            Duration = TimeSpan.FromMilliseconds(1000),
+                            To = newLeft
+                        };
+
+                        if (ease != null)
+                            leftAnimation.EasingFunction = ease;
+
+                        leftAnimation.Completed += (sneder, args) =>
+                        {
+                            _thumbnailsWindow.Left = newLeft;
+                            _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                        };
+
+                        _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                        _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
+                        //}
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex);
-                    }
-
-                    DoubleAnimation leftAnimation = new DoubleAnimation()
-                    {
-                        Duration = TimeSpan.FromMilliseconds(1000),
-                        To = newLeft
-                    };
-
-                    if (ease != null)
-                        leftAnimation.EasingFunction = ease;
-
-                    leftAnimation.Completed += (sneder, args) =>
-                    {
+                    else
                         _thumbnailsWindow.Left = newLeft;
-                        //_thumbnailsWindow.BeginAnimation(LeftProperty, null);
-                    };
-
-                    _thumbnailsWindow.BeginAnimation(LeftProperty, null);
-                    _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
-                    //}
                 }
+                else
+                    _thumbnailsWindow.Hide();
             }
         }
 
@@ -986,6 +1002,11 @@ namespace Superbar
         {
             if (IsLoaded)
                 ActionCenterButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void DragableRegion_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragDockMove();
         }
     }
 }

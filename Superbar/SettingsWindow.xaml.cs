@@ -58,11 +58,16 @@ namespace Superbar
                     BarPositionComboBox.SelectedIndex = 0;
 
                 if (Config.TaskbarCombineMode == Config.CombineMode.WhenFull)
-                    TaskbarCombineModeComboBox.SelectedIndex = 1;
-                else if (Config.TaskbarCombineMode == Config.CombineMode.Never)
                     TaskbarCombineModeComboBox.SelectedIndex = 2;
+                else if (Config.TaskbarCombineMode == Config.CombineMode.Never)
+                    TaskbarCombineModeComboBox.SelectedIndex = 3;
                 else
-                    TaskbarCombineModeComboBox.SelectedIndex = 0;
+                {
+                    if (Config.ShowCombinedLabels)
+                        TaskbarCombineModeComboBox.SelectedIndex = 0;
+                    else
+                        TaskbarCombineModeComboBox.SelectedIndex = 1;
+                }
 
                 if (Config.TrayClockDateMode == Config.ClockDateMode.AlwaysShow)
                     TaskbarClockDateModeComboBox.SelectedIndex = 0;
@@ -90,12 +95,19 @@ namespace Superbar
             else
                 Config.DockMode = AppBarWindow.AppBarDockMode.Bottom;
 
-            if (TaskbarCombineModeComboBox.SelectedIndex == 1)
+            if (TaskbarCombineModeComboBox.SelectedIndex == 2)
                 Config.TaskbarCombineMode = Config.CombineMode.WhenFull;
-            else if (TaskbarCombineModeComboBox.SelectedIndex == 2)
+            else if (TaskbarCombineModeComboBox.SelectedIndex == 3)
                 Config.TaskbarCombineMode = Config.CombineMode.Never;
             else
+            {
                 Config.TaskbarCombineMode = Config.CombineMode.Always;
+
+                if (TaskbarCombineModeComboBox.SelectedIndex == 1)
+                    Config.ShowCombinedLabels = false;
+                else
+                    Config.ShowCombinedLabels = true;
+            }
 
             if (TaskbarClockDateModeComboBox.SelectedIndex == 1)
                 Config.TrayClockDateMode = Config.ClockDateMode.Auto;

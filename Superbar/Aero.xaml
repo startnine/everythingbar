@@ -35,6 +35,116 @@
         <Setter Property="ResizeIntervalDistance" Value="42"/>
         <Setter Property="CompositionState" Value="Glass"/>
         <!--Setter Property="Opacity" Value="0"/-->
+        <Setter Property="DragIndicatorStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type win:ShadowedWindow}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="CompositionState" Value="Glass"/>
+                    <Setter Property="ShadowOffsetThickness" Value="12,12,20,20"/>
+                    <Setter Property="ShadowStyle">
+                        <Setter.Value>
+                            <Style TargetType="Window">
+                                <Setter Property="WindowStyle" Value="None"/>
+                                <Setter Property="ResizeMode" Value="NoResize"/>
+                                <Setter Property="AllowsTransparency" Value="True"/>
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Window">
+                                            <Rectangle>
+                                                <Rectangle.OpacityMask>
+                                                    <VisualBrush>
+                                                        <VisualBrush.Visual>
+                                                            <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16">
+                                                                <Border VerticalAlignment="Bottom" BorderBrush="Black" BorderThickness="4" Margin="-4,-4,-4,0" CornerRadius="0,0,6,6"/>
+                                                            </Border>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Rectangle.OpacityMask>
+                                                <Rectangle.Fill>
+                                                    <VisualBrush>
+                                                        <VisualBrush.Visual>
+                                                            <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
+                                                                <Border Margin="18,18,14,14" Background="#C0000000">
+                                                                    <Border.Effect>
+                                                                        <BlurEffect Radius="14"/>
+                                                                    </Border.Effect>
+                                                                </Border>
+                                                            </Grid>
+                                                        </VisualBrush.Visual>
+                                                    </VisualBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type win:ShadowedWindow}">
+                                <Grid>
+                                    <Rectangle x:Name="SizingAidRectangle" Fill="#01000000"/>
+                                    <Grid>
+                                        <Border x:Name="RootBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <LinearGradientBrush.GradientStops>
+                                                        <GradientStop Offset="0" Color="#D74F4F4F"/>
+                                                        <GradientStop Offset="0.375" Color="#C7292929"/>
+                                                        <GradientStop Offset="1" Color="#B7000000"/>
+                                                    </LinearGradientBrush.GradientStops>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <Border BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="5">
+                                                <ContentPresenter Content="{TemplateBinding Content}" Margin="3"/>
+                                            </Border>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsGlassAvailable" Value="False">
+                                        <Setter Property="CompositionState" Value="Alpha"/>
+                                        <Setter TargetName="RootBorder" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <LinearGradientBrush.GradientStops>
+                                                        <GradientStop Offset="0" Color="#FF5C5C5C"/>
+                                                        <GradientStop Offset="0.375" Color="#FF353535"/>
+                                                        <GradientStop Offset="1" Color="Black"/>
+                                                    </LinearGradientBrush.GradientStops>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <!--Setter TargetName="ShineRectangle" Property="Fill">
+                                            <Setter.Value>
+                                                <LinearGradientBrush StartPoint="75,0" EndPoint="125,175" MappingMode="Absolute">
+                                                    <GradientStop Offset="0.25" Color="Black"/>
+                                                    <GradientStop Offset="0.251" Color="#40000000"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter-->
+                                        <Setter Property="ShadowStyle">
+                                            <Setter.Value>
+                                                <Style TargetType="{x:Type Window}">
+                                                    <Setter Property="WindowStyle" Value="None"/>
+                                                    <Setter Property="ResizeMode" Value="NoResize"/>
+                                                    <Setter Property="AllowsTransparency" Value="True"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </Style>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:MainWindow}">
@@ -78,7 +188,7 @@
                                         <Rectangle Fill="#C0000000" Height="1"/>
                                         <Rectangle Fill="#7FFFFFFF" Height="1"/>
                                     </StackPanel>
-                                    <Rectangle HorizontalAlignment="Left" Width="60" Height="20" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="0,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
+                                    <Rectangle HorizontalAlignment="Left" Width="60" Height="{Binding Height,ElementName=ShineRectangle}" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="0,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
                                     <ContentControl Content="{TemplateBinding QuickLaunchArea}"/>
                                 </Grid>
                                 <Separator Style="{DynamicResource TaskbandSeparatorStyle}" DockPanel.Dock="Left"/>
@@ -86,7 +196,7 @@
                                     <Rectangle x:Name="DarkRectangle" Fill="{DynamicResource DarkRegionBrush}" Margin="0,2,0,0" IsHitTestVisible="False"/>
                                     <Separator Style="{DynamicResource TaskbandSeparatorStyle}" HorizontalAlignment="Right" Margin="0,0,-2,0" IsHitTestVisible="False"/>
                                     <ContentControl Content="{TemplateBinding TrayArea}" Margin="0,0,-15,0"/>
-                                    <Rectangle HorizontalAlignment="Right" Width="15" Height="20" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="0,1,-15,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
+                                    <Rectangle HorizontalAlignment="Right" Width="15" Height="{Binding Height,ElementName=ShineRectangle}" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="0,1,-15,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
                                 </Grid>
                                 <Separator Style="{DynamicResource TaskbandSeparatorStyle}" DockPanel.Dock="Right"/>
                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -112,7 +222,7 @@
                                 <Rectangle Fill="#7FFFFFFF" Height="1"/>
                             </StackPanel>
                             <Thumb x:Name="PART_ResizeThumb" Background="White" Cursor="SizeNS" Opacity="0.01" IsHitTestVisible="True"/>
-                            <Rectangle HorizontalAlignment="Stretch" Height="20" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="60,1,0,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
+                            <Rectangle HorizontalAlignment="Stretch" Height="{Binding Height,ElementName=ShineRectangle}" VerticalAlignment="{Binding VerticalAlignment, ElementName=ShineRectangle}" Margin="60,1,0,1" IsHitTestVisible="False" Fill="{Binding Fill, ElementName=ShineRectangle}"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -181,7 +291,10 @@
                             <Setter TargetName="PART_ResizeThumb" Property="Width" Value="5"/>
                             <Setter Property="MinWidth" Value="120"/>
                         </Trigger>
-                        <Trigger Property="IsGlassAvailable" Value="True">
+                        <Trigger Property="UseSmallIcons" Value="True">
+                            <Setter TargetName="ShineRectangle" Property="Height" Value="15"/>
+                        </Trigger>
+                        <Trigger Property="IsGlassAvailable" Value="False">
                             <Setter Property="CompositionState" Value="Alpha"/>
                             <Setter TargetName="RootBorder" Property="Background" Value="Black"/>
                         </Trigger>
@@ -358,49 +471,64 @@
                                         </BeginStoryboard>
                                     </Trigger.ExitActions>
                                 </Trigger>
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="last">
-                                            <MultiBinding.Bindings>
-                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
-                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
-                                                <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
-                                            </MultiBinding.Bindings>
-                                        </MultiBinding>
-                                    </DataTrigger.Binding>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
+                                        <Condition Value="True">
+                                            <Condition.Binding>
+                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="last">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                        <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Condition.Binding>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0,6,0,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0,5,0,0"/>
                                     <Setter TargetName="IdleOuterBorder" Property="BorderThickness" Value="1,1,1,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="BorderThickness" Value="1"/>
-                                </DataTrigger>
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="first">
-                                            <MultiBinding.Bindings>
-                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
-                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
-                                                <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
-                                            </MultiBinding.Bindings>
-                                        </MultiBinding>
-                                    </DataTrigger.Binding>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
+                                        <Condition Value="True">
+                                            <Condition.Binding>
+                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="first">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                        <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Condition.Binding>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,0,0,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,0,0,0"/>
-                                </DataTrigger>
-                                <DataTrigger Value="True">
-                                    <DataTrigger.Binding>
-                                        <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="only">
-                                            <MultiBinding.Bindings>
-                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
-                                                <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
-                                                <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
-                                            </MultiBinding.Bindings>
-                                        </MultiBinding>
-                                    </DataTrigger.Binding>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
+                                        <Condition Value="True">
+                                            <Condition.Binding>
+                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="first">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                        <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Condition.Binding>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,6,0,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,5,0,0"/>
                                     <Setter TargetName="IdleOuterBorder" Property="BorderThickness" Value="1,1,1,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="BorderThickness" Value="1"/>
-                                </DataTrigger>
+                                </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -415,7 +543,7 @@
                 </Style.Triggers>
             </Style>
         </Style.Resources>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="#01000000"/>
         <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}"/>
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
@@ -876,12 +1004,28 @@
                                                             </DataTrigger>
                                                             <MultiDataTrigger>
                                                                 <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
                                                                     <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DockPanel}}}" Value="False"/>
                                                                     <!--Condition Binding="{Binding IsJumpListOpen}" Value="False"/-->
                                                                     <Condition Binding="{Binding Opacity, ElementName=JumpListToggleButton}" Value="0"/>
                                                                 </MultiDataTrigger.Conditions>
                                                                 <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,6,0,0"/>
                                                                 <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,5,0,0"/>
+                                                            </MultiDataTrigger>
+                                                            <DataTrigger Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Top">
+                                                                <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0,0,0,6"/>
+                                                                <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0,0,0,5"/>
+                                                                <Setter TargetName="RootGrid" Property="Margin" Value="0,0,0,4"/>
+                                                            </DataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Top"/>
+                                                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type DockPanel}}}" Value="False"/>
+                                                                    <!--Condition Binding="{Binding IsJumpListOpen}" Value="False"/-->
+                                                                    <Condition Binding="{Binding Opacity, ElementName=JumpListToggleButton}" Value="0"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0,0,6,6"/>
+                                                                <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0,0,5,5"/>
                                                             </MultiDataTrigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -891,8 +1035,13 @@
                                     </ToggleButton.Style>
                                 </ToggleButton>
                                 <Grid x:Name="IconGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2,0,-2" Visibility="Collapsed">
-                                    <Canvas x:Name="IconCanvas" Width="32" Height="32" Background="{Binding DiskApplication.ItemLargeIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='32'}" IsHitTestVisible="False"/>
-                                    <Border x:Name="WindowCounterBorder" Background="#7F000000" BorderBrush="White" BorderThickness="1" CornerRadius="10" MinWidth="20" MinHeight="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-8,-1">
+                                    <DockPanel LastChildFill="True" Margin="4,0">
+                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Left" Panel.ZIndex="9999">
+                                            <Canvas x:Name="IconCanvas" Width="32" Height="32" Background="{Binding DiskApplication.ItemLargeIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='32'}" IsHitTestVisible="False"/>
+                                        </Grid>
+                                        <TextBlock x:Name="ItemLabelTextBlock" Text="{Binding DiskApplication.ItemDisplayName}" VerticalAlignment="Center" Margin="4,0" Foreground="White" Visibility="Collapsed"/>
+                                    </DockPanel>
+                                    <Border x:Name="WindowCounterBorder" Background="#7F000000" BorderBrush="White" BorderThickness="1" CornerRadius="10" MinWidth="20" MinHeight="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-5,-1">
                                         <TextBlock Text="{Binding OpenWindows.Count}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                 </Grid>
@@ -900,6 +1049,10 @@
                         </DockPanel>
                     </Grid>
                     <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding ShowCombinedLabels, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                            <Setter TargetName="ItemLabelTextBlock" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="WindowCounterBorder" Property="Margin" Value="2,-1"/>
+                        </DataTrigger>
                         <!--DataTrigger Binding="{Binding TaskItemCombineMode}" Value="WhenFull">
                             <Setter TargetName="SizingGrid" Property="Width" Value="{Binding ActualWidth, ElementName=ItemsListView}"/>
                         </DataTrigger-->
@@ -928,16 +1081,71 @@
                             <Setter TargetName="IconCanvas" Property="Background" Value="{Binding DiskApplication.ItemSmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/>
                             <Setter TargetName="IconCanvas" Property="Width" Value="16"/>
                             <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
-                            <Setter TargetName="PinnedAppRootGrid" Property="MinWidth" Value="36"/>
-                            <Setter TargetName="IconDockPanel" Property="MinWidth" Value="36"/>
+                            <Setter TargetName="PinnedAppRootGrid" Property="MinWidth" Value="54"/>
+                            <Setter TargetName="IconDockPanel" Property="MinWidth" Value="54"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding TaskItemCombineMode}" Value="Always">
                             <!--Setter TargetName="ItemsGrid" Property="Visibility" Value="Collapsed"/-->
                             <Setter TargetName="ItemsGrid" Property="Opacity" Value="0"/>
                             <Setter TargetName="IconToggleButton" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="IconGrid" Property="Visibility" Value="Visible"/>
-                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="74"/>
                         </DataTrigger>
+                        <!--MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding ShowCombinedLabels, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="74"/>
+                        </MultiDataTrigger-->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="74"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="54"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding ShowCombinedLabels, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconGrid" Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="160"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding ShowCombinedLabels, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                                <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconGrid" Property="HorizontalAlignment" Value="Center"/>
+                            <Setter TargetName="ItemLabelTextBlock" Property="Visibility" Value="Collapsed"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding ShowCombinedLabels, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                                <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
+                                <Condition Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="74"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding TaskItemCombineMode}" Value="Always"/>
+                                <Condition Binding="{Binding ShowCombinedLabels, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                                <Condition Binding="{Binding OpenWindows.Count}" Value="0"/>
+                                <Condition Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="IconDockPanel" Property="MaxWidth" Value="54"/>
+                        </MultiDataTrigger>
                         <!--DataTrigger Binding="{Binding OpenWindows.Count}" Value="2">
                             <Setter TargetName="OuterGroupTab" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="InnerGroupTab" Property="Opacity" Value="0.625"/>
@@ -952,6 +1160,7 @@
                             <Setter TargetName="UnderlineBorder" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger-->
                         <DataTrigger Binding="{Binding OpenWindows.Count}" Value="1">
+                            <Setter TargetName="ItemLabelTextBlock" Property="Text" Value="{Binding OpenWindows[0].Title}"/>
                             <Setter TargetName="WindowCounterBorder" Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding OpenWindows.Count}" Value="0">
@@ -1119,7 +1328,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListView}">
-                    <WrapPanel x:Name="ItemsHostWrapPanel" IsItemsHost="True" MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" HorizontalAlignment="Left" Background="#01000000" Orientation="Horizontal" Margin="0"/>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{TemplateBinding Background}">
+                        <WrapPanel x:Name="ItemsHostWrapPanel" IsItemsHost="True" MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" HorizontalAlignment="Left" Background="#01000000" Orientation="Horizontal" Margin="0"/>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
                             <Setter TargetName="ItemsHostWrapPanel" Property="Orientation" Value="vertical"/>
@@ -1227,7 +1438,7 @@
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsGlassAvailable" Value="True">
+                        <Trigger Property="IsGlassAvailable" Value="False">
                             <Setter Property="CompositionState" Value="Alpha"/>
                             <Setter TargetName="RootBorder" Property="Background" Value="#FF1B1B1B"/>
                             <Setter TargetName="BaseGrid" Property="Margin" Value="0"/>
@@ -1590,7 +1801,7 @@
                         </Border>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsGlassAvailable" Value="True">
+                        <Trigger Property="IsGlassAvailable" Value="False">
                             <Setter Property="CompositionState" Value="Alpha"/>
                             <Setter TargetName="RootBorder" Property="Background">
                                 <Setter.Value>

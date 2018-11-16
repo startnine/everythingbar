@@ -144,8 +144,8 @@ namespace Superbar
                 TaskItemCombineMode = Config.TaskbarCombineMode;
 
 
-            if (DiskApplication.ItemPath.Contains("moon"))
-                Debug.WriteLine("new ItemSize: " + ItemSize + ", new TaskItemCombineMode: " + TaskItemCombineMode.ToString() + ", new ListSize: " + ListSize.ToString() + ", " + DiskApplication.ItemPath);
+            /*if (DiskApplication.ItemPath.Contains("moon"))
+                Debug.WriteLine("new ItemSize: " + ItemSize + ", new TaskItemCombineMode: " + TaskItemCombineMode.ToString() + ", new ListSize: " + ListSize.ToString() + ", " + DiskApplication.ItemPath);*/
         }
 
         bool _areThumbnailsShown = false;
@@ -310,8 +310,8 @@ namespace Superbar
         {
             Dispatcher.Invoke(new Action(() =>
             {
-                try
-                {
+                /*try
+                {*/
                     if (Config.GetExecutablePath(e.Window.Process).ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
                     {
                         bool proceed = true;
@@ -334,11 +334,11 @@ namespace Superbar
                         }
                     }
                     EvaluateItemCombining();
-                }
+                /*}
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
-                }
+                }*/
             }));
         }
 

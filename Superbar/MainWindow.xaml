@@ -45,7 +45,7 @@
         </ContextMenu>
     </local:TaskbarWindow.ContextMenu>
     <local:TaskbarWindow.TrayArea>
-        <StackPanel Orientation="{Binding Orientation}">
+        <StackPanel Orientation="{Binding Orientation}" Background="#01000000" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown">
             <ToolBarTray x:Name="TrayRegionToolBarTray"/>
             <ToggleButton x:Name="ShowTrayFlyoutButton" Style="{DynamicResource ShowTrayFlyoutButtonStyle}"/>
             <StackPanel Orientation="Horizontal"/>
@@ -60,7 +60,7 @@
         </StackPanel>
     </local:TaskbarWindow.TrayArea>
     <local:TaskbarWindow.QuickLaunchArea>
-        <StackPanel Orientation="{Binding Orientation}">
+        <StackPanel Orientation="{Binding Orientation}" Background="#01000000" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown">
             <ToggleButton x:Name="StartButton" Style="{DynamicResource StartToggleButtonStyle}" Click="StartButton_Click">start</ToggleButton>
             <TextBox x:Name="SearchBox" Style="{DynamicResource SearchTextBoxStyle}" PreviewMouseLeftButtonDown="SearchBox_PreviewMouseLeftButtonDown" Visibility="Collapsed"/>
             <ToggleButton x:Name="SearchButton" Style="{DynamicResource SearchToggleButtonStyle}" Click="SearchButton_Click"/>
@@ -79,7 +79,7 @@
             </UniformGrid-->
         <!--ScrollBar x:Name="TaskBandScrollBar" Orientation="Vertical" ValueChanged="TaskBandScrollBar_ValueChanged" DockPanel.Dock="Right" Visibility="{Binding ComputedVerticalScrollBarVisibility, ElementName=TaskBandScrollViewer}"/-->
         <ScrollViewer x:Name="TaskBandScrollViewer" Style="{DynamicResource TaskBandScrollViewerStyle}" Margin="0" PreviewMouseWheel="ScrollViewer_MouseWheel">
-            <ListView x:Name="TaskBandListView" ItemsSource="{Binding OpenApplications}" Style="{DynamicResource TaskBandListViewStyle}" SelectionChanged="TaskBandListView_SelectionChanged"/>
+            <ListView x:Name="TaskBandListView" ItemsSource="{Binding OpenApplications}" Style="{DynamicResource TaskBandListViewStyle}" SelectionChanged="TaskBandListView_SelectionChanged" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown"/>
         </ScrollViewer>
     </Grid>
 </local:TaskbarWindow>

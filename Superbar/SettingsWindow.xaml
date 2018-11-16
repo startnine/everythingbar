@@ -20,9 +20,9 @@
         <TabControl>
             <TabItem Header="Main UI">
                 <StackPanel Orientation="Vertical">
-                    <ui:ToggleSwitch x:Name="LockBarCheckBox">Lock the Superbar</ui:ToggleSwitch>
-                    <ui:ToggleSwitch x:Name="AutoHideCheckBox">Auto-hide the Superbar</ui:ToggleSwitch>
-                    <ui:ToggleSwitch x:Name="SmallButtonsCheckBox">Use small Superbar buttons</ui:ToggleSwitch>
+                    <ui:ToggleSwitch x:Name="LockBarCheckBox" TrueText="Locked" FalseText="Unlocked">Lock the Superbar</ui:ToggleSwitch>
+                    <ui:ToggleSwitch x:Name="AutoHideCheckBox" TrueText="Auto-Hidden" FalseText="Always Shown">Auto-hide the Superbar</ui:ToggleSwitch>
+                    <ui:ToggleSwitch x:Name="SmallButtonsCheckBox" TrueText="Small" FalseText="Large">Superbar button size</ui:ToggleSwitch>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Width="175">Superbar location on screen:</TextBlock>
                         <ComboBox x:Name="BarPositionComboBox" SelectedIndex="0">
@@ -34,7 +34,8 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Width="175">Superbar buttons:</TextBlock>
-                        <ComboBox x:Name="TaskbarCombineModeComboBox" SelectedIndex="0">
+                        <ComboBox x:Name="TaskbarCombineModeComboBox" SelectedIndex="1">
+                            <ComboBoxItem>Always combine, show labels</ComboBoxItem>
                             <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
                             <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
                             <ComboBoxItem>Never combine</ComboBoxItem>
@@ -52,7 +53,7 @@
                         <TextBlock Width="175">Notification area:</TextBlock>
                         <Button>Manage</Button>
                     </StackPanel>
-                    <ui:ToggleSwitch>Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
+                    <ui:ToggleSwitch TrueText="On" FalseText="Off">Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Jump Lists">
@@ -63,8 +64,8 @@
                     </DockPanel>
                     <GroupBox Header="Privacy">
                         <StackPanel Orientation="Vertical">
-                            <ui:ToggleSwitch>Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
-                            <ui:ToggleSwitch>Store recently opened items in Jump Lists</ui:ToggleSwitch>
+                            <ui:ToggleSwitch TrueText="On" FalseText="Off">Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
+                            <ui:ToggleSwitch TrueText="On" FalseText="Off">Store recently opened items in Jump Lists</ui:ToggleSwitch>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
