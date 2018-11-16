@@ -486,8 +486,8 @@
                                             </Condition.Binding>
                                         </Condition>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0,6,0,0"/>
-                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0,5,0,0"/>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0"/>
                                     <Setter TargetName="IdleOuterBorder" Property="BorderThickness" Value="1,1,1,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="BorderThickness" Value="1"/>
                                 </MultiDataTrigger>
@@ -514,7 +514,7 @@
                                         <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
                                         <Condition Value="True">
                                             <Condition.Binding>
-                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="first">
+                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="only">
                                                     <MultiBinding.Bindings>
                                                         <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
                                                         <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
@@ -524,10 +524,51 @@
                                             </Condition.Binding>
                                         </Condition>
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,6,0,0"/>
-                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,5,0,0"/>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,0,0,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,0,0,0"/>
                                     <Setter TargetName="IdleOuterBorder" Property="BorderThickness" Value="1,1,1,0"/>
                                     <Setter TargetName="IdleInnerBorder" Property="BorderThickness" Value="1"/>
+                                </MultiDataTrigger>
+
+
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
+                                        <Condition Value="True">
+                                            <Condition.Binding>
+                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="last">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                        <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Condition.Binding>
+                                        </Condition>
+                                        <Condition Binding="{Binding Opacity, ElementName=JumpListToggleButton}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="0,6,0,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="0,5,0,0"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="Bottom"/>
+                                        <Condition Value="True">
+                                            <Condition.Binding>
+                                                <MultiBinding Converter="{StaticResource ListViewItemIndexToBoolConverter}" ConverterParameter="only">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                        <Binding Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type Panel}}"/>
+                                                        <Binding Mode="OneWay" Path="Items.Count" RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType={x:Type ListView}}" UpdateSourceTrigger="PropertyChanged"/>
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Condition.Binding>
+                                        </Condition>
+                                        <Condition Binding="{Binding Opacity, ElementName=JumpListToggleButton}" Value="0"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="IdleOuterBorder" Property="CornerRadius" Value="6,6,0,0"/>
+                                    <Setter TargetName="IdleInnerBorder" Property="CornerRadius" Value="5,5,0,0"/>
                                 </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
