@@ -90,6 +90,7 @@
       <DependentUpon>JumpListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ModuleCallback.cs" />
+    <Compile Include="PeekBehavior.cs" />
     <Compile Include="PinnedApplication.cs" />
     <Compile Include="ProcessToWindowsConverter.cs" />
     <Compile Include="SettingsWindow.xaml.cs">

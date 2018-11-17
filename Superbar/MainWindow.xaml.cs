@@ -591,11 +591,11 @@ namespace Superbar
             {
                 /*try
                 {*/
-                    var pinnedApp = new PinnedApplication(new DiskItem(Config.GetExecutablePath(window.Process)));
-                    SetAppEventHandlers(pinnedApp);
-                    //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
-                    OpenApplications.Add(pinnedApp);
-                    //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
+                var pinnedApp = new PinnedApplication(new DiskItem(Config.GetExecutablePath(window.Process)));
+                SetAppEventHandlers(pinnedApp);
+                //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
+                OpenApplications.Add(pinnedApp);
+                //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
                 /*}
                 catch (Exception ex)
                 {

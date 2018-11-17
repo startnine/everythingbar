@@ -1605,10 +1605,18 @@
                     <Setter Property="BorderThickness" Value="0"/>
                     <Setter Property="Padding" Value="2,0"/>
                     <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <ToolTip IsHitTestVisible="False" Opacity="0" Content="Test"/>
+                        </Setter.Value>
+                    </Setter>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListViewItem}">
                                 <Grid>
+                                    <e:Interaction.Behaviors>
+                                        <local:PeekBehavior PeekWindow="{Binding}"/>
+                                    </e:Interaction.Behaviors>
                                     <Border x:Name="HoverBackground" BorderBrush="#7F99DDFD" BorderThickness="1" CornerRadius="3" Margin="0,1" Opacity="0">
                                         <Border.Background>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">

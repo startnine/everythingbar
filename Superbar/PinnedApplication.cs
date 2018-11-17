@@ -257,10 +257,16 @@ namespace Superbar
 
             foreach (ProcessWindow win in ProcessWindow.ProcessWindows)
             {
+                string path = Config.GetExecutablePath(win.Process);
+                var appx = AppxMethods.AppxPackage.FromProcess(win.Process);
+                if (appx != null)
+                {
+                    MessageBox.Show("DisplayName: " + appx.DisplayName + "\nApplicationUserModelId: " + appx.ApplicationUserModelId + "\nFullName: " + appx.FullName, "Package information");
+                }
                 /*try
                 {*/
-                    //Debug.WriteLine(win.Process.MainModule.FileName + "    " + DiskApplication.ItemRealName);
-                    if (Config.GetExecutablePath(win.Process).ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
+                //Debug.WriteLine(win.Process.MainModule.FileName + "    " + DiskApplication.ItemRealName);
+                if (path.ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
                     {
                         OpenWindows.Add(win);
                         //Debug.WriteLine("WINDOW: " + win.Title);

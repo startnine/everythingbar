@@ -8,6 +8,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using WindowsSharp.Processes;
+using static WindowsSharp.Processes.AppxMethods;
 
 namespace Superbar
 {
@@ -21,7 +23,7 @@ namespace Superbar
 
         public static string GetExecutablePath(Process process)
         {
-            string returnValue = "";
+            string returnValue = string.Empty;
             StringBuilder stringBuilder = new StringBuilder(1024);
             IntPtr hprocess = OpenProcess(0x1000, false, process.Id);
 
@@ -47,7 +49,16 @@ namespace Superbar
                     }
                 }
             }
+            /*var package = AppxPackage.FromProcess(process);
+            if (package != null)
+            {
+                Debug.WriteLine("PACKAGE.APPLICATIONUSERMODELID: " + package.ApplicationUserModelId);
+                returnValue = package.ApplicationUserModelId;
+            }*/
+            /*else
+                Debug.WriteLine("PACKAGE IS NULL");*/
 
+            //Debug.WriteLine("returnValue: " + returnValue);
             return returnValue;
         }
 
