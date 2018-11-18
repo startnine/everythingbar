@@ -7,7 +7,7 @@
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
                     xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/PresentationFramework.Luna;V3.0.0.0;31bf3856ad364e35;component\themes/luna.normalcolor.xaml" />
+        <!--ResourceDictionary Source="/PresentationFramework.Luna;V3.0.0.0;31bf3856ad364e35;component\themes/luna.normalcolor.xaml" /-->
         <ResourceDictionary Source="pack://application:,,,/Start9.UI.Wpf;component/Themes/Luna.NormalColor.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

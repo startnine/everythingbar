@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using WindowsSharp.Processes;
-using static WindowsSharp.Processes.AppxMethods;
+//using static WindowsSharp.Processes.AppxMethods;
 
 namespace Superbar
 {

@@ -1,4 +1,4 @@
-﻿using Start9.WCF;
+﻿//using Start9.WCF;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,11 +16,11 @@ namespace Superbar
     /// </summary>
     public partial class App : Application
     {
-        public IModuleService service;
+        //public IModuleService service;
 
         public App()
         {
-            try
+            /*try
             {
                 var callback = new ModuleCallback();
                 var context = new InstanceContext(callback);
@@ -36,7 +36,7 @@ namespace Superbar
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
+            }*/
         }
     }
 }

@@ -21,7 +21,7 @@ using Start9.UI.Wpf;
 using Start9.UI.Wpf.Windows;
 using WindowsSharp.Processes;
 using System.Collections.ObjectModel;
-using Start9.WCF;
+//using Start9.WCF;
 using System.ServiceModel;
 using WindowsSharp.DiskItems;
 using System.ComponentModel;
@@ -449,7 +449,7 @@ namespace Superbar
             Config.ConfigUpdated += Config_ConfigUpdated;
             Config_ConfigUpdated(null, null);
 
-            UpdateClockDateVisibility();
+            //UpdateClockDateVisibility();
 
             _clockTimer.Elapsed += delegate
             {
@@ -518,14 +518,17 @@ namespace Superbar
 
                 if (!isAppAlreadyPresent)
                 {
-                    PinnedApplication app = new PinnedApplication(new DiskItem(s))
+                    if (!string.IsNullOrWhiteSpace(s))
                     {
-                        IsPinned = true
-                    };
-                    SetAppEventHandlers(app);
-                    OpenApplications.Insert(insertCounter, app);
-                    //Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
-                    insertCounter++;
+                        PinnedApplication app = new PinnedApplication(new DiskItem(s))
+                        {
+                            IsPinned = true
+                        };
+                        SetAppEventHandlers(app);
+                        OpenApplications.Insert(insertCounter, app);
+                        //Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
+                        insertCounter++;
+                    }
                 }
                 //areAppsAlreadyPresent.Add(isAppAlreadyPresent);
             }
@@ -591,16 +594,20 @@ namespace Superbar
             {
                 /*try
                 {*/
-                var pinnedApp = new PinnedApplication(new DiskItem(Config.GetExecutablePath(window.Process)));
-                SetAppEventHandlers(pinnedApp);
-                //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
-                OpenApplications.Add(pinnedApp);
-                //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
-                /*}
-                catch (Exception ex)
+                string path = Config.GetExecutablePath(window.Process);
+                if (!string.IsNullOrWhiteSpace(path))
                 {
-                    Debug.WriteLine(ex);
-                }*/
+                    var pinnedApp = new PinnedApplication(new DiskItem(path));
+                    SetAppEventHandlers(pinnedApp);
+                    //Debug.WriteLine("2IsPinned: " + pinnedApp.IsPinned.ToString() + ", " + pinnedApp.DiskApplication.ItemRealName);
+                    OpenApplications.Add(pinnedApp);
+                    //Debug.WriteLine("PROCESS: " + w.Process.MainModule.FileName);
+                    /*}
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }*/
+                }
             }
             /*try
             {
@@ -792,14 +799,14 @@ namespace Superbar
                 if (DockMode == AppBarDockMode.Right)
                     param2 = (int)SystemParameters.WorkArea.Right;
 
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                /*Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     (Application.Current as App).service.SendMessage(new Message(MessageCommand.Open)
                     {
                         Param1 = param1,
                         Param2 = param2
                     });
-                }));
+                }));*/
 
                 if (!_isChecked)
                 {

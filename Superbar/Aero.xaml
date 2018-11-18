@@ -6,10 +6,9 @@
                     xmlns:window="clr-namespace:WindowsSharp.Processes;assembly=WindowsSharp"
                     xmlns:disk="clr-namespace:WindowsSharp.DiskItems;assembly=WindowsSharp"
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
-                    xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity"
-                    xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic">
+                    xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml" />
+        <!--ResourceDictionary Source="pack://application:,,,/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml" /-->
         <ResourceDictionary Source="pack://application:,,,/Start9.UI.Wpf;component/Themes/Aero.NormalColor.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
@@ -169,11 +168,6 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-
-                        <GradientStopCollection x:Key="ShineGradientStops">
-                            <GradientStop Offset="0" Color="#B8FFFFFF"/>
-                            <GradientStop Offset="1" Color="#1CFFFFFF"/>
-                        </GradientStopCollection>
                         
                     </ControlTemplate.Resources>
                     <Border x:Name="RootBorder">
@@ -211,7 +205,10 @@
                                     </Rectangle>
                                     <Rectangle x:Name="ShineRectangle" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="0,1" IsHitTestVisible="False">
                                         <Rectangle.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" GradientStops="{DynamicResource ShineGradientStops}"/>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Offset="0" Color="#B8FFFFFF"/>
+                                                <GradientStop Offset="1" Color="#1CFFFFFF"/>
+                                            </LinearGradientBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <ContentControl Content="{TemplateBinding Content}"/>
@@ -268,7 +265,10 @@
                             <Setter TargetName="ShineRectangle" Property="VerticalAlignment" Value="Bottom"/>
                             <Setter TargetName="ShineRectangle" Property="Fill">
                                 <Setter.Value>
-                                    <LinearGradientBrush StartPoint="0,1" EndPoint="0,0" GradientStops="{DynamicResource ShineGradientStops}"/>
+                                    <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                        <GradientStop Offset="0" Color="#B8FFFFFF"/>
+                                        <GradientStop Offset="1" Color="#1CFFFFFF"/>
+                                    </LinearGradientBrush>
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="EdgeStackPanel" Property="VerticalAlignment" Value="Bottom"/>

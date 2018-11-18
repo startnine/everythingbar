@@ -30,8 +30,6 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\ru\System.Windows.Interactivity.resources.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
-C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Start9.WCF.dll
-C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\bin\Debug\Start9.WCF.pdb
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\Interop.Shell32.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\Superbar.csproj.ResolveComReference.cache
 C:\Users\Splitwirez\Documents\Important\Start9\Development\Superbar\Superbar\obj\Debug\ThumbnailsWindow.g.cs
