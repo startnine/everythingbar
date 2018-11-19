@@ -8,7 +8,7 @@
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
                     xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity">
     <ResourceDictionary.MergedDictionaries>
-        <!--ResourceDictionary Source="pack://application:,,,/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml" /-->
+        <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Start9.UI.Wpf;component/Themes/Aero.NormalColor.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
@@ -1082,8 +1082,8 @@
                                         </Grid>
                                         <TextBlock x:Name="ItemLabelTextBlock" Text="{Binding DiskApplication.ItemDisplayName}" VerticalAlignment="Center" Margin="4,0" Foreground="White" Visibility="Collapsed"/>
                                     </DockPanel>
-                                    <Border x:Name="WindowCounterBorder" Background="#7F000000" BorderBrush="White" BorderThickness="1" CornerRadius="10" MinWidth="20" MinHeight="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-5,-1">
-                                        <TextBlock Text="{Binding OpenWindows.Count}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Border x:Name="WindowCounterBorder" Background="#7F000000" BorderBrush="White" BorderThickness="1" CornerRadius="10" MinWidth="20" MinHeight="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="-5,-1" RenderTransformOrigin="0.5,0.5">
+                                        <TextBlock x:Name="WindowCounterTextBlock" Text="{Binding OpenWindows.Count}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5"/>
                                     </Border>
                                 </Grid>
                             </Grid>
@@ -1124,6 +1124,17 @@
                             <Setter TargetName="IconCanvas" Property="Height" Value="16"/>
                             <Setter TargetName="PinnedAppRootGrid" Property="MinWidth" Value="54"/>
                             <Setter TargetName="IconDockPanel" Property="MinWidth" Value="54"/>
+                            <Setter TargetName="WindowCounterBorder" Property="SnapsToDevicePixels" Value="True"/>
+                            <Setter TargetName="WindowCounterBorder" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.75" ScaleY="0.75"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="WindowCounterTextBlock" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
+                                </Setter.Value>
+                            </Setter>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding TaskItemCombineMode}" Value="Always">
                             <!--Setter TargetName="ItemsGrid" Property="Visibility" Value="Collapsed"/-->
@@ -2285,8 +2296,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Grid Background="#01000000">
-                        <Grid Margin="0,2">
-                            <Grid x:Name="HoverBackground" Opacity="1">
+                        <Grid Margin="0,2" VerticalAlignment="Stretch">
+                            <Grid x:Name="HoverBackground" VerticalAlignment="Stretch" Opacity="1">
                                 <Border x:Name="HoverOuterBorder" BorderBrush="Black" Background="#4D000000" BorderThickness="1" CornerRadius="3" Opacity="0">
                                     <Border x:Name="HoverInnerBorder" BorderBrush="#40406F74" BorderThickness="1" CornerRadius="2">
                                         <Grid>
@@ -2302,7 +2313,7 @@
                                     </Border>
                                 </Border>
                             </Grid>
-                            <Border x:Name="PressedOuterBorder" BorderBrush="Transparent" Background="#B8000000" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverOuterBorder}" Opacity="0">
+                            <Border x:Name="PressedOuterBorder" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#B8000000" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverOuterBorder}" Opacity="0">
                                 <Border x:Name="PressedInnerBorder" BorderBrush="#F7030303" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverInnerBorder}">
                                     <Grid>
                                         <Rectangle Width="5" HorizontalAlignment="Left">
@@ -2416,6 +2427,113 @@
         <Setter Property="Width" Value="48"/>
         <Setter Property="Content">
             <Setter.Value>
+                <Control>
+                    <Control.Style>
+                        <Style TargetType="{x:Type Control}">
+                            <Setter Property="SnapsToDevicePixels" Value="True"/>
+                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Control}">
+                                        <ControlTemplate.Resources>
+                                            <CircleEase x:Key="AnimationEase" EasingMode="EaseOut"/>
+                                        </ControlTemplate.Resources>
+                                        <Canvas x:Name="RootCanvas" Width="18" Height="19" RenderTransformOrigin="0.5,0.5">
+                                            <Canvas.RenderTransform>
+                                                <RotateTransform Angle="0"/>
+                                            </Canvas.RenderTransform>
+                                            <Path Data="M 7 0 L 0 7" StrokeEndLineCap="Round" StrokeThickness="3" Canvas.Top="9">
+                                                <Path.Stroke>
+                                                    <LinearGradientBrush StartPoint="0.39,0.39" EndPoint="0.61,0.61">
+                                                        <GradientStop Offset="0" Color="#FF42280A"/>
+                                                        <GradientStop Offset="0.13" Color="#FF563D23"/>
+                                                        <GradientStop Offset="0.18" Color="#FF4F3012"/>
+                                                        <GradientStop Offset="0.31" Color="#FF633A15"/>
+                                                        <GradientStop Offset="0.31" Color="#FF633A15"/>
+                                                        <GradientStop Offset="0.5" Color="#FF734620"/>
+                                                        <GradientStop Offset="0.72" Color="#FF6D4928"/>
+                                                        <GradientStop Offset="0.86" Color="#FF866140"/>
+                                                        <GradientStop Offset="1" Color="#FFA47D59"/>
+                                                    </LinearGradientBrush>
+                                                </Path.Stroke>
+                                            </Path>
+                                            <Grid x:Name="GlassGrid" Width="13" Height="13" RenderTransformOrigin="0.5,0.5" Canvas.Left="4">
+                                                <Grid.RenderTransform>
+                                                    <RotateTransform Angle="0"/>
+                                                </Grid.RenderTransform>
+                                                <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black" StrokeThickness="2">
+                                                    <Ellipse.Fill>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="#AEA4CAF0"/>
+                                                            <GradientStop Offset="1" Color="#AEFFFFFF"/>
+                                                        </LinearGradientBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
+                                                <Ellipse StrokeThickness="0" Margin="2">
+                                                    <Ellipse.Fill>
+                                                        <!--VisualBrush>
+                                                            <VisualBrush.Visual>
+                                                                <Rectangle>
+                                                                    <Rectangle.Fill-->
+                                                        <RadialGradientBrush GradientOrigin="0.625,0.5" Center="0.625,0.5" RadiusX="0.375" RadiusY="0.5">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="0.99" Color="White"/>
+                                                            <GradientStop Offset="1" Color="Transparent"/>
+                                                        </RadialGradientBrush>
+                                                        <!--/Rectangle.Fill>
+                                                                </Rectangle>
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush-->
+                                                    </Ellipse.Fill>
+                                                    <Ellipse.OpacityMask>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="#40FFFFFF"/>
+                                                            <GradientStop Offset="0.4" Color="#30FFFFFF"/>
+                                                            <GradientStop Offset="0.4" Color="Transparent"/>
+                                                            <GradientStop Offset="0.6" Color="Transparent"/>
+                                                            <GradientStop Offset="0.6" Color="#30FFFFFF"/>
+                                                            <GradientStop Offset="1" Color="#20FFFFFF"/>
+                                                        </LinearGradientBrush>
+                                                    </Ellipse.OpacityMask>
+                                                </Ellipse>
+                                                <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="#FFC0C0C0" StrokeThickness="1" Margin="0,0,1,1"/>
+                                            </Grid>
+                                        </Canvas>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="RootCanvas" Storyboard.TargetProperty="RenderTransform.Angle" To="-25" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="GlassGrid" Storyboard.TargetProperty="RenderTransform.Angle" To="25" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="RootCanvas" Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="GlassGrid" Storyboard.TargetProperty="RenderTransform.Angle" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                    <Setter Property="RenderTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX="0.875" ScaleY="0.875"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Control.Style>
+                </Control>
                 <!--Grid Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RenderTransform>
                         <TranslateTransform X="0" Y="3"/>
@@ -2423,11 +2541,11 @@
                     <Path Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="#C0FFFFFF" StrokeThickness="2.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Path x:Name="SearchIconPath" Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="{DynamicResource TaskbarGlyphBrush}" StrokeThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid-->
-                <Path Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Fill="{DynamicResource TaskbarGlyphFillBrush}" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!--Path Data="M 0 9 L 5 4 M 4 0 A 5,5 360 1 1 4,0.01 L 4 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ToggleButton}}" Fill="{DynamicResource TaskbarGlyphFillBrush}" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Path.RenderTransform>
                         <TranslateTransform X="0" Y="3"/>
                     </Path.RenderTransform>
-                </Path>
+                </Path-->
             </Setter.Value>
         </Setter>
         <Style.Triggers>
@@ -2444,68 +2562,14 @@
                 <Control>
                     <Control.Style>
                         <Style TargetType="{x:Type Control}">
-                            <Setter Property="Width" Value="28"/>
-                            <Setter Property="Height" Value="18"/>
+                            <!--Setter Property="Width" Value="28"/>
+                            <Setter Property="Height" Value="18"/-->
+                            <Setter Property="SnapsToDevicePixels" Value="True"/>
+                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Control}">
                                         <!--Grid>
-                                            <Rectangle x:Name="ThirdEdgeRectangle" Margin="2" Fill="White">
-                                                <Rectangle.OpacityMask>
-                                                    <VisualBrush Visual="{Binding ElementName=GlyphRectangle}"/>
-                                                </Rectangle.OpacityMask>
-                                                <Rectangle.Effect>
-                                                    <BlurEffect Radius="2"/>
-                                                </Rectangle.Effect>
-                                            </Rectangle>
-                                            <Rectangle x:Name="SecondEdgeRectangle" Margin="2" Fill="White">
-                                                <Rectangle.OpacityMask>
-                                                    <VisualBrush Visual="{Binding ElementName=GlyphRectangle}"/>
-                                                </Rectangle.OpacityMask>
-                                                <Rectangle.Effect>
-                                                    <BlurEffect Radius="2"/>
-                                                </Rectangle.Effect>
-                                            </Rectangle>
-                                            <Rectangle x:Name="EdgeRectangle" Margin="2" Fill="White">
-                                                <Rectangle.OpacityMask>
-                                                    <VisualBrush Visual="{Binding ElementName=GlyphRectangle}"/>
-                                                </Rectangle.OpacityMask>
-                                                <Rectangle.Effect>
-                                                    <BlurEffect Radius="2"/>
-                                                </Rectangle.Effect>
-                                            </Rectangle>
-                                            <Rectangle x:Name="GlyphRectangle" Margin="2" Fill="{DynamicResource TaskbarGlyphBrush}">
-                                                <Rectangle.OpacityMask>
-                                                    <VisualBrush>
-                                                        <VisualBrush.Visual>
-                                                            <Grid Width="24" Height="14" ClipToBounds="True" Background="#01000000">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="5"/>
-                                                                    <ColumnDefinition Width="14"/>
-                                                                    <ColumnDefinition Width="5"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Grid ClipToBounds="True" Grid.Column="0">
-                                                                    <Rectangle x:Name="LeftRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="0,2" ClipToBounds="True">
-                                                                        <Rectangle.RenderTransform>
-                                                                            <TranslateTransform X="2" Y="0"/>
-                                                                        </Rectangle.RenderTransform>
-                                                                    </Rectangle>
-                                                                </Grid>
-                                                                <Rectangle Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="1,0" ClipToBounds="True" Grid.Column="1"/>
-                                                                <Grid ClipToBounds="True" Grid.Column="2">
-                                                                    <Rectangle x:Name="RightRectangle" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Margin="0,2" ClipToBounds="True">
-                                                                        <Rectangle.RenderTransform>
-                                                                            <TranslateTransform X="-2" Y="0"/>
-                                                                        </Rectangle.RenderTransform>
-                                                                    </Rectangle>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </VisualBrush.Visual>
-                                                    </VisualBrush>
-                                                </Rectangle.OpacityMask>
-                                            </Rectangle>
-                                        </Grid-->
-                                        <Grid>
                                             <Grid Width="24" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="True" Background="#01000000">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="5"/>
@@ -2528,41 +2592,93 @@
                                                     </Rectangle>
                                                 </Grid>
                                             </Grid>
-                                        </Grid>
+                                        </Grid-->
+                                        <ControlTemplate.Resources>
+                                            <CircleEase x:Key="AnimationEase" EasingMode="EaseOut"/>
+                                        </ControlTemplate.Resources>
+                                        <Canvas Width="22" Height="18">
+                                            <Border x:Name="BackBorder" Width="{Binding Width, ElementName=FrontBorder}" Height="{Binding Height, ElementName=FrontBorder}" BorderBrush="#C0000000" BorderThickness="1" CornerRadius="2" Canvas.Left="4" Canvas.Top="0">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Offset="0" Color="#FF606060"/>
+                                                        <GradientStop Offset="1" Color="#FF404040"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Border BorderBrush="#C0FFFFFF" BorderThickness="1" CornerRadius="1">
+                                                    <Border.Background>
+                                                        <RadialGradientBrush Center="1,0.75" GradientOrigin="1,0.75" RadiusX="0.875" RadiusY="0.625">
+                                                            <GradientStop Offset="0" Color="Transparent"/>
+                                                            <GradientStop Offset="0.99" Color="Transparent"/>
+                                                            <GradientStop Offset="1" Color="#60FFFFFF"/>
+                                                        </RadialGradientBrush>
+                                                    </Border.Background>
+                                                    <Border.OpacityMask>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="1" Color="#C0FFFFFF"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.OpacityMask>
+                                                </Border>
+                                            </Border>
+                                            <Border x:Name="FrontBorder" Width="18" Height="15" BorderBrush="#C0000000" BorderThickness="1" CornerRadius="2" Canvas.Top="3" Canvas.Left="0">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Offset="0" Color="#FF606060"/>
+                                                        <GradientStop Offset="1" Color="#FF404040"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Border BorderBrush="#C0FFFFFF" BorderThickness="1" CornerRadius="1">
+                                                    <Border.Background>
+                                                        <RadialGradientBrush Center="1,0.75" GradientOrigin="1,0.75" RadiusX="0.875" RadiusY="0.625">
+                                                            <GradientStop Offset="0" Color="Transparent"/>
+                                                            <GradientStop Offset="0.99" Color="Transparent"/>
+                                                            <GradientStop Offset="1" Color="#60FFFFFF"/>
+                                                        </RadialGradientBrush>
+                                                    </Border.Background>
+                                                    <Border.OpacityMask>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="1" Color="#C0FFFFFF"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.OpacityMask>
+                                                </Border>
+                                            </Border>
+                                        </Canvas>
                                         <ControlTemplate.Triggers>
                                             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Value="True">
                                                 <DataTrigger.EnterActions>
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="LeftRectangle" Storyboard.TargetProperty="RenderTransform.X" To="0" Duration="0:0:0.125">
-                                                                <DoubleAnimation.EasingFunction>
-                                                                    <CircleEase EasingMode="EaseOut"/>
-                                                                </DoubleAnimation.EasingFunction>
-                                                            </DoubleAnimation>
-                                                            <DoubleAnimation Storyboard.TargetName="RightRectangle" Storyboard.TargetProperty="RenderTransform.X" To="0" Duration="0:0:0.125">
-                                                                <DoubleAnimation.EasingFunction>
-                                                                    <CircleEase EasingMode="EaseOut"/>
-                                                                </DoubleAnimation.EasingFunction>
-                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetName="FrontBorder" Storyboard.TargetProperty="(Canvas.Top)" To="5" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="BackBorder" Storyboard.TargetProperty="(Canvas.Top)" To="5" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+
+                                                            <DoubleAnimation Storyboard.TargetName="BackBorder" Storyboard.TargetProperty="(Canvas.Left)" To="11" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+
+                                                            <DoubleAnimation Storyboard.TargetName="FrontBorder" Storyboard.TargetProperty="Width" To="10" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="FrontBorder" Storyboard.TargetProperty="Height" To="9" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </DataTrigger.EnterActions>
                                                 <DataTrigger.ExitActions>
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetName="LeftRectangle" Storyboard.TargetProperty="RenderTransform.X" To="2" Duration="0:0:0.125">
-                                                                <DoubleAnimation.EasingFunction>
-                                                                    <CircleEase EasingMode="EaseOut"/>
-                                                                </DoubleAnimation.EasingFunction>
-                                                            </DoubleAnimation>
-                                                            <DoubleAnimation Storyboard.TargetName="RightRectangle" Storyboard.TargetProperty="RenderTransform.X" To="-2" Duration="0:0:0.125">
-                                                                <DoubleAnimation.EasingFunction>
-                                                                    <CircleEase EasingMode="EaseOut"/>
-                                                                </DoubleAnimation.EasingFunction>
-                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetName="FrontBorder" Storyboard.TargetProperty="(Canvas.Top)" To="3" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="BackBorder" Storyboard.TargetProperty="(Canvas.Top)" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+
+                                                            <DoubleAnimation Storyboard.TargetName="BackBorder" Storyboard.TargetProperty="(Canvas.Left)" To="4" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+
+                                                            <DoubleAnimation Storyboard.TargetName="FrontBorder" Storyboard.TargetProperty="Width" To="18" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="FrontBorder" Storyboard.TargetProperty="Height" To="15" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0.875" ScaleY="0.875"/>
+                                                    </Setter.Value>
+                                                </Setter>
                                             </DataTrigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -2586,10 +2702,98 @@
         <Setter Property="Content">
             <Setter.Value>
                 <!--Path Data="M 0 0 L 16 0 L 16 12 L 10 12 L 8 14 L 6 12 L 0 12 Z" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1"/-->
-                <Grid Width="16" Height="16">
+                <!--Grid Width="16" Height="16">
                     <Border BorderBrush="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Background="{DynamicResource TaskbarGlyphFillBrush}" BorderThickness="2,2,2,0" Margin="0,0,0,3"/>
                     <Path Data="M 0 0 L 6 0 L 8 2 L 10 0 L 16 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="2" VerticalAlignment="Bottom" UseLayoutRounding="True"/>
-                </Grid>
+                </Grid-->
+                <Control>
+                    <Control.Style>
+                        <Style TargetType="{x:Type Control}">
+                            <!--Setter Property="Width" Value="28"/>
+                            <Setter Property="Height" Value="18"/-->
+                            <Setter Property="SnapsToDevicePixels" Value="True"/>
+                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Control}">
+                                        <ControlTemplate.Resources>
+                                            <CircleEase x:Key="AnimationEase" EasingMode="EaseOut"/>
+                                        </ControlTemplate.Resources>
+                                        <Grid Width="26" Height="20">
+                                            <Grid.RenderTransform>
+                                                <TranslateTransform X="0" Y="1"/>
+                                            </Grid.RenderTransform>
+                                            <Grid x:Name="InnerGrid" HorizontalAlignment="Center" Width="22">
+                                                <Grid.RenderTransform>
+                                                    <TranslateTransform X="0" Y="0"/>
+                                                </Grid.RenderTransform>
+                                                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,4" BorderBrush="#C0000000" BorderThickness="1" CornerRadius="2">
+                                                    <Border Background="Transparent" BorderThickness="1" CornerRadius="1">
+                                                        <Border.BorderBrush>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                <GradientStop Offset="0" Color="White"/>
+                                                                <GradientStop Offset="1" Color="#FFD0D0D0"/>
+                                                            </LinearGradientBrush>
+                                                        </Border.BorderBrush>
+                                                    </Border>
+                                                </Border>
+                                                <Path Data="M 0 0 L 5 4 L 5 0" Stroke="#C0000000" StrokeThickness="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0">
+                                                    <Path.Fill>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Offset="0" Color="#FFD0D0D0"/>
+                                                            <GradientStop Offset="1" Color="#FFC0C0C0"/>
+                                                        </LinearGradientBrush>
+                                                    </Path.Fill>
+                                                </Path>
+                                            </Grid>
+                                            <Border x:Name="NotificationBorder" Opacity="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="10" Margin="6,0,0,0" BorderBrush="#C0000000" BorderThickness="1" CornerRadius="2">
+                                                <Border.RenderTransform>
+                                                    <TranslateTransform X="-10" Y="-2"/>
+                                                </Border.RenderTransform>
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Offset="0" Color="White"/>
+                                                        <GradientStop Offset="1" Color="#FFD0D0D0"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Rectangle Fill="Black" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="2,0"/>
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="InnerGrid" Storyboard.TargetProperty="RenderTransform.X" To="-2" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="NotificationBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="NotificationBorder" Storyboard.TargetProperty="RenderTransform.X" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="InnerGrid" Storyboard.TargetProperty="RenderTransform.X" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="NotificationBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                            <DoubleAnimation Storyboard.TargetName="NotificationBorder" Storyboard.TargetProperty="RenderTransform.X" To="-10" Duration="0:0:0.25" EasingFunction="{StaticResource AnimationEase}"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=UseSmallIcons, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True">
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0.875" ScaleY="0.875"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Control.Style>
+                </Control>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
