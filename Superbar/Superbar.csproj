@@ -92,10 +92,10 @@
     <Compile Include="ModuleCallback.cs" />
     <Compile Include="PeekBehavior.cs" />
     <Compile Include="PinnedApplication.cs" />
-    <Compile Include="ProcessToWindowsConverter.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SysMenuBehavior.cs" />
     <Compile Include="TaskbarWindow.cs" />
     <Compile Include="TaskItemDragBehavior.cs" />
     <Compile Include="TaskItemMiddleClickBehavior.cs" />

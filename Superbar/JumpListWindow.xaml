@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:Superbar"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="JumpListWindow" Style="{DynamicResource JumpListWindowStyle}" Topmost="True" SizeToContent="WidthAndHeight" Deactivated="JumpListWindow_Deactivated" ShowInTaskbar="False">
+        Title="JumpListWindow" Style="{DynamicResource JumpListWindowStyle}" Topmost="True" SizeToContent="WidthAndHeight" Deactivated="JumpListWindow_Deactivated" ShowInTaskbar="False" ShowInAltTab="False">
     <win:ShadowedWindow.Resources>
         <sys:String x:Key="JumpListApplicationNameText">a</sys:String>
         <sys:String x:Key="JumpListPinApplicationText">Pin to Superbar</sys:String>

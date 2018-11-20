@@ -5,7 +5,8 @@
                     xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
                     xmlns:window="clr-namespace:WindowsSharp.Processes;assembly=WindowsSharp"
                     xmlns:disk="clr-namespace:WindowsSharp.DiskItems;assembly=WindowsSharp"
-                    xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf">
+                    xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <ResourceDictionary.MergedDictionaries>
         <!--ResourceDictionary Source="/PresentationFramework.Aero2;component/themes/Aero2.NormalColor.xaml" /-->
         <!--ResourceDictionary Source="pack://application:,,,/Start9.UI.Wpf;component/Themes/Aero2.NormalColor.xaml"/-->
@@ -1321,6 +1322,90 @@
                     <Path Data="M 0 7 L 7 0" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Canvas.Top="9"/>
                     <Ellipse Width="11" Height="11" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ToggleButton}}}" StrokeThickness="1" Canvas.Left="5"/>
                 </Canvas>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SearchTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="Width" Value="344"/>
+        <Setter Property="Background" Value="#FF333333"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#7FFFFFFF"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <ControlTemplate.Resources>
+                        <CircleEase x:Key="AnimationEase" EasingMode="EaseOut"/>
+                        <CircleEase x:Key="EmblemEase" EasingMode="EaseInOut"/>
+                    </ControlTemplate.Resources>
+                    <Border Background="{TemplateBinding Background}">
+                        <DockPanel>
+                            <Grid x:Name="EmblemGrid" Width="22" Height="{Binding Width, RelativeSource={RelativeSource Mode=Self}}" Margin="9" RenderTransformOrigin="0.5,0.5" DockPanel.Dock="Left">
+                                <Grid.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                </Grid.RenderTransform>
+                                <Ellipse x:Name="EmblemOuterEllipse" Stroke="{TemplateBinding Foreground}" StrokeThickness="4" Margin="0" Fill="Transparent" Opacity="0.5"/>
+                                <Ellipse x:Name="EmblemInnerEllipse" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" Margin="2" Fill="Transparent"/>
+                            </Grid>
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <ScrollViewer x:Name="PART_ContentHost" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Background="#01000000"/>
+                                <TextBlock x:Name="Watermark" Text="Type here to search" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" IsHitTestVisible="False" Visibility="Collapsed"/>
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                            <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <!--ThicknessAnimation Storyboard.TargetName="EmblemGrid" Storyboard.TargetProperty="Margin" To="7" Duration="0:0:2" EasingFunction="{StaticResource EmblemEase}" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}"/>
+                                        <DoubleAnimation Storyboard.TargetName="EmblemGrid" Storyboard.TargetProperty="Width" To="26" Duration="0:0:2" EasingFunction="{StaticResource EmblemEase}" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}"/-->
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="EmblemGrid" Storyboard.TargetProperty="RenderTransform.ScaleY" Duration="0:0:4" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:1.75" Value="1" EasingFunction="{StaticResource EmblemEase}"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:2" Value="0" EasingFunction="{StaticResource EmblemEase}"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:2.25" Value="1" EasingFunction="{StaticResource EmblemEase}"/>
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <DoubleAnimation Storyboard.TargetName="EmblemOuterEllipse" Storyboard.TargetProperty="StrokeThickness" To="1" Duration="0:0:1" EasingFunction="{StaticResource EmblemEase}" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}"/>
+                                        <ThicknessAnimation Storyboard.TargetName="EmblemOuterEllipse" Storyboard.TargetProperty="Margin" To="3" Duration="0:0:1" EasingFunction="{StaticResource EmblemEase}" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="EmblemInnerEllipse" Storyboard.TargetProperty="StrokeThickness" To="4" Duration="0:0:1" EasingFunction="{StaticResource EmblemEase}" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}"/>
+                                        <ThicknessAnimation Storyboard.TargetName="EmblemInnerEllipse" Storyboard.TargetProperty="Margin" To="0" Duration="0:0:1" EasingFunction="{StaticResource EmblemEase}" AutoReverse="True" RepeatBehavior="{x:Static RepeatBehavior.Forever}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <!--ThicknessAnimation Storyboard.TargetName="EmblemGrid" Storyboard.TargetProperty="Margin" To="9" Duration="0:0:2" EasingFunction="{StaticResource AnimationEase}"/>
+                                        <DoubleAnimation Storyboard.TargetName="EmblemGrid" Storyboard.TargetProperty="Width" To="22" Duration="0:0:2" EasingFunction="{StaticResource AnimationEase}"/-->
+                                        <DoubleAnimation Storyboard.TargetName="EmblemGrid" Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="0:0:1" EasingFunction="{StaticResource AnimationEase}"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="EmblemOuterEllipse" Storyboard.TargetProperty="StrokeThickness" To="4" Duration="0:0:1" EasingFunction="{StaticResource AnimationEase}"/>
+                                        <ThicknessAnimation Storyboard.TargetName="EmblemOuterEllipse" Storyboard.TargetProperty="Margin" To="0" Duration="0:0:1" EasingFunction="{StaticResource AnimationEase}"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="EmblemInnerEllipse" Storyboard.TargetProperty="StrokeThickness" To="2" Duration="0:0:1" EasingFunction="{StaticResource AnimationEase}"/>
+                                        <ThicknessAnimation Storyboard.TargetName="EmblemInnerEllipse" Storyboard.TargetProperty="Margin" To="2" Duration="0:0:1" EasingFunction="{StaticResource AnimationEase}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter Property="Background" Value="#FF4C4C4C"/>
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsFocused, RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="True"/>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="#FFF3F3F3"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </MultiDataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>

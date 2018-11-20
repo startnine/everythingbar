@@ -257,7 +257,7 @@ namespace Superbar
 
             foreach (ProcessWindow win in ProcessWindow.ProcessWindows)
             {
-                string path = Config.GetExecutablePath(win.Process);
+                string path = win.Process.GetExecutablePath();
                 /*if (Environment.OSVersion.Version >= new Version(6, 2, 8400, 0))
                 {
                     var appx = AppxMethods.AppxPackage.FromProcess(win.Process);
@@ -321,17 +321,19 @@ namespace Superbar
             {
                 /*try
                 {*/
-                    if (Config.GetExecutablePath(e.Window.Process).ToLowerInvariant() == DiskApplication.ItemPath.ToLowerInvariant())
-                    {
-                        bool proceed = true;
-                        foreach (ProcessWindow w in OpenWindows)
-                            if (w.Handle == e.Window.Handle)
-                            {
-                                proceed = false;
-                                break;
-                            }
+                if (e.Window.Process.BelongsToExecutable(DiskApplication))
+                {
+                    bool proceed = true;
+                    foreach (ProcessWindow w in OpenWindows)
+                        if (w.Handle == e.Window.Handle)
+                        {
+                            proceed = false;
+                            break;
+                        }
 
-                        if (proceed)
+                    if (proceed)
+                    {
+                        if (ProcessWindow.IsWindowUserAccessible(e.Window.Handle))
                         {
                             OpenWindows.Add(e.Window);
                             //ExamineActiveWindow(e.Window);
@@ -342,7 +344,8 @@ namespace Superbar
                             }
                         }
                     }
-                    EvaluateItemCombining();
+                }
+                EvaluateItemCombining();
                 /*}
                 catch (Exception ex)
                 {

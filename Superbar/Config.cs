@@ -15,7 +15,7 @@ namespace Superbar
 {
     public static class Config
     {
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        /*[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool QueryFullProcessImageName(IntPtr hProcess, int dwFlags, StringBuilder lpExeName, out int lpdwSize);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -56,11 +56,11 @@ namespace Superbar
                 returnValue = package.ApplicationUserModelId;
             }*/
             /*else
-                Debug.WriteLine("PACKAGE IS NULL");*/
+                Debug.WriteLine("PACKAGE IS NULL");*
 
             //Debug.WriteLine("returnValue: " + returnValue);
             return returnValue;
-        }
+        }*/
 
         static Config()
         {

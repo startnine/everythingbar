@@ -351,7 +351,8 @@ namespace Superbar
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    AddWindow(args.Window);
+                    if (ProcessWindow.IsWindowUserAccessible(args.Window.Handle))
+                        AddWindow(args.Window);
                 }));
             };
 
@@ -594,7 +595,7 @@ namespace Superbar
             {
                 /*try
                 {*/
-                string path = Config.GetExecutablePath(window.Process);
+                string path = window.Process.GetExecutablePath();
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     var pinnedApp = new PinnedApplication(new DiskItem(path));
@@ -674,14 +675,12 @@ namespace Superbar
 
                 if (app.OpenWindows.Count > 0)
                 {
-                    bool visible = _thumbnailsWindow.IsWindowVisible;
                     /*if (app.AreThumbnailsShown)
                     {*/
                     //_thumbnailsWindow.SetSelection(e.Window);
                     _thumbnailsWindow.SelectedWindow = e.Window;
                     _thumbnailsWindow.OpenWindows = app.OpenWindows;
                     _thumbnailsWindow.Show();
-
                     //var item = TaskBandListView.ItemContainerGenerator.ContainerFromItem(app);
                     /*var hitResult = System.Windows.Media.VisualTreeHelper.HitTest(TaskBandListView, Start9.UI.Wpf.Statics.SystemScaling.CursorPosition);
 
@@ -703,7 +702,7 @@ namespace Superbar
 
                     double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
 
-                    if (visible)
+                    if (_thumbnailsWindow.IsWindowVisible)
                     {
                         IEasingFunction ease = null;
                         try
@@ -717,7 +716,7 @@ namespace Superbar
 
                         DoubleAnimation leftAnimation = new DoubleAnimation()
                         {
-                            Duration = TimeSpan.FromMilliseconds(1000),
+                            Duration = TimeSpan.FromMilliseconds(500),
                             To = newLeft
                         };
 
@@ -726,11 +725,11 @@ namespace Superbar
 
                         leftAnimation.Completed += (sneder, args) =>
                         {
-                            _thumbnailsWindow.Left = newLeft;
                             _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                            _thumbnailsWindow.Left = newLeft;
                         };
 
-                        _thumbnailsWindow.BeginAnimation(LeftProperty, null);
+                        //_thumbnailsWindow.BeginAnimation(LeftProperty, null);
                         _thumbnailsWindow.BeginAnimation(LeftProperty, leftAnimation);
                         //}
                     }
