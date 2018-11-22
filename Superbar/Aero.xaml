@@ -6,6 +6,7 @@
                     xmlns:window="clr-namespace:WindowsSharp.Processes;assembly=WindowsSharp"
                     xmlns:disk="clr-namespace:WindowsSharp.DiskItems;assembly=WindowsSharp"
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
+                    xmlns:stat="clr-namespace:Start9.UI.Wpf.Statics;assembly=Start9.UI.Wpf"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity">
     <ResourceDictionary.MergedDictionaries>
@@ -23,7 +24,12 @@
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <conv:IconToImageBrushConverter x:Key="IconToImageBrushConverter"/>
+    <conv:DoubleToFractionOfDoubleConverter x:Key="DoubleToFractionOfDoubleConverter"/>
+    <conv:RectangleToAspectRatioConverter x:Key="RectangleToAspectRatioConverter"/>
+    <local:RectangleScaleConverter x:Key="RectangleScaleConverter"/>
+    <conv:DoubleComparisonConverter x:Key="DoubleComparisonConverter"/>
     <conv:ListViewItemIndexToBoolConverter x:Key="ListViewItemIndexToBoolConverter"/>
+    <conv:SysDrawingImageToImageBrushConverter x:Key="SysDrawingImageToImageBrushConverter"/>
 
     <!--#endregion Converters-->
 
@@ -1491,12 +1497,12 @@
 
     <Style x:Key="ThumbnailsWindowStyle" TargetType="{x:Type win:ShadowedWindow}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Width" Value="200"/>
         <Setter Property="CompositionState" Value="Glass"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="Opacity" Value="0"/>
         <Setter Property="ShadowOffsetThickness" Value="12,12,20,20"/>
         <Setter Property="HideTransitionDuration" Value="25"/>
+        <Setter Property="SizeToContent" Value="WidthAndHeight"/>
         <Setter Property="ShadowStyle">
             <Setter.Value>
                 <Style TargetType="Window">
@@ -1579,7 +1585,7 @@
                                                 </VisualBrush>
                                             </Border.OpacityMask>
                                         </Border>
-                                        <ContentPresenter Content="{TemplateBinding Content}" Margin="3"/>
+                                        <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Margin="3,3,0,3"/>
                                     </Grid>
                                 </Border>
                             </Border>
@@ -1587,6 +1593,12 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsGlassAvailable" Value="False">
+                            <Setter Property="CompositionState" Value="Alpha"/>
+                            <Setter TargetName="RootBorder" Property="Background" Value="#FF1B1B1B"/>
+                            <Setter TargetName="BaseGrid" Property="Margin" Value="0"/>
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="Margin" Value="3"/>
                             <Setter Property="CompositionState" Value="Alpha"/>
                             <Setter TargetName="RootBorder" Property="Background" Value="#FF1B1B1B"/>
                             <Setter TargetName="BaseGrid" Property="Margin" Value="0"/>
@@ -1609,7 +1621,7 @@
                                     </Style>
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>
+                        </DataTrigger>
                         <Trigger Property="IsWindowVisible" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -1640,6 +1652,12 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
+                <Setter Property="SizeToContent" Value="Height"/>
+                <Setter Property="Width" Value="200"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="DarkListViewItemStyle" TargetType="{x:Type ListViewItem}">
@@ -1687,11 +1705,61 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate DataType="{x:Type window:ProcessWindow}">
-                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <Canvas x:Name="IconCanvas" Width="16" Height="16" VerticalAlignment="Center" Background="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}" DockPanel.Dock="Left"/>
-                        <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
+                    <DockPanel x:Name="RootDockPanel" LastChildFill="True">
+                        <DockPanel x:Name="HeaderDockPanel" VerticalAlignment="Center" HorizontalAlignment="Stretch" MaxWidth="200" DockPanel.Dock="Top">
+                            <Canvas x:Name="IconCanvas" Width="16" Height="16" VerticalAlignment="Center" Background="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}" DockPanel.Dock="Left"/>
+                            <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
+                        </DockPanel>
+                        <Grid x:Name="ThumbnailGrid" Visibility="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+                            <Border Background="#7F000000" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="1" Margin="11,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Rectangle x:Name="ThumbnailRectangle" Fill="{Binding Thumbnail, Converter={StaticResource SysDrawingImageToImageBrushConverter}}" Margin="1">
+                                    <!--Width="{Binding WindowBounds.Width, Converter={StaticResource DoubleToFractionOfDoubleConverter}, FallbackValue=0.0}" Height="{Binding WindowBounds.Height, Converter={StaticResource DoubleToFractionOfDoubleConverter}, FallbackValue=0.0}"/-->
+                                </Rectangle>
+                            </Border>
+                        </Grid>
                     </DockPanel>
                     <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
+                            <Setter TargetName="HeaderDockPanel" Property="Margin" Value="0,2,0,-2"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="True">
+                            <Setter TargetName="HeaderDockPanel" Property="Height" Value="22"/>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="True"/>
+                                <Condition Binding="{Binding ActualWidth, ElementName=ThumbnailRectangle, Converter={StaticResource DoubleComparisonConverter}, ConverterParameter='ge200'}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="HeaderDockPanel" Property="MaxWidth" Value="{Binding ActualWidth, ElementName=ThumbnailRectangle}"/>
+                        </MultiDataTrigger>
+                        <Trigger SourceName="ThumbnailRectangle" Property="IsVisible" Value="True">
+                            <Setter TargetName="ThumbnailRectangle" Property="Width">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource RectangleScaleConverter}" ConverterParameter="200.0,100.0">
+                                        <MultiBinding.Bindings>
+                                            <Binding Path="WindowBounds.Width"/>
+                                            <Binding Path="WindowBounds.Height"/>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="ThumbnailRectangle" Property="Height">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource RectangleScaleConverter}" ConverterParameter="200.0,100.0,v">
+                                        <MultiBinding.Bindings>
+                                            <Binding Path="WindowBounds.Width"/>
+                                            <Binding Path="WindowBounds.Height"/>
+                                            <!--Binding Path="aaa" FallbackValue="200.0"/>
+                                        <Binding Path="aaa" FallbackValue="110.0"/>
+                                        <Binding Path="aaa" FallbackValue="110.0"/-->
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <!--DataTrigger Binding="{Binding Thumbnail}" Value="{x:Null}">
+                            <Setter TargetName="ThumbnailGrid" Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger-->
                         <DataTrigger Binding="{Binding SmallIcon}" Value="{x:Null}">
                             <Setter TargetName="IconCanvas" Property="Background" Value="Black"/>
                         </DataTrigger>
@@ -1705,12 +1773,11 @@
                     <Setter Property="OverridesDefaultStyle" Value="True"/>
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                     <Setter Property="Background" Value="#01000000"/>
-                    <Setter Property="Height" Value="22"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
                     <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Padding" Value="2,0"/>
+                    <Setter Property="Padding" Value="7"/>
                     <Setter Property="Foreground" Value="White"/>
                     <Setter Property="ToolTip">
                         <Setter.Value>
@@ -1743,6 +1810,13 @@
                                         <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible"/>
                                         <Setter TargetName="PART_GridViewRowPesenter" Property="Visibility" Value="Hidden"/>
                                     </Trigger>
+                                    <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
+                                        <Setter Property="Padding" Value="2,0"/>
+                                        <Setter Property="Height" Value="22"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="True">
+                                        <Setter Property="Margin" Value="0,0,3,0"/>
+                                    </DataTrigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsMouseOver" Value="False"/>
@@ -1773,7 +1847,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListView}">
-                    <StackPanel Orientation="Vertical" IsItemsHost="True"/>
+                    <StackPanel x:Name="RootStackPanel" Orientation="Vertical" IsItemsHost="True"/>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="True">
+                            <Setter TargetName="RootStackPanel" Property="Orientation" Value="Horizontal"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -1971,6 +2050,20 @@
                                     </LinearGradientBrush>
                                 </Setter.Value>
                             </Setter>
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
+                            <Setter Property="CompositionState" Value="Alpha"/>
+                            <Setter TargetName="RootBorder" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Offset="0" Color="#FF5C5C5C"/>
+                                            <GradientStop Offset="0.375" Color="#FF353535"/>
+                                            <GradientStop Offset="1" Color="Black"/>
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
                             <Setter Property="ShadowStyle">
                                 <Setter.Value>
                                     <Style TargetType="{x:Type Window}">
@@ -1982,7 +2075,7 @@
                                     </Style>
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>
+                        </DataTrigger>
                         <Trigger Property="IsWindowVisible" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>

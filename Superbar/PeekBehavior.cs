@@ -50,7 +50,8 @@ namespace Superbar
             _window.IsVisibleChanged += ThumbnailsWindow_IsVisibleChanged;
             _processWindow = _window.OpenWindows[_panel.Children.IndexOf(_item)];*/
 
-            //(_item.ToolTip as ToolTip).Opened += ListViewItem_ToolTip_Opened;
+            /*if (_item.ToolTip != null)
+                _item.ToolTip.Opened += ListViewItem_ToolTip_Opened;*/
             _item.MouseEnter += ListViewItem_MouseEnter;
             _item.MouseLeave += ListViewItem_MouseLeave;
         }
@@ -76,7 +77,7 @@ namespace Superbar
             else
             {
                 int interval = 0;
-                Timer timer = new Timer(125);
+                Timer timer = new Timer(250);
                 timer.Elapsed += (sneder, args) =>
                 {
                     Dispatcher.Invoke(new Action(() =>
@@ -85,7 +86,9 @@ namespace Superbar
                         if (interval > 1)
                         {
                             //Debug.WriteLine("timer");
-                            BeginPeek();
+                            if (_item.IsMouseOver)
+                                BeginPeek();
+
                             timer.Stop();
                         }
                     }));

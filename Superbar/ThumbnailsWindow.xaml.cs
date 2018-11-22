@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WindowsSharp.Processes;
@@ -64,12 +65,12 @@ namespace Superbar
         {
             InitializeComponent();
 
-            IntPtr handle = new WindowInteropHelper(this).EnsureHandle();
+            /*IntPtr handle = new WindowInteropHelper(this).EnsureHandle();
             int exStyle = NativeMethods.GetWindowLong(handle, NativeMethods.GwlExstyle).ToInt32();
 
             exStyle = NativeMethods.WsExToolwindow;
 
-            NativeMethods.SetWindowLong(handle, NativeMethods.GwlExstyle, exStyle);
+            NativeMethods.SetWindowLong(handle, NativeMethods.GwlExstyle, exStyle);*/
 
             ProcessWindow.ActiveWindowChanged += ProcessWindow_ActiveWindowChanged;
 
@@ -95,6 +96,65 @@ namespace Superbar
                     }
                 }));
             };
+        }
+
+        new public void Show()
+        {
+            base.Show();
+            UpdatePosition();
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+
+            UpdatePosition();
+        }
+
+        public void UpdatePosition()
+        {
+            double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (ActualWidth / 2);
+            if (!double.IsNaN(Width))
+                newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (Width / 2);
+
+            if (newLeft < 0)
+                newLeft = 0;
+            else if ((newLeft + ActualWidth) > SystemParameters.WorkArea.Width)
+                newLeft = SystemParameters.WorkArea.Width - ActualWidth;
+
+            if (IsWindowVisible)
+            {
+                IEasingFunction ease = null;
+                try
+                {
+                    ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+
+                DoubleAnimation leftAnimation = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromMilliseconds(500),
+                    To = newLeft
+                };
+
+                if (ease != null)
+                    leftAnimation.EasingFunction = ease;
+
+                leftAnimation.Completed += (sneder, args) =>
+                {
+                    BeginAnimation(LeftProperty, null);
+                    Left = newLeft;
+                };
+
+                //BeginAnimation(LeftProperty, null);
+                BeginAnimation(LeftProperty, leftAnimation);
+                //}
+            }
+            else
+                Left = newLeft;
         }
 
         /*protected override void OnSourceInitialized(EventArgs e)

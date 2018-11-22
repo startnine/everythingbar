@@ -92,6 +92,7 @@
     <Compile Include="ModuleCallback.cs" />
     <Compile Include="PeekBehavior.cs" />
     <Compile Include="PinnedApplication.cs" />
+    <Compile Include="RectangleScaleConverter.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

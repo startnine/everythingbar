@@ -699,8 +699,16 @@ namespace Superbar
                         _thumbnailsWindow.Left = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
                         _thumbnailsWindow.Top = Top - _thumbnailsWindow.ActualHeight;
                     }*/
-
-                    double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (_thumbnailsWindow.ActualWidth / 2);
+                    
+                
+                /*
+                    double width = _thumbnailsWindow.Width / 2;
+                    width = _thumbnailsWindow.Width / 2;
+                    double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - width;
+                    if (newLeft < 0)
+                        newLeft = 0;
+                    else if ((newLeft + width) > SystemParameters.WorkArea.Width)
+                        newLeft = SystemParameters.WorkArea.Width - width;
 
                     if (_thumbnailsWindow.IsWindowVisible)
                     {
@@ -735,6 +743,7 @@ namespace Superbar
                     }
                     else
                         _thumbnailsWindow.Left = newLeft;
+                    */
                 }
                 else
                     _thumbnailsWindow.Hide();
