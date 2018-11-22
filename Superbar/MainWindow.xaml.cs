@@ -26,6 +26,7 @@ using System.ServiceModel;
 using WindowsSharp.DiskItems;
 using System.ComponentModel;
 using System.IO;
+using WindowsSharp;
 
 namespace Superbar
 {
@@ -34,17 +35,9 @@ namespace Superbar
     /// </summary>
     public partial class MainWindow : TaskbarWindow, INotifyPropertyChanged
     {
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindow(IntPtr hWnd, GetWindowCmd uCmd);
-
-        [DllImport("dwmapi.dll")]
-        static extern void DwmEnableBlurBehindWindow(IntPtr hwnd, ref DWM_BLURBEHIND blurBehind);
-
-        //public ObservableCollection<ProcessWindowSet> OpenWindows { get; set; } = new ObservableCollection<ProcessWindowSet>();
         public ObservableCollection<PinnedApplication> OpenApplications { get; set; } = new ObservableCollection<PinnedApplication>();
+
+        public ObservableCollection<SystemTrayItem> VisibleTrayItems { get; set; } = new ObservableCollection<SystemTrayItem>();
         //public List<int> AddedProcesses = new List<int>();
         //public Dictionary<Process, int> OpenProcesses { get; set; } = new Dictionary<Process, int>();
 
@@ -553,6 +546,17 @@ namespace Superbar
 
                 //OpenApplications.Insert(0, new PinnedApplication(new DiskItem(Environment.ExpandEnvironmentVariables(@"%windir%\Explorer.exe"))));
                 //OpenApplications.RemoveAt(0);*/
+
+            VisibleTrayItems.Clear();
+
+            foreach (SystemTrayItem t in SystemTrayItem.TrayItems)
+            {
+                if (t.DisplayMode == SystemTrayItem.TrayDisplayMode.ShowAlways)
+                {
+                    Debug.WriteLine("ADDING ITEM: " + t.Executable.ItemDisplayName);
+                    VisibleTrayItems.Add(t);
+                }
+            }
         }
 
         void UpdateClockDateVisibility()
@@ -1022,6 +1026,17 @@ namespace Superbar
         private void DragableRegion_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragDockMove();
+        }
+
+        private void SystemTrayListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SystemTrayListView.SelectedItem != null)
+            {
+                var item = SystemTrayListView.SelectedItem as SystemTrayItem;
+                Debug.WriteLine("Activating: " + item.ToolTipText + ", " + item.ActivateTrayItem(0).ToString());
+
+                SystemTrayListView.SelectedItem = null;
+            }
         }
     }
 }

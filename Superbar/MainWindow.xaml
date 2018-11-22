@@ -48,7 +48,7 @@
         <StackPanel Orientation="{Binding Orientation}" Background="#01000000" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown">
             <ToolBarTray x:Name="TrayRegionToolBarTray"/>
             <ToggleButton x:Name="ShowTrayFlyoutButton" Style="{DynamicResource ShowTrayFlyoutButtonStyle}"/>
-            <StackPanel Orientation="Horizontal"/>
+            <ListView x:Name="SystemTrayListView" Style="{DynamicResource SystemTrayListViewStyle}" ItemsSource="{Binding VisibleTrayItems}" SelectionMode="Single" SelectionChanged="SystemTrayListView_SelectionChanged"/>
             <ToggleButton Style="{DynamicResource ClockToggleButtonStyle}">
                 <StackPanel Orientation="Vertical">
                     <TextBlock x:Name="ClockTime" Style="{DynamicResource ClockStyle}"/>

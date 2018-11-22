@@ -6,6 +6,7 @@
                     xmlns:window="clr-namespace:WindowsSharp.Processes;assembly=WindowsSharp"
                     xmlns:disk="clr-namespace:WindowsSharp.DiskItems;assembly=WindowsSharp"
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
+                    xmlns:tray="clr-namespace:WindowsSharp;assembly=WindowsSharp"
                     xmlns:stat="clr-namespace:Start9.UI.Wpf.Statics;assembly=Start9.UI.Wpf"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity">
@@ -175,7 +176,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        
+
                     </ControlTemplate.Resources>
                     <Border x:Name="RootBorder">
                         <Border.RenderTransform>
@@ -1495,6 +1496,146 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SystemTrayListViewStyle" TargetType="{x:Type ListView}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate DataType="{x:Type tray:SystemTrayItem}">
+                    <Grid Background="#01000000">
+                        <Grid.ToolTip>
+                            <ToolTip Content="{Binding ToolTipText}"/>
+                        </Grid.ToolTip>
+                        <Rectangle x:Name="IconCanvas" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{Binding ItemIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}"/>
+                        <!--{Binding ItemIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}-->
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Width" Value="24"/>
+                    <Setter Property="Height" Value="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Grid Background="#01000000">
+                                    <Grid Margin="0,2" VerticalAlignment="Stretch">
+                                        <Border x:Name="HoverOuterBorder" BorderBrush="Black" Background="#4D000000" BorderThickness="1" CornerRadius="3" Opacity="0">
+                                            <Border x:Name="HoverInnerBorder" BorderBrush="#40406F74" BorderThickness="1" CornerRadius="2">
+                                                <Grid>
+                                                    <Rectangle Height="10" VerticalAlignment="Bottom" Margin="1,-1">
+                                                        <Rectangle.Fill>
+                                                            <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1">
+                                                                <GradientStop Offset="0" Color="#FF89C2C8"/>
+                                                                <GradientStop Offset="1" Color="#0089C2C8"/>
+                                                            </RadialGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </Grid>
+                                            </Border>
+                                        </Border>
+                                        <Border x:Name="PressedOuterBorder" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#B8000000" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverOuterBorder}" Opacity="0">
+                                            <Border x:Name="PressedInnerBorder" BorderBrush="#F7030303" BorderThickness="1" CornerRadius="{Binding CornerRadius, ElementName=HoverInnerBorder}">
+                                                <Grid>
+                                                    <Rectangle Width="5" HorizontalAlignment="Left">
+                                                        <Rectangle.Fill>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                                <GradientStop Offset="0" Color="#40000000"/>
+                                                                <GradientStop Offset="1" Color="#00000000"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                    <Rectangle Width="5" HorizontalAlignment="Right">
+                                                        <Rectangle.Fill>
+                                                            <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                                                                <GradientStop Offset="0" Color="#40000000"/>
+                                                                <GradientStop Offset="1" Color="#00000000"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                    <Rectangle Height="7" VerticalAlignment="Top">
+                                                        <Rectangle.Fill>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                <GradientStop Offset="0" Color="#40000000"/>
+                                                                <GradientStop Offset="1" Color="#00000000"/>
+                                                            </LinearGradientBrush>
+                                                        </Rectangle.Fill>
+                                                    </Rectangle>
+                                                </Grid>
+                                            </Border>
+                                        </Border>
+                                    </Grid>
+                                    <Grid x:Name="ContentGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseLayoutRounding="True">
+                                        <Grid.Effect>
+                                            <DropShadowEffect Color="Black" Direction="315" BlurRadius="3" ShadowDepth="2" Opacity="0.375"/>
+                                        </Grid.Effect>
+                                        <ContentPresenter x:Name="PART_ContentPresenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Visibility="Collapsed" />
+                                        <GridViewRowPresenter x:Name="PART_GridViewRowPesenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Visibility="Visible" />
+                                    </Grid>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="GridView.ColumnCollection" Value="{x:Null}">
+                                        <Setter TargetName="PART_ContentPresenter" Property="Visibility" Value="Visible"/>
+                                        <Setter TargetName="PART_GridViewRowPesenter" Property="Visibility" Value="Collapsed"/>
+                                    </Trigger>
+                                    <!--Trigger Property="IsSelected" Value="True">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                    <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                    <DoubleAnimation Storyboard.TargetName="PressedOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger-->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="HoverOuterBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="HoverOuterBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListView}">
+                    <WrapPanel x:Name="RootWrapPanel" Orientation="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" IsItemsHost="True"/>
+                    <ControlTemplate.Triggers>
+                        <!--DataTrigger Binding="{Binding Path=Orientation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Vertical">
+                            <Setter TargetName="RootWrapPanel" Property="Orientation" Value="Vertical"/>
+                        </DataTrigger-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ThumbnailsWindowStyle" TargetType="{x:Type win:ShadowedWindow}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="CompositionState" Value="Glass"/>
@@ -1955,32 +2096,32 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Window">
                                 <!--Grid-->
-                                    <Rectangle x:Name="RootRect">
-                                        <!--Rectangle.RenderTransform>
+                                <Rectangle x:Name="RootRect">
+                                    <!--Rectangle.RenderTransform>
                                             <TranslateTransform X="0" Y="25"/>
                                         </Rectangle.RenderTransform-->
-                                        <Rectangle.OpacityMask>
-                                            <VisualBrush>
-                                                <VisualBrush.Visual>
-                                                    <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16" />
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Rectangle.OpacityMask>
-                                        <Rectangle.Fill>
-                                            <VisualBrush>
-                                                <VisualBrush.Visual>
-                                                    <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
-                                                        <!--Rectangle Width="10" Height="10" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top"/-->
-                                                        <Border Margin="18,18,14,14" Background="#C0000000">
-                                                            <Border.Effect>
-                                                                <BlurEffect Radius="14"/>
-                                                            </Border.Effect>
-                                                        </Border>
-                                                    </Grid>
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Border Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="Transparent" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12,16,20,16" />
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.OpacityMask>
+                                    <Rectangle.Fill>
+                                        <VisualBrush>
+                                            <VisualBrush.Visual>
+                                                <Grid Width="{TemplateBinding ActualWidth}" Height="{TemplateBinding ActualHeight}" Background="#01000000">
+                                                    <!--Rectangle Width="10" Height="10" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top"/-->
+                                                    <Border Margin="18,18,14,14" Background="#C0000000">
+                                                        <Border.Effect>
+                                                            <BlurEffect Radius="14"/>
+                                                        </Border.Effect>
+                                                    </Border>
+                                                </Grid>
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
                                 <!--/Grid>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="Opacity" Value="0">
