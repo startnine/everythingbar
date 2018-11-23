@@ -176,12 +176,11 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-
                     </ControlTemplate.Resources>
                     <Border x:Name="RootBorder">
-                        <Border.RenderTransform>
+                        <!--Border.RenderTransform>
                             <TranslateTransform x:Name="RootTransform" X="0" Y="{Binding DockedWidthOrHeight, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
-                        </Border.RenderTransform>
+                        </Border.RenderTransform-->
                         <Grid x:Name="PART_DragMoveGrid" Background="#01000000">
                             <DockPanel LastChildFill="True">
                                 <Grid x:Name="Ql" DockPanel.Dock="Left">
@@ -231,7 +230,7 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="DockMode" Value="Bottom">
+                        <!--Trigger Property="DockMode" Value="Bottom">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -240,11 +239,11 @@
                                                 <CircleEase EasingMode="EaseOut"/>
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                        <!--DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/-->
+                                        <!-DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/->
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
-                        </Trigger>
+                        </Trigger-->
                         <!--Trigger Property="IsWindowVisible" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -2327,8 +2326,10 @@
                             <Ellipse StrokeThickness="1">
                                 <Ellipse.Fill>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Offset="0" Color="#FF10100E"/>
-                                        <GradientStop Offset="1" Color="#FF40423C"/>
+                                        <GradientStop Offset="0" Color="#E6010101"/>
+                                        <GradientStop Offset="1" Color="#B25D5D5D"/>
+                                        <!--GradientStop Offset="0" Color="#FF10100E"/>
+                                        <GradientStop Offset="1" Color="#FF40423C"/-->
                                     </LinearGradientBrush>
                                 </Ellipse.Fill>
                                 <Ellipse.Stroke>
@@ -2338,36 +2339,80 @@
                                     </LinearGradientBrush>
                                 </Ellipse.Stroke>
                             </Ellipse>
-                            <Grid x:Name="OrbGrid" Margin="2,1,2,3">
+                            <Ellipse x:Name="PressedRidgeGlowEllipse" Margin="1" StrokeThickness="0" Stroke="Transparent" Opacity="0" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="-45"/>
+                                </Ellipse.RenderTransform>
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="#FF4FC6DB"/>
+                                    <!--{Binding SystemGlassColor,Source={x:Static stat:SystemState.Instance}}-->
+                                </Ellipse.Fill>
+                                <Ellipse.OpacityMask>
+                                    <!--LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Offset="0" Color="Transparent"/>
+                                        <GradientStop Offset="0.75" Color="White"/>
+                                    </LinearGradientBrush-->
+                                    <RadialGradientBrush GradientOrigin="0.5,0.45" Center="0.5,0.45" RadiusX="0.45" RadiusY="0.55">
+                                        <GradientStop Offset="0.75" Color="Transparent"/>
+                                        <GradientStop Offset="1.125" Color="#C0FFFFFF"/>
+                                    </RadialGradientBrush>
+                                </Ellipse.OpacityMask>
+                            </Ellipse>
+                            <Grid x:Name="OrbGrid" Margin="3,2,3,4">
                                 <Grid>
                                     <Grid x:Name="IdleBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="1">
-                                        <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1">
+                                        <Ellipse StrokeThickness="0" Fill="#7F00274E"/>
+                                        <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,0,1,1" StrokeThickness="1">
                                             <Ellipse.Fill>
                                                 <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusY="1">
-                                                    <RadialGradientBrush.GradientStops>
-                                                        <GradientStop Offset="0" Color="#FF19DBFF"/>
-                                                        <GradientStop Offset="1" Color="#FF00355D"/>
-                                                    </RadialGradientBrush.GradientStops>
+                                                    <GradientStop Offset="0" Color="#FF19DBFF"/>
+                                                    <GradientStop Offset="1" Color="#FF00355D"/>
                                                 </RadialGradientBrush>
                                             </Ellipse.Fill>
+                                            <Ellipse.Stroke>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Offset="0.5" Color="#FF004577"/>
+                                                    <GradientStop Offset="1" Color="#FF19DBFF"/>
+                                                </LinearGradientBrush>
+                                            </Ellipse.Stroke>
                                         </Ellipse>
                                     </Grid>
                                     <Grid x:Name="HoverBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="0">
-                                        <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1">
+                                        <Ellipse StrokeThickness="0" Fill="#7F002245"/>
+                                        <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,0,1,1" StrokeThickness="1">
                                             <Ellipse.Fill>
                                                 <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusY="1">
-                                                    <RadialGradientBrush.GradientStops>
-                                                        <GradientStop Offset="0" Color="#FF19DBFF"/>
-                                                        <GradientStop Offset="1" Color="#FF076C92"/>
-                                                    </RadialGradientBrush.GradientStops>
+                                                    <GradientStop Offset="0" Color="#FF19DBFF"/>
+                                                    <GradientStop Offset="1" Color="#FF076C92"/>
                                                 </RadialGradientBrush>
                                             </Ellipse.Fill>
+                                            <Ellipse.Stroke>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Offset="0.5" Color="#FF024B7C"/>
+                                                    <GradientStop Offset="1" Color="#FF19DBFF"/>
+                                                </LinearGradientBrush>
+                                            </Ellipse.Stroke>
                                         </Ellipse>
                                     </Grid>
                                     <Grid x:Name="PressedBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="0">
+                                        <Ellipse StrokeThickness="0" Fill="#7F01121A"/>
+                                        <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,0,1,1" StrokeThickness="1">
+                                            <Ellipse.Fill>
+                                                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusY="1">
+                                                    <GradientStop Offset="0" Color="#FF5AB5C8"/>
+                                                    <GradientStop Offset="1" Color="#FF052D4C"/>
+                                                </RadialGradientBrush>
+                                            </Ellipse.Fill>
+                                            <Ellipse.Stroke>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                    <GradientStop Offset="0.5" Color="#FF022D50"/>
+                                                    <GradientStop Offset="1" Color="#FF5AB5C8"/>
+                                                </LinearGradientBrush>
+                                            </Ellipse.Stroke>
+                                        </Ellipse>
                                     </Grid>
-                                    <Grid x:Name="DisabledBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="0">
-                                    </Grid>
+                                    <!--Grid x:Name="DisabledBackground" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Background="Transparent" Opacity="0">
+                                    </Grid-->
                                     <!--ContentControl Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Focusable="False" IsTabStop="False" /-->
                                     <Canvas Width="13.500054199161586821763898920888" Height="24" Margin="0.5,0,-0.5,0">
                                         <Canvas.Background>
@@ -2405,13 +2450,14 @@
                                             <DropShadowEffect x:Name="DropShadow" Color="Black" Direction="275" ShadowDepth="0.5" BlurRadius="2.5" Opacity="1" />
                                         </Canvas.Effect>
                                     </Canvas>
-                                    <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2">
+                                    <Ellipse HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2,1,2,2">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="1.5" RadiusY="1.1875">
                                                 <RadialGradientBrush.GradientStops>
                                                     <GradientStop Offset="0.5" Color="Transparent"/>
                                                     <GradientStop Offset="0.5" Color="#40FFFFFF"/>
-                                                    <GradientStop Offset="1" Color="#C0FFFFFF"/>
+                                                    <GradientStop Offset="0.875" Color="#C0FFFFFF"/>
+                                                    <GradientStop Offset="1" Color="White"/>
                                                 </RadialGradientBrush.GradientStops>
                                             </RadialGradientBrush>
                                         </Ellipse.Fill>
@@ -2429,9 +2475,18 @@
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Popup Width="54" Height="54" IsOpen="False" IsHitTestVisible="False" AllowsTransparency="True" VerticalOffset="-1">
+                        <Popup x:Name="Popup" Width="{Binding ActualWidth, ElementName=OrbGrid}" Height="{Binding ActualHeight, ElementName=OrbGrid}" IsOpen="True" AllowsTransparency="True" IsHitTestVisible="False" PlacementTarget="{Binding ElementName=OrbGrid}" Placement="Center">
+                            <Grid Width="{Binding ActualWidth, ElementName=OrbGrid}" Height="{Binding ActualHeight, ElementName=OrbGrid}">
+                                <Rectangle x:Name="PopupRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Visual="{Binding ElementName=OrbGrid}"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Grid>
+                        </Popup>
+                        <!--Popup Width="54" Height="54" IsOpen="False" IsHitTestVisible="False" AllowsTransparency="True" VerticalOffset="-1">
                             <Grid Background="#01000000">
-                                <!--Grid Margin="0,17,0,0" ClipToBounds="True" Background="#01000000">
+                                <!-Grid Margin="0,17,0,0" ClipToBounds="True" Background="#01000000">
                                     <Ellipse Width="42" Height="42" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-7,0,7" Stroke="#7FFFFFFF">
                                         <Ellipse.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -2440,19 +2495,58 @@
                                             </LinearGradientBrush>
                                         </Ellipse.Fill>
                                     </Ellipse>
-                                </Grid-->
+                                </Grid->
                                 <Rectangle Margin="8,7,4,7">
-                                    <!--Rectangle.Fill>
+                                    <!-Rectangle.Fill>
                                         <VisualBrush Visual="{Binding ElementName=OrbGrid}"/>
-                                    </Rectangle.Fill-->
+                                    </Rectangle.Fill->
                                 </Rectangle>
                             </Grid>
-                        </Popup>
+                        </Popup-->
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Left">
+                            <!--Setter TargetName="Popup" Property="PlacementTarget" Value="{Binding ElementName=OrbGrid}"/-->
+                            <Setter TargetName="Popup" Property="HorizontalOffset" Value="1"/>
+                            <Setter TargetName="PopupRectangle" Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform X="-1" Y="0"/>
+                                </Setter.Value>
+                            </Setter>
+                            <!--Setter TargetName="PopupRectangle" Property="Margin" Value="-1,0,1,0"/-->
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Path=DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Top">
                             <Setter TargetName="BaseGrid" Property="VerticalAlignment" Value="Bottom"/>
                             <Setter TargetName="OrbGrid" Property="Margin" Value="2,3,2,1"/>
+                            <!--Setter TargetName="Popup" Property="PlacementTarget" Value="{Binding ElementName=OrbGrid}"/-->
+                            <Setter TargetName="Popup" Property="VerticalOffset" Value="1"/>
+                            <Setter TargetName="PopupRectangle" Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform X="0" Y="-1"/>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Right">
+                            <Setter TargetName="Popup" Property="HorizontalOffset" Value="-1"/>
+                            <Setter TargetName="PopupRectangle" Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform X="1" Y="0"/>
+                                </Setter.Value>
+                            </Setter>
+                            <!--Setter TargetName="PopupRectangle" Property="Margin" Value="1,0,-1,0"/-->
+                            <!--Setter TargetName="Popup" Property="PlacementTarget" Value="{Binding ElementName=OrbGrid}"/-->
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=DockMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type win:AppBarWindow}}}" Value="Bottom">
+                            <!--Setter TargetName="Popup" Property="PlacementTarget" Value="{Binding ElementName=OrbGrid}"/-->
+                            <!--Setter TargetName="Popup" Property="HorizontalOffset" Value="10"/>
+                            <Setter TargetName="Popup" Property="VerticalOffset" Value="-3"/-->
+                            <Setter TargetName="Popup" Property="VerticalOffset" Value="-1"/>
+                            <Setter TargetName="PopupRectangle" Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform X="0" Y="1"/>
+                                </Setter.Value>
+                            </Setter>
+                            <!--Setter TargetName="PopupRectangle" Property="Margin" Value="0,1,0,-1"/-->
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
@@ -2467,32 +2561,33 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="HoverBackground"
-                                            Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5" />
+                                        <DoubleAnimation Storyboard.TargetName="HoverBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                         </Trigger>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Trigger.EnterActions>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsPressed" Value="False"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PressedBackground"
-                                            Storyboard.TargetProperty="Opacity" To="1"
-                                            Duration="0:0:0.125" />
+                                        <DoubleAnimation Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125" />
+                                        <DoubleAnimation Storyboard.TargetName="PressedRidgeGlowEllipse" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.125" />
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
+                            </MultiTrigger.EnterActions>
+                            <MultiTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PressedBackground"
-                                            Storyboard.TargetProperty="Opacity" To="0"
-                                            Duration="0:0:0.125" />
+                                        <DoubleAnimation Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125" />
+                                        <DoubleAnimation Storyboard.TargetName="PressedRidgeGlowEllipse" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.125" />
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
+                            </MultiTrigger.ExitActions>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
