@@ -38,6 +38,8 @@ namespace Superbar
         public ObservableCollection<PinnedApplication> OpenApplications { get; set; } = new ObservableCollection<PinnedApplication>();
 
         public ObservableCollection<SystemTrayItem> VisibleTrayItems { get; set; } = new ObservableCollection<SystemTrayItem>();
+        public ObservableCollection<SystemTrayItem> ExpandedTrayItems { get; set; } = new ObservableCollection<SystemTrayItem>();
+
         //public List<int> AddedProcesses = new List<int>();
         //public Dictionary<Process, int> OpenProcesses { get; set; } = new Dictionary<Process, int>();
 
@@ -51,6 +53,10 @@ namespace Superbar
                 NotifyPropertyChanged("UseSmallIcons");
             }
         }*/
+
+        ThumbnailsWindow _thumbnailsWindow = new ThumbnailsWindow();
+        JumpListWindow _jumpListWindow = new JumpListWindow();
+        TrayFlyoutWindow _trayFlyoutWindow = new TrayFlyoutWindow();
 
         public bool UseSmallIcons
         {
@@ -274,9 +280,6 @@ namespace Superbar
             set => SetValue(ScrollAnimatorProperty, value);
         }
 
-        ThumbnailsWindow _thumbnailsWindow = new ThumbnailsWindow();
-        JumpListWindow _jumpListWindow = new JumpListWindow();
-
         public static readonly DependencyProperty ScrollAnimatorProperty = DependencyProperty.Register("ScrollAnimator",
             typeof(double), typeof(MainWindow),
             new FrameworkPropertyMetadata((double)0, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -452,6 +455,9 @@ namespace Superbar
                     ClockTime.Text = DateTime.Now.ToShortTimeString();
                     if (ClockDate.IsVisible)
                         ClockDate.Text = DateTime.Now.ToShortDateString();
+
+                    if ((ClockToggleButton.ToolTip != null) && (ClockToggleButton.ToolTip is ToolTip))
+                        (ClockToggleButton.ToolTip as ToolTip).Content = DateTime.Now.ToLongDateString() + "\n" + DateTime.Now.DayOfWeek.ToString();
                 }));
             };
             _clockTimer.Start();
@@ -548,13 +554,18 @@ namespace Superbar
                 //OpenApplications.RemoveAt(0);*/
 
             VisibleTrayItems.Clear();
+            ExpandedTrayItems.Clear();
 
             foreach (SystemTrayItem t in SystemTrayItem.TrayItems)
             {
                 if (t.DisplayMode == SystemTrayItem.TrayDisplayMode.ShowAlways)
                 {
-                    Debug.WriteLine("ADDING ITEM: " + t.Executable.ItemDisplayName);
+                    //Debug.WriteLine("ADDING ITEM: " + t.Executable.ItemDisplayName);
                     VisibleTrayItems.Add(t);
+                }
+                else if (t.DisplayMode == SystemTrayItem.TrayDisplayMode.ShowNotifications)
+                {
+                    ExpandedTrayItems.Add(t);
                 }
             }
         }
@@ -1026,6 +1037,18 @@ namespace Superbar
         private void DragableRegion_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragDockMove();
+        }
+
+        private void ShowTrayFlyoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShowTrayFlyoutButton.IsChecked == true)
+            {
+                _trayFlyoutWindow.ExpandedTrayItems.Clear();
+
+                foreach (SystemTrayItem t in ExpandedTrayItems)
+                    _trayFlyoutWindow.ExpandedTrayItems.Add(t);
+                _trayFlyoutWindow.Show();
+            }
         }
 
         private void SystemTrayListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

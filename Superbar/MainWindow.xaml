@@ -47,9 +47,9 @@
     <local:TaskbarWindow.TrayArea>
         <StackPanel Orientation="{Binding Orientation}" Background="#01000000" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown">
             <ToolBarTray x:Name="TrayRegionToolBarTray"/>
-            <ToggleButton x:Name="ShowTrayFlyoutButton" Style="{DynamicResource ShowTrayFlyoutButtonStyle}"/>
+            <ToggleButton x:Name="ShowTrayFlyoutButton" Style="{DynamicResource ShowTrayFlyoutButtonStyle}" Click="ShowTrayFlyoutButton_Click"/>
             <ListView x:Name="SystemTrayListView" Style="{DynamicResource SystemTrayListViewStyle}" ItemsSource="{Binding VisibleTrayItems}" SelectionMode="Single" SelectionChanged="SystemTrayListView_SelectionChanged"/>
-            <ToggleButton Style="{DynamicResource ClockToggleButtonStyle}">
+            <ToggleButton x:Name="ClockToggleButton" Style="{DynamicResource ClockToggleButtonStyle}">
                 <StackPanel Orientation="Vertical">
                     <TextBlock x:Name="ClockTime" Style="{DynamicResource ClockStyle}"/>
                     <TextBlock x:Name="ClockDate" Style="{DynamicResource ClockStyle}"/>

@@ -48,3 +48,5 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.exe
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.pdb
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.csprojAssemblyReference.cache
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\TrayFlyoutWindow.g.cs
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\TrayFlyoutWindow.baml

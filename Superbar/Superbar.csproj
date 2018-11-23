@@ -103,6 +103,9 @@
     <Compile Include="ThumbnailsWindow.xaml.cs">
       <DependentUpon>ThumbnailsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TrayFlyoutWindow.xaml.cs">
+      <DependentUpon>TrayFlyoutWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Aero.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -128,6 +131,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ThumbnailsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TrayFlyoutWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Universal.xaml">
