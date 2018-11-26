@@ -22,12 +22,14 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\ru\System.Windows.Interactivity.resources.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\zh-Hans\System.Windows.Interactivity.resources.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\bin\Debug\zh-Hant\System.Windows.Interactivity.resources.dll
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.csprojAssemblyReference.cache
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Interop.Shell32.dll
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.csproj.ResolveComReference.cache
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\JumpListWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\MainWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\SettingsWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\ThumbnailsWindow.g.cs
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\TrayFlyoutWindow.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\App.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar_MarkupCompile.cache
@@ -39,6 +41,7 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\MainWindow.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\SettingsWindow.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\ThumbnailsWindow.baml
+C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\TrayFlyoutWindow.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Universal.baml
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.g.resources
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.Properties.Resources.resources
@@ -47,6 +50,3 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.csproj.CopyComplete
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.exe
 C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.pdb
-C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\Superbar.csprojAssemblyReference.cache
-C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\TrayFlyoutWindow.g.cs
-C:\Users\Splitwirez\Documents\Important\Start9\Development\superbar\Superbar\obj\Debug\TrayFlyoutWindow.baml

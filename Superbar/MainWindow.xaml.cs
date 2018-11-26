@@ -315,6 +315,15 @@ namespace Superbar
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            (ShowDesktopButton.ToolTip as ToolTip).Opened += (sneder, args) =>
+            {
+                //ProcessWindow.DesktopWindow.Peek();
+                ProcessWindow.PeekDesktop();
+            };
+            ShowDesktopButton.MouseLeave += (sneder, args) =>
+            {
+                ProcessWindow.UnpeekDesktop();
+            };
             /*OpenApplications.CollectionChanged += (sneder, args) =>
             {
                 TaskBandScrollBar.Visibility = TaskBandScrollViewer.ComputedVerticalScrollBarVisibility;

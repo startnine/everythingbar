@@ -990,7 +990,7 @@
                                     <!--Content="{Binding ListViewControl, Mode=OneWayToSource}"-->
                                     <Control HorizontalAlignment="Left" Width="{Binding ActualWidth, ElementName=ItemsListView, Mode=OneWay}" VerticalAlignment="Top" Opacity="{Binding ListSize, Mode=OneWayToSource}" Tag="{Binding ElementName=ItemsListView, Mode=OneWay}" Height="1">
                                         <e:Interaction.Behaviors>
-                                            <local:ActualizerBehaviour/>
+                                            <local:ActualizerBehavior/>
                                         </e:Interaction.Behaviors>
                                         <!--Rectangle Width="{Binding ActualWidth, ElementName=ItemsListView}"/-->
                                     </Control>
@@ -1676,9 +1676,10 @@
     </Style>
 
     <Style x:Key="ThumbnailsWindowStyle" TargetType="{x:Type win:ShadowedWindow}" BasedOn="{StaticResource ShinyShadowedWindowBaseStyle}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="True">
-                <Setter Property="Margin" Value="3,3,0,3"/>
+                <Setter Property="Margin" Value="7,5,0,5"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
                 <Setter Property="SizeToContent" Value="Height"/>
@@ -1732,20 +1733,135 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate DataType="{x:Type window:ProcessWindow}">
-                    <DockPanel x:Name="RootDockPanel" LastChildFill="True">
-                        <DockPanel x:Name="HeaderDockPanel" VerticalAlignment="Center" HorizontalAlignment="Stretch" MaxWidth="200" DockPanel.Dock="Top">
-                            <Canvas x:Name="IconCanvas" Width="16" Height="16" VerticalAlignment="Center" Background="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}" DockPanel.Dock="Left"/>
-                            <TextBlock Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
+                    <Grid>
+                        <DockPanel x:Name="RootDockPanel" LastChildFill="True">
+                            <DockPanel x:Name="HeaderDockPanel" VerticalAlignment="Center" HorizontalAlignment="Stretch" MaxWidth="200" DockPanel.Dock="Top">
+                                <Canvas x:Name="IconCanvas" Width="16" Height="16" VerticalAlignment="Center" Background="{Binding SmallIcon, Converter={StaticResource IconToImageBrushConverter}, ConverterParameter='16'}" DockPanel.Dock="Left"/>
+                                <Rectangle x:Name="TitleSpacingDummyRectangle" Width="0" DockPanel.Dock="Right"/>
+                                <TextBlock x:Name="TitleTextBlock" Margin="4,0,0,0" Text="{Binding Title}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <Grid x:Name="ThumbnailGrid" Visibility="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
+                                <Border Background="#7F000000" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="1" Margin="11,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Rectangle x:Name="ThumbnailRectangle" Fill="{Binding Thumbnail, Converter={StaticResource SysDrawingImageToImageBrushConverter}}" Margin="1">
+                                        <!--Width="{Binding WindowBounds.Width, Converter={StaticResource DoubleToFractionOfDoubleConverter}, FallbackValue=0.0}" Height="{Binding WindowBounds.Height, Converter={StaticResource DoubleToFractionOfDoubleConverter}, FallbackValue=0.0}"/-->
+                                    </Rectangle>
+                                </Border>
+                            </Grid>
                         </DockPanel>
-                        <Grid x:Name="ThumbnailGrid" Visibility="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}">
-                            <Border Background="#7F000000" BorderBrush="#40FFFFFF" BorderThickness="1" CornerRadius="1" Margin="11,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Rectangle x:Name="ThumbnailRectangle" Fill="{Binding Thumbnail, Converter={StaticResource SysDrawingImageToImageBrushConverter}}" Margin="1">
-                                    <!--Width="{Binding WindowBounds.Width, Converter={StaticResource DoubleToFractionOfDoubleConverter}, FallbackValue=0.0}" Height="{Binding WindowBounds.Height, Converter={StaticResource DoubleToFractionOfDoubleConverter}, FallbackValue=0.0}"/-->
-                                </Rectangle>
-                            </Border>
-                        </Grid>
-                    </DockPanel>
+                        <Button x:Name="CloseWindowButton" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="1">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Width" Value="16"/>
+                                    <Setter Property="Height" Value="16"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Grid>
+                                                    <Border x:Name="RootBorder" BorderBrush="#FF3C181A" BorderThickness="1" CornerRadius="2" Margin="1">
+                                                        <Border.Background>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                <GradientStop Offset="0" Color="#FFE4B4B0"/>
+                                                                <GradientStop Offset="0.25" Color="#FFF2927C"/>
+                                                                <GradientStop Offset="0.25" Color="#FFBF5943"/>
+                                                                <GradientStop Offset="1" Color="#FFCE7F70"/>
+                                                            </LinearGradientBrush>
+                                                        </Border.Background>
+                                                        <Border x:Name="InnerBorder" BorderThickness="1" CornerRadius="1">
+                                                            <Border.BorderBrush>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Offset="0" Color="#FFFACAC8"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFFDB3AA"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFDB8D83"/>
+                                                                    <GradientStop Offset="1" Color="#FFEFACA6"/>
+                                                                </LinearGradientBrush>
+                                                            </Border.BorderBrush>
+                                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <Grid.Effect>
+                                                                    <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="1" Opacity="1"/>
+                                                                </Grid.Effect>
+                                                                <Path Data="M 0 0 L 2 0 L 3 1 L 4 0 L 6 0 L 4 2 L 4 4 L 6 6 L 4 6 L 3 5 L 2 6 L 0 6 L 2 4 L 2 2 Z" Stroke="Black" StrokeThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="True">
+                                                                    <Path.Effect>
+                                                                        <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="1" Opacity="1"/>
+                                                                    </Path.Effect>
+                                                                    <!--M 0 0 L 1 0 L 8 8 L 7 8 Z M 8 0 L 7 0 L 0 8 L 0 7 Z-->
+                                                                    <!--M 0 0 L 3 0 L 4 1 L 5 0 L 7 0 L 7 1 L 5 3 L 5 5 L 7 7 L 7 6 L 5 7 L 4 6 L 3 7 L 0 7 L 0 6 L 3 5 L 3 3 L 0 1 Z-->
+                                                                    <Path.Fill>
+                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                            <GradientStop Offset="0" Color="White"/>
+                                                                            <GradientStop Offset="1" Color="#FFDADADA"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Path.Fill>
+                                                                </Path>
+                                                            </Grid>
+                                                        </Border>
+                                                    </Border>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="RootBorder" Property="Background">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Offset="0" Color="#FFE49F92"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFDE9284"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFB8432C"/>
+                                                                    <GradientStop Offset="1" Color="#FFD58576"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter TargetName="InnerBorder" Property="BorderBrush">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Offset="0" Color="#FFFDE4E0"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFFCCEC6"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFE78977"/>
+                                                                    <GradientStop Offset="1" Color="#FFF8E893"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter TargetName="RootBorder" Property="Background">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Offset="0" Color="#FFE49F92"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFDE9284"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFB8432C"/>
+                                                                    <GradientStop Offset="1" Color="#FFD58576"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter TargetName="InnerBorder" Property="BorderBrush">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Offset="0" Color="#FFE3CCC1"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFCCB0A5"/>
+                                                                    <GradientStop Offset="0.25" Color="#FFB28176"/>
+                                                                    <GradientStop Offset="1" Color="#FFEFE28F"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListViewItem}}}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <e:Interaction.Behaviors>
+                                <local:CloseWindowButtonBehavior TargetWindow="{Binding}"/>
+                            </e:Interaction.Behaviors>
+                        </Button>
+                    </Grid>
                     <DataTemplate.Triggers>
+                        <Trigger SourceName="CloseWindowButton" Property="IsVisible" Value="True">
+                            <Setter TargetName="TitleTextBlock" Property="Margin" Value="4,0,20,0"/>
+                            <!--Setter TargetName="TitleSpacingDummyRectangle" Property="Width" Value="20"/-->
+                        </Trigger>
                         <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="False">
                             <Setter TargetName="HeaderDockPanel" Property="Margin" Value="0,2,0,-2"/>
                         </DataTrigger>
@@ -1842,7 +1958,7 @@
                                         <Setter Property="Height" Value="22"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsCompositionEnabled, Source={x:Static stat:SystemState.Instance}}" Value="True">
-                                        <Setter Property="Margin" Value="0,0,3,0"/>
+                                        <Setter Property="Margin" Value="0,0,7,0"/>
                                     </DataTrigger>
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
@@ -3882,6 +3998,11 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Width" Value="15"/>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip IsHitTestVisible="False" Opacity="0"/>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

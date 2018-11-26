@@ -9,7 +9,7 @@ using System.Windows.Interactivity;
 
 namespace Superbar
 {
-    class ActualizerBehaviour : Behavior<FrameworkElement>
+    class ActualizerBehavior : Behavior<FrameworkElement>
     {
         protected override void OnAttached()
         {

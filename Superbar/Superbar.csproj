@@ -85,6 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="ActualizerBehaviour.cs" />
+    <Compile Include="CloseWindowButtonBehavior.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="JumpListWindow.xaml.cs">
       <DependentUpon>JumpListWindow.xaml</DependentUpon>
