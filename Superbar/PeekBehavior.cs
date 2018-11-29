@@ -99,7 +99,8 @@ namespace Superbar
 
         private void BeginPeek()
         {
-            Window.GetWindow(_item).IsVisibleChanged += Window_IsVisibleChanged;
+            if (_item != null)
+                Window.GetWindow(_item).IsVisibleChanged += Window_IsVisibleChanged;
             //SetFields();
 
             /*if (_processWindow != null)

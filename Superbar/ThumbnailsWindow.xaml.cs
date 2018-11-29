@@ -49,7 +49,7 @@ namespace Superbar
             {
                 _selectedWindow = value;
                 NotifyPropertyChanged("SelectedWindow");
-                if (_selectedWindow != null)
+                if (IsWindowVisible && (_selectedWindow != null))
                     _selectedWindow.Show();
             }
         }

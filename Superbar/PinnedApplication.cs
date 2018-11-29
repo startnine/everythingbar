@@ -203,8 +203,9 @@ namespace Superbar
             {
                 if (!Config.IsDraggingPinnedApplication)
                 {
+                    var oldValue = _isApplicationActive;
                     _isApplicationActive = value;
-                    if (value == true)
+                    if ((value == true) && (oldValue != value))
                     {
 
                         if (OpenWindows.Count == 0)
