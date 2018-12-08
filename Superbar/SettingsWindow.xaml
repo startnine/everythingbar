@@ -49,29 +49,30 @@
                             <ComboBoxItem>Never show the date</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="NotificationAreaStackPanel" Orientation="Horizontal">
                         <TextBlock Width="175">Notification area:</TextBlock>
                         <Button>Manage</Button>
                     </StackPanel>
-                    <ui:ToggleSwitch TrueText="On" FalseText="Off">Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
+                    <ui:ToggleSwitch x:Name="AllowPeekCheckBox" TrueText="On" FalseText="Off">Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Jump Lists">
+            <TabItem x:Name="JumpListsTabItem" Header="Jump Lists">
                 <StackPanel Orientation="Vertical">
-                    <DockPanel>
+                    <DockPanel x:Name="RecentItemsMaxInJumpListDockPanel">
                         <TextBox DockPanel.Dock="Right">7</TextBox>
                         <TextBlock>Number of recent items to display in Jump Lists:</TextBlock>
                     </DockPanel>
                     <GroupBox Header="Privacy">
                         <StackPanel Orientation="Vertical">
-                            <ui:ToggleSwitch TrueText="On" FalseText="Off">Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
-                            <ui:ToggleSwitch TrueText="On" FalseText="Off">Store recently opened items in Jump Lists</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="ShowMRUProgramsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="ShowMRUFilesInJumpListsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened items in Jump Lists</ui:ToggleSwitch>
                         </StackPanel>
                     </GroupBox>
+                    <ui:ToggleSwitch x:Name="ShowKillProcessesEntryToggleSwitch" TrueText="Show" FalseText="Hide">Show an option to force-kill programs in the Jump Lists</ui:ToggleSwitch>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Toolbars">
-                <ListView/>
+            <TabItem x:Name="ToolbarsTabItem" Header="Toolbars">
+                <ListView x:Name="ToolbarsListView"/>
             </TabItem>
         </TabControl>
     </DockPanel>

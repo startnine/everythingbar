@@ -2070,9 +2070,9 @@
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
+                        <!--Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="Red"/>
-                        </Trigger>
+                        </Trigger-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -2302,6 +2302,42 @@
                                     </Setter>
                                 </DataTrigger-->
                             </Style.Triggers>
+                        </Style>
+
+                        <Style x:Key="JumpListKillProcessesListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource JumpListEntryListViewItemStyle}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Canvas Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,6,0">
+                                            <Path StrokeThickness="3" Data="M 0 0 L 5 5">
+                                                <Path.Stroke>
+                                                    <LinearGradientBrush StartPoint="0.75,0.25" EndPoint="0.25,0.75">
+                                                        <GradientStop Offset="0" Color="#FF42280A"/>
+                                                        <GradientStop Offset="0.13" Color="#FF563D23"/>
+                                                        <GradientStop Offset="0.18" Color="#FF4F3012"/>
+                                                        <GradientStop Offset="0.31" Color="#FF633A15"/>
+                                                        <GradientStop Offset="0.31" Color="#FF633A15"/>
+                                                        <GradientStop Offset="0.5" Color="#FF734620"/>
+                                                        <GradientStop Offset="0.72" Color="#FF6D4928"/>
+                                                        <GradientStop Offset="0.86" Color="#FF866140"/>
+                                                        <GradientStop Offset="1" Color="#FFA47D59"/>
+                                                    </LinearGradientBrush>
+                                                </Path.Stroke>
+                                            </Path>
+                                            <Path StrokeThickness="0" Data="M 2 0 L 12 10 L 9 10 L 6 9 L 0 2 Z" Canvas.Left="3" Canvas.Top="4">
+                                                <Path.Fill>
+                                                    <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
+                                                        <GradientStop Offset="0.45" Color="#FFBBBBBB"/>
+                                                        <GradientStop Offset="0.55" Color="#FF888888"/>
+                                                    </LinearGradientBrush>
+                                                </Path.Fill>
+                                            </Path>
+                                        </Canvas>
+                                        <!--Path VerticalAlignment="Center" Data="M 0 0 L 12 12 M 12 0 L 0 12" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}" StrokeThickness="1" /-->
+                                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource JumpListKillProcessesText}"/>
+                                    </StackPanel>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
 
                         <Style x:Key="JumpListCloseWindowsListViewItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource JumpListEntryListViewItemStyle}">

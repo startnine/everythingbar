@@ -24,6 +24,14 @@ namespace Superbar
         public SettingsWindow()
         {
             InitializeComponent();
+
+            //Hide UI controls for NYI features
+            AutoHideCheckBox.Visibility = Visibility.Collapsed;
+            NotificationAreaStackPanel.Visibility = Visibility.Collapsed;
+            RecentItemsMaxInJumpListDockPanel.Visibility = Visibility.Collapsed;
+            ShowMRUProgramsToggleSwitch.Visibility = Visibility.Collapsed;
+            ShowMRUFilesInJumpListsToggleSwitch.Visibility = Visibility.Collapsed;
+            ToolbarsTabItem.IsEnabled = false;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -47,6 +55,8 @@ namespace Superbar
                 AutoHideCheckBox.IsChecked = Config.AutoHide;
 
                 SmallButtonsCheckBox.IsChecked = Config.UseSmallIcons;
+
+                AllowPeekCheckBox.IsChecked = Config.AllowPeekDesktop;
 
                 if (Config.DockMode == AppBarWindow.AppBarDockMode.Left)
                     BarPositionComboBox.SelectedIndex = 1;
@@ -75,6 +85,8 @@ namespace Superbar
                     TaskbarClockDateModeComboBox.SelectedIndex = 2;
                 else
                     TaskbarClockDateModeComboBox.SelectedIndex = 1;
+
+                ShowKillProcessesEntryToggleSwitch.IsChecked = Config.ShowKillProcessesInJumpLists;
             }
         }
 
@@ -85,6 +97,10 @@ namespace Superbar
             Config.AutoHide = AutoHideCheckBox.IsChecked.Value;
 
             Config.UseSmallIcons = SmallButtonsCheckBox.IsChecked.Value;
+
+            Config.AllowPeekDesktop = AllowPeekCheckBox.IsChecked.Value;
+
+            Config.ShowKillProcessesInJumpLists = ShowKillProcessesEntryToggleSwitch.IsChecked.Value;
 
             if (BarPositionComboBox.SelectedIndex == 1)
                 Config.DockMode = AppBarWindow.AppBarDockMode.Left;

@@ -27,6 +27,8 @@ using WindowsSharp.DiskItems;
 using System.ComponentModel;
 using System.IO;
 using WindowsSharp;
+using Microsoft.Win32;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 
 namespace Superbar
 {
@@ -318,39 +320,36 @@ namespace Superbar
             (ShowDesktopButton.ToolTip as ToolTip).Opened += (sneder, args) =>
             {
                 //ProcessWindow.DesktopWindow.Peek();
-                ProcessWindow.PeekDesktop();
+                if (Config.AllowPeekDesktop)
+                    ProcessWindow.PeekDesktop();
             };
             ShowDesktopButton.MouseLeave += (sneder, args) =>
             {
-                ProcessWindow.UnpeekDesktop();
+                if (Config.AllowPeekDesktop)
+                    ProcessWindow.UnpeekDesktop();
             };
-            /*OpenApplications.CollectionChanged += (sneder, args) =>
-            {
-                TaskBandScrollBar.Visibility = TaskBandScrollViewer.ComputedVerticalScrollBarVisibility;
-            };*/
             Populate();
-            //int windowCounter = 0;
-
-            /*foreach (KeyValuePair<Process, int> p in OpenProcesses)
+            Config.FolderToolBars.CollectionChanged += (sneder, args) =>
             {
-                foreach (ProcessWindow w in p.Key.Windows)
+                List<string> items = new List<string>();
+                /*foreach (DiskItem d in args.OldItems)
                 {
-                    OpenWindows.Add()
-                }
-            }*/
+                    if (d.ItemPath == (string))
+                }*/
 
-            /*ProcessWindow.WindowOpened += (sneder, args) =>
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
+                foreach (DiskItem d in args.NewItems)
                 {
-                    var win = (args as WindowEventArgs).Window;
-                    if (!OpenProcesses.Keys.Contains(win.Process))
+                    int separatorIndex = 0;
+                    foreach (object o in ToolbarsMenuItem.Items)
                     {
-
-                        OpenWindows.Add((args as WindowEventArgs).Window);
+                        if (o is Separator)
+                        {
+                            separatorIndex = ToolbarsMenuItem.Items.IndexOf(o);
+                        }
                     }
-                }));
-            };*/
+                    //ToolbarsMenuItem.Items.Insert()
+                }
+            };
 
             ProcessWindow.WindowOpened += (sneder, args) =>
             {
@@ -529,13 +528,7 @@ namespace Superbar
                 {
                     if (!string.IsNullOrWhiteSpace(s))
                     {
-                        PinnedApplication app = new PinnedApplication(new DiskItem(s))
-                        {
-                            IsPinned = true
-                        };
-                        SetAppEventHandlers(app);
-                        OpenApplications.Insert(insertCounter, app);
-                        //Debug.WriteLine("3IsPinned: " + app.IsPinned.ToString() + ", " + app.DiskApplication.ItemRealName);
+                        AddPinnedApp(s, insertCounter);
                         insertCounter++;
                     }
                 }
@@ -577,6 +570,16 @@ namespace Superbar
                     ExpandedTrayItems.Add(t);
                 }
             }
+        }
+
+        void AddPinnedApp(string path, int index)
+        {
+            PinnedApplication app = new PinnedApplication(new DiskItem(path))
+            {
+                IsPinned = true
+            };
+            SetAppEventHandlers(app);
+            OpenApplications.Insert(index, app);
         }
 
         void UpdateClockDateVisibility()
@@ -804,6 +807,7 @@ namespace Superbar
         private void TaskItemButton_Click(object sender, RoutedEventArgs e)
         {
             var programWindow = ((sender as Button).Tag as ProcessWindow);
+            Debug.WriteLine("MainWindow.TaskItemButton_Click " + programWindow.Title);
             programWindow.Show();
         }
 
@@ -1068,6 +1072,53 @@ namespace Superbar
                 Debug.WriteLine("Activating: " + item.ToolTipText + ", " + item.ActivateTrayItem(0).ToString());
 
                 SystemTrayListView.SelectedItem = null;
+            }
+        }
+
+        private void NewToolBarMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new FolderBrowserDialog()
+            {
+                Description = "New Toolbar - Choose a folder"
+            };
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                var bar = FolderToolBars.CreateToolBar(new DiskItem(dialog.SelectedPath));
+                if (bar != null)
+                    StartRegionToolBarTray.ToolBars.Add(bar);
+            }
+        }
+
+        private void TaskBandListView_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string path = string.Empty;
+
+                foreach (string s in paths)
+                    if (File.Exists(s))
+                    {
+                        path = s;
+                        break;
+                    }
+
+                bool alreadyPresent = false;
+                foreach (PinnedApplication a in OpenApplications)
+                    if (a.DiskApplication.ItemPath.ToLowerInvariant() == Environment.ExpandEnvironmentVariables(path.ToLowerInvariant()))
+                    {
+                        alreadyPresent = true;
+                        break;
+                    }
+
+                if (!alreadyPresent)
+                {
+                    if (Config.AddPinnedApp(path))
+                    {
+                        AddPinnedApp(path, 0);
+                    }
+                }
             }
         }
     }

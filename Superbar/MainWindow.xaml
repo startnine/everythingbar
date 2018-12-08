@@ -23,8 +23,10 @@
     </local:TaskbarWindow.Resources>
     <local:TaskbarWindow.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Toolbars">
+            <MenuItem x:Name="ToolbarsMenuItem" Header="Toolbars">
                 <MenuItem x:Name="QuickLaunchMenuItem" Header="Quick Launch" IsCheckable="True" Checked="QuickLaunchMenuItem_Checked" Unchecked="QuickLaunchMenuItem_Unchecked"/>
+                <Separator/>
+                <MenuItem x:Name="NewToolBarMenuItem" Header="New toolbar..." Click="NewToolBarMenuItem_Click"/>
             </MenuItem>
             <MenuItem x:Name="SearchMenuItem" Header="Search">
                 <MenuItem x:Name="SearchHiddenMenuItem" Header="Hidden" IsCheckable="True" Click="SearchMenuItem_Click"/>
@@ -79,7 +81,7 @@
             </UniformGrid-->
         <!--ScrollBar x:Name="TaskBandScrollBar" Orientation="Vertical" ValueChanged="TaskBandScrollBar_ValueChanged" DockPanel.Dock="Right" Visibility="{Binding ComputedVerticalScrollBarVisibility, ElementName=TaskBandScrollViewer}"/-->
         <ScrollViewer x:Name="TaskBandScrollViewer" Style="{DynamicResource TaskBandScrollViewerStyle}" Margin="0" PreviewMouseWheel="ScrollViewer_MouseWheel">
-            <ListView x:Name="TaskBandListView" ItemsSource="{Binding OpenApplications}" Style="{DynamicResource TaskBandListViewStyle}" SelectionChanged="TaskBandListView_SelectionChanged" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown"/>
+            <ListView x:Name="TaskBandListView" ItemsSource="{Binding OpenApplications}" Style="{DynamicResource TaskBandListViewStyle}" SelectionChanged="TaskBandListView_SelectionChanged" PreviewMouseLeftButtonDown="DragableRegion_MouseLeftButtonDown" AllowDrop="True" Drop="TaskBandListView_Drop"/>
         </ScrollViewer>
     </Grid>
 </local:TaskbarWindow>

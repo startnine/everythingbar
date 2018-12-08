@@ -2,14 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using WindowsSharp.Processes;
-//using static WindowsSharp.Processes.AppxMethods;
+using WindowsSharp.DiskItems;
 
 namespace Superbar
 {
@@ -85,7 +80,34 @@ namespace Superbar
 
         public static bool UseSmallIcons { get; set; } = false;
 
+        public static bool AllowPeekDesktop { get; set; } = true;
+
+        public static bool ShowKillProcessesInJumpLists { get; set; } = false;
+
         public static AppBarWindow.AppBarDockMode DockMode { get; set; } = AppBarWindow.AppBarDockMode.Bottom;
+
+        public static string FolderToolBarsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
+
+        public static ObservableCollection<DiskItem> FolderToolBars
+        {
+            get
+            {
+                var items = new ObservableCollection<DiskItem>();
+
+                foreach (string s in File.ReadAllLines(FolderToolBarsPath))
+                    items.Add(new DiskItem(s));
+
+                return items;
+            }
+            set
+            {
+                List<string> items = new List<string>();
+                foreach (DiskItem d in value)
+                    items.Add(d.ItemPath);
+
+                File.WriteAllLines(FolderToolBarsPath, items.ToArray());
+            }
+        }
 
         public static string PinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
 

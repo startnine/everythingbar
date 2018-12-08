@@ -50,7 +50,10 @@ namespace Superbar
                 _selectedWindow = value;
                 NotifyPropertyChanged("SelectedWindow");
                 if (IsWindowVisible && (_selectedWindow != null))
+                {
+                    Debug.WriteLine("ThumbnailsWindow.SelectedWindow " + _selectedWindow.Title);
                     _selectedWindow.Show();
+                }
             }
         }
 

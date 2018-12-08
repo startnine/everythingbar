@@ -172,22 +172,25 @@ namespace Superbar
             set
             {
                 _selectedWindow = value;
-                NotifyPropertyChanged("SelectedWindow");
                 //Debug.WriteLine("Selected Window changed");
                 if (_selectedWindow != null)
                     ShowWindow(_selectedWindow);
                 /*else
                     Debug.WriteLine("_selectedWindow is null");*/
+                NotifyPropertyChanged("SelectedWindow");
             }
         }
 
-        private async void ShowWindow(ProcessWindow window)
+        private /*async*/ void ShowWindow(ProcessWindow window)
         {
-            await Task.Run(() =>
+            /*await Task.Run(() =>
+            {*/
+            if (window != null)
             {
-                if (window != null)
-                    window.Show();
-            });
+                Debug.WriteLine("PinnedApplication.ShowWindow " + window.Title);
+                window.Show();
+            }
+            //});
         }
 
         bool _isApplicationActive = false;

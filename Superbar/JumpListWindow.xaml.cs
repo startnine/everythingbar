@@ -75,6 +75,11 @@ namespace Superbar
                 else
                     CloseWindowsListViewItem.Visibility = Visibility.Collapsed;
 
+                if (Config.ShowKillProcessesInJumpLists)
+                    KillProcessesListViewItem.Visibility = Visibility.Visible;
+                else
+                    KillProcessesListViewItem.Visibility = Visibility.Collapsed;
+
                 if (CloseWindowsListViewItem.IsVisible)
                 {
                     if (_app.OpenWindows.Count > 1)
@@ -90,7 +95,7 @@ namespace Superbar
             if (_app != null)
                 _app.DiskApplication.Open();
 
-            Debug.WriteLine("Application");
+            //Debug.WriteLine("Application");
             ResetSelection();
         }
 
@@ -123,6 +128,18 @@ namespace Superbar
             ResetSelection();
         }
 
+        private void KillProcesses()
+        {
+            if (_app != null)
+            {
+                Process.Start(new ProcessStartInfo("taskkill", @"/f /im " + _app.DiskApplication.ItemRealName)
+                {
+                    CreateNoWindow = true
+                });
+            }
+            ResetSelection();
+        }
+
         private void ResetSelection()
         {
             BottomSegmentListView.SelectedItem = null; //DummyListViewItem;
@@ -141,20 +158,21 @@ namespace Superbar
 
         private void BottomSegmentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (BottomSegmentListView.SelectedIndex >= 0)
+            if (BottomSegmentListView.SelectedItem == ApplicationListViewItem)
             {
-                if (BottomSegmentListView.SelectedIndex == 0)
-                {
-                    ApplicationListViewItem_Click(sender, null);
-                }
-                else if (BottomSegmentListView.SelectedIndex == 1)
-                {
-                    PinOrUnpinListViewItem_Click(sender, null);
-                }
-                else if (BottomSegmentListView.SelectedIndex == 2)
-                {
-                    CloseWindowsListViewItem_Click(sender, null);
-                }
+                ApplicationListViewItem_Click(sender, null);
+            }
+            else if (BottomSegmentListView.SelectedItem == PinOrUnpinListViewItem)
+            {
+                PinOrUnpinListViewItem_Click(sender, null);
+            }
+            else if (BottomSegmentListView.SelectedItem == KillProcessesListViewItem)
+            {
+                KillProcesses();
+            }
+            else if (BottomSegmentListView.SelectedItem == CloseWindowsListViewItem)
+            {
+                CloseWindowsListViewItem_Click(sender, null);
             }
         }
 
@@ -162,6 +180,23 @@ namespace Superbar
         {
             _app.IsJumpListOpen = false;
             base.Hide();
+        }
+
+        private void RunAsAdminMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_app != null)
+                _app.DiskApplication.Open(WindowsSharp.DiskItems.DiskItem.OpenVerbs.Admin);
+        }
+
+        private void PropertiesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_app != null)
+                _app.DiskApplication.ShowProperties();
+        }
+
+        private void PinMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _app.IsPinned = true;
         }
     }
 }
