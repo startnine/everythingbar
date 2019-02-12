@@ -12,7 +12,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using WindowsSharp.Processes;
 
-namespace Superbar
+namespace Everythingbar
 {
     public class PeekBehavior : Behavior<FrameworkElement>
     {

@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Superbar"
+                    xmlns:local="clr-namespace:Everythingbar"
                     xmlns:ui="clr-namespace:Start9.UI.Wpf;assembly=Start9.UI.Wpf"
                     xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
                     xmlns:window="clr-namespace:WindowsSharp.Processes;assembly=WindowsSharp"
@@ -2775,7 +2775,7 @@
     <!--#endregion Tray Styles-->
 
     <Style x:Key="{x:Type local:SettingsWindow}" TargetType="{x:Type local:SettingsWindow}" BasedOn="{StaticResource {x:Type win:DecoratableWindow}}">
-        <Setter Property="Height" Value="600"/>
+        <Setter Property="Height" Value="700"/>
         <Setter Property="Width" Value="500"/>
         <Setter Property="BorderThickness" Value="0,58,0,0"/>
         <Style.Resources>

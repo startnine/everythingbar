@@ -1,14 +1,14 @@
-﻿<win:DecoratableWindow x:Class="Superbar.SettingsWindow"
+﻿<win:DecoratableWindow x:Class="Everythingbar.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="clr-namespace:Start9.UI.Wpf;assembly=Start9.UI.Wpf"
         xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
-        xmlns:local="clr-namespace:Superbar"
+        xmlns:local="clr-namespace:Everythingbar"
         xmlns:tic="clr-namespace:Start9.UI.Wpf.Statics;assembly=Start9.UI.Wpf"
         mc:Ignorable="d"
-        Title="Superbar Settings" ResizeMode="NoResize" IsVisibleChanged="SettingsWindow_IsVisibleChanged">
+        Title="Everythingbar Settings" ResizeMode="NoResize" IsVisibleChanged="SettingsWindow_IsVisibleChanged">
     <DockPanel>
         <ContentControl Style="{DynamicResource FooterContentControlStyle}" DockPanel.Dock="Bottom">
             <UniformGrid Columns="4">
@@ -26,11 +26,11 @@
                 <StackPanel Orientation="Vertical">
                     <GroupBox Header="Appearance">
                         <StackPanel Orientation="Vertical">
-                            <ui:ToggleSwitch x:Name="LockBarCheckBox" TrueText="Locked" FalseText="Unlocked">Lock the Superbar</ui:ToggleSwitch>
-                            <ui:ToggleSwitch x:Name="AutoHideCheckBox" TrueText="Auto-Hidden" FalseText="Always Shown">Auto-hide the Superbar</ui:ToggleSwitch>
-                            <ui:ToggleSwitch x:Name="SmallButtonsCheckBox" TrueText="Small" FalseText="Large">Superbar button size</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="LockBarCheckBox" TrueText="Locked" FalseText="Unlocked">Lock the Everythingbar</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="AutoHideCheckBox" TrueText="Auto-Hidden" FalseText="Always Shown">Auto-hide the Everythingbar</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="SmallButtonsCheckBox" TrueText="Small" FalseText="Large">Everythingbar button size</ui:ToggleSwitch>
                             <DockPanel Style="{DynamicResource OptionButtonsRowPanelStyle}">
-                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Superbar position:</TextBlock>
+                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Everythingbar position:</TextBlock>
                                 <!--ComboBox x:Name="BarPositionComboBox" SelectedIndex="0" Visibility="Collapsed">
                             <ComboBoxItem>Bottom</ComboBoxItem>
                             <ComboBoxItem>Left</ComboBoxItem>
@@ -65,7 +65,7 @@
                     <GroupBox Header="Content">
                         <StackPanel Orientation="Vertical">
                             <DockPanel Style="{DynamicResource OptionButtonsRowPanelStyle}">
-                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Combine Superbar buttons:</TextBlock>
+                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Combine Everythingbar buttons:</TextBlock>
                                 <UniformGrid x:Name="TaskbarCombineModeGrid" Rows="2">
                                     <ToggleButton Content="Always, show labels" Click="ToggleButton_Click">
                                         <tic:AttachedProperties.CornerCurves>
@@ -91,7 +91,7 @@
                                 <!--ComboBox x:Name="TaskbarCombineModeComboBox" SelectedIndex="1">
                                     <ComboBoxItem>Always combine, show labels</ComboBoxItem>
                                     <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
-                                    <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
+                                    <ComboBoxItem>Combine when Everythingbar is full</ComboBoxItem>
                                     <ComboBoxItem>Never combine</ComboBoxItem>
                                 </ComboBox-->
                             </DockPanel>
@@ -127,6 +127,13 @@
                             <ui:ToggleSwitch x:Name="AllowPeekCheckBox" TrueText="On" FalseText="Off">Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
                         </StackPanel>
                     </GroupBox>
+                    <GroupBox Header="Skin">
+                        <StackPanel Orientation="Vertical">
+                            <ComboBox x:Name="CurrentSkinComboBox">
+                                <ComboBoxItem>Shale</ComboBoxItem>
+                            </ComboBox>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="JumpListsTabItem" Header="Jump Lists">
@@ -142,7 +149,7 @@
                     </GroupBox>
                     <GroupBox Header="Privacy">
                         <StackPanel Orientation="Vertical">
-                            <ui:ToggleSwitch x:Name="ShowMRUProgramsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="ShowMRUProgramsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened programs (does this even apply to the Taskbar???)</ui:ToggleSwitch>
                             <ui:ToggleSwitch x:Name="ShowMRUFilesInJumpListsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened items in Jump Lists</ui:ToggleSwitch>
                         </StackPanel>
                     </GroupBox>

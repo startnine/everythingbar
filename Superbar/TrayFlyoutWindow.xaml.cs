@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using Start9.UI.Wpf.Statics;
 using WindowsSharp;
 
-namespace Superbar
+namespace Everythingbar
 {
     /// <summary>
     /// Interaction logic for TrayFlyoutWindow.xaml

@@ -9,7 +9,7 @@ using System.Windows.Interactivity;
 using System.Windows.Interop;
 using WindowsSharp.Processes;
 
-namespace Superbar
+namespace Everythingbar
 {
     public class SysMenuBehavior : Behavior<FrameworkElement>
     {

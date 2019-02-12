@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using Start9.UI.Wpf.Converters;
 
-namespace Superbar
+namespace Everythingbar
 {
     public class RectangleScaleConverter : IMultiValueConverter
     {

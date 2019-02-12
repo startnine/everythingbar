@@ -31,7 +31,7 @@ using Microsoft.Win32;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 using System.Threading.Tasks;
 
-namespace Superbar
+namespace Everythingbar
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

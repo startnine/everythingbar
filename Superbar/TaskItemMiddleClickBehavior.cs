@@ -11,9 +11,9 @@ using System.Windows.Interactivity;
 using System.Windows.Media;
 using WindowsSharp.DiskItems;
 
-namespace Superbar
+namespace Everythingbar
 {
-    class TaskItemMiddleClickBehavior : Behavior<FrameworkElement>
+    public class TaskItemMiddleClickBehavior : Behavior<FrameworkElement>
     {
         bool _pressed = false;
         ListViewItem _item;

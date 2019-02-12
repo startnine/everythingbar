@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
 
-namespace Superbar
+namespace Everythingbar
 {
     public class TaskItemDragBehavior : Behavior<Panel>
     {

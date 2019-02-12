@@ -9,7 +9,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Superbar
+namespace Everythingbar
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -83,3 +83,6 @@ C:\Users\Splitwirez\Documents\Important\Start9\Development\everythingbar\Superba
 C:\Users\Splitwirez\Documents\Important\Start9\Development\everythingbar\Superbar\obj\Debug\Superbar.csproj.CopyComplete
 C:\Users\Splitwirez\Documents\Important\Start9\Development\everythingbar\Superbar\obj\Debug\Module.exe
 C:\Users\Splitwirez\Documents\Important\Start9\Development\everythingbar\Superbar\obj\Debug\Module.pdb
+C:\Users\Splitwirez\AppData\Roaming\Start9\ModuleStore\Everythingbar\Module.exe.config
+C:\Users\Splitwirez\AppData\Roaming\Start9\ModuleStore\Everythingbar\Module.exe
+C:\Users\Splitwirez\AppData\Roaming\Start9\ModuleStore\Everythingbar\Module.pdb

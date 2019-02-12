@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Start9.UI.Wpf.Windows;
 
-namespace Superbar
+namespace Everythingbar
 {
     public partial class TaskbarWindow : AppBarWindow
     {

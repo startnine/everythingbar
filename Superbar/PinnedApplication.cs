@@ -10,7 +10,7 @@ using System.Windows;
 using WindowsSharp.DiskItems;
 using WindowsSharp.Processes;
 
-namespace Superbar
+namespace Everythingbar
 {
     public class PinnedApplication : DependencyObject, INotifyPropertyChanged
     {

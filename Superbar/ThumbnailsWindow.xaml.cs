@@ -20,7 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WindowsSharp.Processes;
 
-namespace Superbar
+namespace Everythingbar
 {
     /// <summary>
     /// Interaction logic for ThumbnailsWindow.xaml

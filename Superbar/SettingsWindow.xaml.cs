@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,13 +16,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Superbar
+namespace Everythingbar
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow : DecoratableWindow
     {
+        ResourceDictionary _dictionary = null;
+
         public SettingsWindow()
         {
             InitializeComponent();
@@ -88,6 +91,26 @@ namespace Superbar
                     SetToggleButtons(TaskbarClockDateModeGrid, 1); //TaskbarClockDateModeComboBox.SelectedIndex = 1;
 
                 ShowKillProcessesEntryToggleSwitch.IsChecked = Config.ShowKillProcessesInJumpLists;
+
+                CurrentSkinComboBox.Items.Clear();
+                CurrentSkinComboBox.Items.Add("Shale");
+                foreach (string s in Directory.EnumerateFiles(Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Everythingbar_Skins")))
+                {
+                    if (System.IO.Path.GetExtension(s).ToLowerInvariant().EndsWith("dll"))
+                    {
+                        var assembly = System.Reflection.Assembly.LoadFile(s); //This is probably a terrible idea idk, todo: checc with flec
+                        var dictionary = new ResourceDictionary()
+                        {
+                            Source = new Uri(@"/" + System.IO.Path.GetFileNameWithoutExtension(s) + @";component/Themes/Theme.xaml", UriKind.RelativeOrAbsolute)
+                        };
+
+                        CurrentSkinComboBox.Items.Add(new ComboBoxItem()
+                        {
+                            Content = System.IO.Path.GetFileName(s),
+                            Tag = dictionary
+                        });
+                    }
+                }
             }
         }
 
@@ -157,6 +180,17 @@ namespace Superbar
                 Config.TrayClockDateMode = Config.ClockDateMode.NeverShow;
             else
                 Config.TrayClockDateMode = Config.ClockDateMode.AlwaysShow;
+
+            if (CurrentSkinComboBox.SelectedItem == "Shale")
+            {
+                //if (Application.Current.Resources.MergedDictionaries.Count > 1)
+                    Application.Current.Resources.MergedDictionaries.Remove(_dictionary);
+            }
+            else if (CurrentSkinComboBox.SelectedItem != null)
+            {
+                Application.Current.Resources.MergedDictionaries.Add((CurrentSkinComboBox.SelectedItem as ComboBoxItem).Tag as ResourceDictionary);
+                _dictionary = (CurrentSkinComboBox.SelectedItem as ComboBoxItem).Tag as ResourceDictionary;
+            }
 
             Config.InvokeConfigUpdated(this, new EventArgs());
 

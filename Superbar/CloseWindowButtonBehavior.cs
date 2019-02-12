@@ -8,9 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Interactivity;
 using WindowsSharp.Processes;
 
-namespace Superbar
+namespace Everythingbar
 {
-    class CloseWindowButtonBehavior : Behavior<Button>
+    public class CloseWindowButtonBehavior : Behavior<Button>
     {
         public ProcessWindow TargetWindow
         {

@@ -7,9 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 
-namespace Superbar
+namespace Everythingbar
 {
-    class ActualizerBehavior : Behavior<FrameworkElement>
+    public class ActualizerBehavior : Behavior<FrameworkElement>
     {
         protected override void OnAttached()
         {

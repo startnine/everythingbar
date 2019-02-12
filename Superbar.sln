@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Superbar", "Superbar\Superbar.csproj", "{0BEEFA9E-A11E-44A8-9063-8C7EFBED64AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AeroVista", "skins\AeroVista\AeroVista.csproj", "{AB4DF95B-A327-40C7-B0EC-D247BA3DF786}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0BEEFA9E-A11E-44A8-9063-8C7EFBED64AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BEEFA9E-A11E-44A8-9063-8C7EFBED64AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BEEFA9E-A11E-44A8-9063-8C7EFBED64AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB4DF95B-A327-40C7-B0EC-D247BA3DF786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB4DF95B-A327-40C7-B0EC-D247BA3DF786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB4DF95B-A327-40C7-B0EC-D247BA3DF786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB4DF95B-A327-40C7-B0EC-D247BA3DF786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

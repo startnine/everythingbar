@@ -10,7 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using WindowsSharp.DiskItems;
 
-namespace Superbar
+namespace Everythingbar
 {
     [TemplatePart(Name = PartResizeThumb, Type = typeof(Thumb))]
     public class SizableToolBar : ToolBar

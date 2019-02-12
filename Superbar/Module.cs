@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Windows;
 
-namespace Superbar
+namespace Everythingbar
 {
     public static class Module
     {
@@ -43,7 +43,7 @@ namespace Superbar
 
         public static void SendMessage(object message)
         {
-            //MessageBox.Show("Message sent by Superbar");
+            //MessageBox.Show("Message sent by Everythingbar");
             _writer.WriteLine(message);
             _moduleWritePipe.WaitForPipeDrain();
             //MessageBox.Show("PIPE DRAINED");

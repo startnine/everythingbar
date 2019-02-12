@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WindowsSharp.Processes;
 
-namespace Superbar
+namespace Everythingbar
 {
     /// <summary>
     /// Interaction logic for JumpListWindow.xaml
@@ -28,8 +28,8 @@ namespace Superbar
         string _closeOneWindowText = "Close window";
         string _closeAllWindowsText = "Close all windows";
 
-        string _pinAppText = "Pin to Superbar";
-        string _unpinAppText = "Unpin from Superbar";
+        string _pinAppText = "Pin to Everythingbar";
+        string _unpinAppText = "Unpin from Everythingbar";
 
         PinnedApplication _app = null;
         ProcessWindow _window = null;

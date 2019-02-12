@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using WindowsSharp.DiskItems;
 
-namespace Superbar
+namespace Everythingbar
 {
     public static class Config
     {
@@ -86,7 +86,7 @@ namespace Superbar
 
         public static AppBarWindow.AppBarDockMode DockMode { get; set; } = AppBarWindow.AppBarDockMode.Bottom;
 
-        public static string FolderToolBarsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
+        public static string FolderToolBarsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Everythingbar_PinnedApps.txt");
 
         public static ObservableCollection<DiskItem> FolderToolBars
         {
@@ -109,7 +109,7 @@ namespace Superbar
             }
         }
 
-        public static string PinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Superbar_PinnedApps.txt");
+        public static string PinnedAppsPath = Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Everythingbar_PinnedApps.txt");
 
         public static bool AddPinnedApp(string path)
         {
