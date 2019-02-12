@@ -7,7 +7,7 @@
     <ProjectGuid>{0BEEFA9E-A11E-44A8-9063-8C7EFBED64AA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Superbar</RootNamespace>
-    <AssemblyName>Superbar</AssemblyName>
+    <AssemblyName>Module</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(AppData)\Start9\ModuleStore\Superbar</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -60,6 +60,11 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Pipes, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipes.4.3.0\lib\net46\System.IO.Pipes.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -92,7 +97,7 @@
     <Compile Include="JumpListWindow.xaml.cs">
       <DependentUpon>JumpListWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ModuleCallback.cs" />
+    <Compile Include="Module.cs" />
     <Compile Include="PeekBehavior.cs" />
     <Compile Include="PinnedApplication.cs" />
     <Compile Include="RectangleScaleConverter.cs" />
@@ -110,6 +115,10 @@
       <DependentUpon>TrayFlyoutWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Aero.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Shale.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Luna.xaml">
@@ -161,6 +170,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

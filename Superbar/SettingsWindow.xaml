@@ -6,13 +6,17 @@
         xmlns:ui="clr-namespace:Start9.UI.Wpf;assembly=Start9.UI.Wpf"
         xmlns:win="clr-namespace:Start9.UI.Wpf.Windows;assembly=Start9.UI.Wpf"
         xmlns:local="clr-namespace:Superbar"
+        xmlns:tic="clr-namespace:Start9.UI.Wpf.Statics;assembly=Start9.UI.Wpf"
         mc:Ignorable="d"
         Title="Superbar Settings" ResizeMode="NoResize" IsVisibleChanged="SettingsWindow_IsVisibleChanged">
     <DockPanel>
         <ContentControl Style="{DynamicResource FooterContentControlStyle}" DockPanel.Dock="Bottom">
             <UniformGrid Columns="4">
-                <Button x:Name="Start9SettingsButton" Click="Start9SettingsButton_Click">Start9 Settings (NYI)</Button>
-                <Button x:Name="OkButton" Click="ApplyButton_Click">OK</Button>
+                <Button x:Name="Start9SettingsButton" Click="Start9SettingsButton_Click" IsEnabled="False">Start9 Settings</Button>
+                    <!--tic:AttachedProperties.CornerCurves>
+                        <tic:CornerCurves TopLeft="True" TopRight="False" BottomRight="False" BottomLeft="True"/>
+                    </tic:AttachedProperties.CornerCurves-->
+                    <Button x:Name="OkButton" Click="ApplyButton_Click">OK</Button>
                 <Button x:Name="CancelButton" IsCancel="True" Click="CancelButton_Click">Cancel</Button>
                 <Button x:Name="ApplyButton" Click="ApplyButton_Click">Apply</Button>
             </UniformGrid>
@@ -20,55 +24,128 @@
         <TabControl>
             <TabItem Header="Main UI">
                 <StackPanel Orientation="Vertical">
-                    <ui:ToggleSwitch x:Name="LockBarCheckBox" TrueText="Locked" FalseText="Unlocked">Lock the Superbar</ui:ToggleSwitch>
-                    <ui:ToggleSwitch x:Name="AutoHideCheckBox" TrueText="Auto-Hidden" FalseText="Always Shown">Auto-hide the Superbar</ui:ToggleSwitch>
-                    <ui:ToggleSwitch x:Name="SmallButtonsCheckBox" TrueText="Small" FalseText="Large">Superbar button size</ui:ToggleSwitch>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="175">Superbar location on screen:</TextBlock>
-                        <ComboBox x:Name="BarPositionComboBox" SelectedIndex="0">
+                    <GroupBox Header="Appearance">
+                        <StackPanel Orientation="Vertical">
+                            <ui:ToggleSwitch x:Name="LockBarCheckBox" TrueText="Locked" FalseText="Unlocked">Lock the Superbar</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="AutoHideCheckBox" TrueText="Auto-Hidden" FalseText="Always Shown">Auto-hide the Superbar</ui:ToggleSwitch>
+                            <ui:ToggleSwitch x:Name="SmallButtonsCheckBox" TrueText="Small" FalseText="Large">Superbar button size</ui:ToggleSwitch>
+                            <DockPanel Style="{DynamicResource OptionButtonsRowPanelStyle}">
+                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Superbar position:</TextBlock>
+                                <!--ComboBox x:Name="BarPositionComboBox" SelectedIndex="0" Visibility="Collapsed">
                             <ComboBoxItem>Bottom</ComboBoxItem>
                             <ComboBoxItem>Left</ComboBoxItem>
                             <ComboBoxItem>Right</ComboBoxItem>
                             <ComboBoxItem>Top</ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="175">Superbar buttons:</TextBlock>
-                        <ComboBox x:Name="TaskbarCombineModeComboBox" SelectedIndex="1">
-                            <ComboBoxItem>Always combine, show labels</ComboBoxItem>
-                            <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
-                            <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
-                            <ComboBoxItem>Never combine</ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Width="175">Clock display:</TextBlock>
-                        <ComboBox x:Name="TaskbarClockDateModeComboBox" SelectedIndex="0">
-                            <ComboBoxItem>Always show the date</ComboBoxItem>
-                            <ComboBoxItem>Show the date when it fits comfortably onto the Superbar</ComboBoxItem>
-                            <ComboBoxItem>Never show the date</ComboBoxItem>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel x:Name="NotificationAreaStackPanel" Orientation="Horizontal">
-                        <TextBlock Width="175">Notification area:</TextBlock>
-                        <Button>Manage</Button>
-                    </StackPanel>
-                    <ui:ToggleSwitch x:Name="AllowPeekCheckBox" TrueText="On" FalseText="Off">Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
+                        </ComboBox-->
+                                <UniformGrid x:Name="BarPositionButtonsGrid" Rows="1">
+                                    <ToggleButton Content="Bottom" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="True" TopRight="False" BottomRight="False" BottomLeft="True"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Left" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="False" BottomRight="False" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Right" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="False" BottomRight="False" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Top" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="True" BottomRight="True" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                </UniformGrid>
+                            </DockPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Content">
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel Style="{DynamicResource OptionButtonsRowPanelStyle}">
+                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Combine Superbar buttons:</TextBlock>
+                                <UniformGrid x:Name="TaskbarCombineModeGrid" Rows="2">
+                                    <ToggleButton Content="Always, show labels" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="True" TopRight="False" BottomRight="False" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Always, hide labels" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="True" BottomRight="False" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="When full" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="False" BottomRight="False" BottomLeft="True"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Never" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="False" BottomRight="True" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                </UniformGrid>
+                                <!--ComboBox x:Name="TaskbarCombineModeComboBox" SelectedIndex="1">
+                                    <ComboBoxItem>Always combine, show labels</ComboBoxItem>
+                                    <ComboBoxItem>Always combine, hide labels</ComboBoxItem>
+                                    <ComboBoxItem>Combine when Superbar is full</ComboBoxItem>
+                                    <ComboBoxItem>Never combine</ComboBoxItem>
+                                </ComboBox-->
+                            </DockPanel>
+                            <DockPanel Style="{DynamicResource OptionButtonsRowPanelStyle}">
+                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}" DockPanel.Dock="Left">Show clock date:</TextBlock>
+                                <UniformGrid x:Name="TaskbarClockDateModeGrid" Rows="1">
+                                    <ToggleButton Content="Always" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="True" TopRight="False" BottomRight="False" BottomLeft="True"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Space permitting" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="False" BottomRight="False" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                    <ToggleButton Content="Never" Click="ToggleButton_Click">
+                                        <tic:AttachedProperties.CornerCurves>
+                                            <tic:CornerCurves TopLeft="False" TopRight="True" BottomRight="True" BottomLeft="False"/>
+                                        </tic:AttachedProperties.CornerCurves>
+                                    </ToggleButton>
+                                </UniformGrid>
+                                <!--ComboBox x:Name="TaskbarClockDateModeComboBox" SelectedIndex="0">
+                                    <ComboBoxItem>Always show the date</ComboBoxItem>
+                                    <ComboBoxItem>Show the date when space permits</ComboBoxItem>
+                                    <ComboBoxItem>Never show the date</ComboBoxItem>
+                                </ComboBox-->
+                            </DockPanel>
+                            <StackPanel x:Name="NotificationAreaStackPanel" Orientation="Horizontal" Style="{DynamicResource OptionButtonsRowPanelStyle}">
+                                <TextBlock Style="{DynamicResource OptionSideLabelTextBlockStyle}">Notification area:</TextBlock>
+                                <Button x:Name="ManageTrayIconsButton">Manage</Button>
+                            </StackPanel>
+                            <ui:ToggleSwitch x:Name="AllowPeekCheckBox" TrueText="On" FalseText="Off">Activate Aero Peek when hovering over the Show desktop button</ui:ToggleSwitch>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="JumpListsTabItem" Header="Jump Lists">
                 <StackPanel Orientation="Vertical">
-                    <DockPanel x:Name="RecentItemsMaxInJumpListDockPanel">
-                        <TextBox DockPanel.Dock="Right">7</TextBox>
-                        <TextBlock>Number of recent items to display in Jump Lists:</TextBlock>
-                    </DockPanel>
+                    <GroupBox Header="Behaviour">
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel x:Name="RecentItemsMaxInJumpListDockPanel">
+                                <ui:SpinBox DockPanel.Dock="Right" Value="7"/>
+                                <TextBlock>Number of recent items to display in Jump Lists:</TextBlock>
+                            </DockPanel>
+                            <ui:ToggleSwitch x:Name="ShowKillProcessesEntryToggleSwitch" TrueText="Show" FalseText="Hide">Show an option to force-kill programs in the Jump Lists</ui:ToggleSwitch>
+                        </StackPanel>
+                    </GroupBox>
                     <GroupBox Header="Privacy">
                         <StackPanel Orientation="Vertical">
                             <ui:ToggleSwitch x:Name="ShowMRUProgramsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened programs (does this even apply to the Superbar???)</ui:ToggleSwitch>
                             <ui:ToggleSwitch x:Name="ShowMRUFilesInJumpListsToggleSwitch" TrueText="On" FalseText="Off">Store recently opened items in Jump Lists</ui:ToggleSwitch>
                         </StackPanel>
                     </GroupBox>
-                    <ui:ToggleSwitch x:Name="ShowKillProcessesEntryToggleSwitch" TrueText="Show" FalseText="Hide">Show an option to force-kill programs in the Jump Lists</ui:ToggleSwitch>
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="ToolbarsTabItem" Header="Toolbars">

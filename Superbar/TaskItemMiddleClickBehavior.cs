@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
+using WindowsSharp.DiskItems;
 
 namespace Superbar
 {
@@ -43,6 +44,78 @@ namespace Superbar
                 ((Window.GetWindow(sender as DependencyObject) as MainWindow).OpenApplications[visualOwner.Children.IndexOf(_item)]).DiskApplication.Open();
                 _pressed = true;
             }
+        }
+    }
+
+    class ToolBarClickBehavior : Behavior<FrameworkElement>
+    {
+        public Button TargetButton
+        {
+            get => (Button)GetValue(TargetButtonProperty);
+            set => SetValue(TargetButtonProperty, value);
+        }
+
+        public static readonly DependencyProperty TargetButtonProperty =
+            DependencyProperty.Register("TargetButton", typeof(Button), typeof(ToolBarClickBehavior), new PropertyMetadata(null, OnTargetButtonPropertyChangedCallback));
+
+        internal static void OnTargetButtonPropertyChangedCallback(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var sned = sender as ToolBarClickBehavior;
+            sned.GetButton();
+
+            if (e.OldValue != null)
+                (e.OldValue as Button).Click -= sned.Button_Click;
+        }
+
+        public DiskItem DiskFile
+        {
+            get => (DiskItem)GetValue(DiskFileProperty);
+            set => SetValue(DiskFileProperty, value);
+        }
+
+        public static readonly DependencyProperty DiskFileProperty =
+            DependencyProperty.Register("DiskFile", typeof(DiskItem), typeof(ToolBarClickBehavior), new PropertyMetadata(null));
+
+        Button _button;
+
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+            //_button = (AssociatedObject.TemplatedParent as FrameworkElement).TemplatedParent as Button;
+            GetButton();
+        }
+
+        void GetButton()
+        {
+            if (TargetButton != null)
+                _button = TargetButton;
+            else if (AssociatedObject.TemplatedParent != null)
+            {
+                if (AssociatedObject.TemplatedParent is FrameworkElement parent)
+                {
+                    if (parent.TemplatedParent is Button button)
+                        _button = button;
+                    else
+                        _button = null;
+                }
+                else
+                    _button = null;
+
+                if (_button != null)
+                    _button.Click += Button_Click;
+            }
+            else
+                _button = null;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Opening file...");
+            /*Panel visualOwner = /*VisualTreeHelper.GetParent(_item)* / _button.TemplatedParent as Panel;
+            var toolBar = visualOwner.TemplatedParent as SizableToolBar;
+            (toolBar.ItemsSource as List<DiskItem>)[visualOwner.Children.IndexOf(_button)].Open();*/
+            if (DiskFile != null)
+                DiskFile.Open();
         }
     }
 }

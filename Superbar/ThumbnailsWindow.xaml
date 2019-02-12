@@ -8,5 +8,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         Title="ThumbnailsWindow" Style="{DynamicResource ThumbnailsWindowStyle}" Topmost="True" IsVisibleChanged="ThumbnailsWindow_IsVisibleChanged" MouseLeave="ThumbnailsWindow_MouseLeave" ShowInTaskbar="False" ShowInAltTab="False" IgnorePeek="True">
-    <ListView x:Name="WindowsListView" Style="{DynamicResource ThumbnailsListViewStyle}" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" SelectionChanged="WindowsListView_SelectionChanged"/>
+    <!--SizeChanged="ThumbnailsWindow_SizeChanged"-->
+    <ListView x:Name="WindowsListView" Style="{DynamicResource ThumbnailsListViewStyle}" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" SelectionChanged="WindowsListView_SelectionChanged" HorizontalAlignment="Left"/>
+    <!-- SizeChanged="WindowsListView_SizeChanged"-->
 </win:ShadowedWindow>

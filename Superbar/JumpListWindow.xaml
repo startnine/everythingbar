@@ -20,7 +20,7 @@
         <ImageBrush x:Key="JumpListJumboIconImageBrush"/>
     </win:ShadowedWindow.Resources>
     <StackPanel Orientation="Vertical">
-        <ListView x:Name="BottomSegmentListView" Style="{DynamicResource JumpListBottomSegmentListViewStyle}" SelectionMode="Single" SelectionChanged="BottomSegmentListView_SelectionChanged">
+        <ListView x:Name="BottomSegmentListView" Style="{DynamicResource JumpListBottomSegmentListViewStyle}" SelectionMode="Single" SelectionChanged="BottomSegmentListView_SelectionChanged" PreviewMouseRightButtonDown="NoRightClickListView_PreviewMouseRightButtonDown">
             <ListViewItem x:Name="ApplicationListViewItem" Style="{DynamicResource JumpListApplicationListViewItemStyle}">
                 <ListViewItem.ContextMenu>
                     <ContextMenu>

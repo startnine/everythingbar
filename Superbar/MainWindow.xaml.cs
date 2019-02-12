@@ -29,6 +29,7 @@ using System.IO;
 using WindowsSharp;
 using Microsoft.Win32;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+using System.Threading.Tasks;
 
 namespace Superbar
 {
@@ -360,7 +361,7 @@ namespace Superbar
                 }));
             };
 
-            ProcessWindow.ActiveWindowChanged += (sneder, args) =>
+            /*ProcessWindow.ActiveWindowChanged += (sneder, args) =>
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -382,7 +383,7 @@ namespace Superbar
                             break;
                     }
                 }));
-            };
+            };*/
 
             ProcessWindow.WindowClosed += (sneder, args) =>
             {
@@ -823,7 +824,8 @@ namespace Superbar
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            SendStartButtonMessage();
+            /*try
             {
                 //Debug.WriteLine("StartButton_Click");
 
@@ -833,26 +835,36 @@ namespace Superbar
                 if (DockMode == AppBarDockMode.Bottom)
                     param2 = (int)SystemParameters.WorkArea.Bottom;
                 if (DockMode == AppBarDockMode.Right)
-                    param2 = (int)SystemParameters.WorkArea.Right;
+                    param2 = (int)SystemParameters.WorkArea.Right;*/
 
-                /*Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    (Application.Current as App).service.SendMessage(new Message(MessageCommand.Open)
-                    {
-                        Param1 = param1,
-                        Param2 = param2
-                    });
-                }));*/
-
-                if (!_isChecked)
-                {
-                    UpdateStartButtonState(true);
-                }
-            }
-            catch (Exception ex)
+            /*Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                Debug.WriteLine(ex);
+                (Application.Current as App).service.SendMessage(new Message(MessageCommand.Open)
+                {
+                    Param1 = param1,
+                    Param2 = param2
+                });
+            }));*/
+
+            /*if (!_isChecked)
+            {
+                UpdateStartButtonState(true);
             }
+
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+        }*/
+        }
+
+        private async void SendStartButtonMessage()
+        {
+            await Task.Run(new Action(() =>
+            {
+                Module.SendMessage("0");
+            }));
         }
 
         public void UpdateStartButtonState(bool value)
@@ -868,26 +880,32 @@ namespace Superbar
                 TaskBandListView.ScrollIntoView(item);
         }
 
+        SizableToolBar _quickLaunchToolBar = FolderToolBars.CreateToolBar(new DiskItem(Environment.ExpandEnvironmentVariables(@"%appdata%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")));
+
         private void QuickLaunchMenuItem_Checked(object sender, RoutedEventArgs e)
         {
-            (QuickLaunch.Items[0] as ListView).ItemsSource = new DiskItem(Environment.ExpandEnvironmentVariables(@"%appdata%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")).SubItems;
-            QuickLaunch.Visibility = Visibility.Visible;
+            if (!StartRegionToolBarTray.ToolBars.Contains(_quickLaunchToolBar))
+                StartRegionToolBarTray.ToolBars.Add(_quickLaunchToolBar);
+            /*(QuickLaunch.Items[0] as ListView).ItemsSource = new DiskItem(Environment.ExpandEnvironmentVariables(@"%appdata%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar")).SubItems;
+            QuickLaunch.Visibility = Visibility.Visible;*/
         }
 
         private void QuickLaunchMenuItem_Unchecked(object sender, RoutedEventArgs e)
         {
-            (QuickLaunch.Items[0] as ListView).ItemsSource = null;
-            QuickLaunch.Visibility = Visibility.Collapsed;
+            if (StartRegionToolBarTray.ToolBars.Contains(_quickLaunchToolBar))
+                StartRegionToolBarTray.ToolBars.Remove(_quickLaunchToolBar);
+            /*(QuickLaunch.Items[0] as ListView).ItemsSource = null;
+            QuickLaunch.Visibility = Visibility.Collapsed;*/
         }
 
-        private void ToolbarListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        /*private void ToolbarListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
             {
                 (e.AddedItems[0] as DiskItem).Open();
                 (sender as ListView).SelectedItem = null;
             }
-        }
+        }*/
 
         private void TaskManagerMenuItem_Click(object sender, RoutedEventArgs e)
         {

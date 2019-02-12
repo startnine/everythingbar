@@ -38,5 +38,11 @@ namespace Superbar
                 Debug.WriteLine(ex);
             }*/
         }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            //Module.StartModule();
+            //Module.SendMessage("")
+        }
     }
 }

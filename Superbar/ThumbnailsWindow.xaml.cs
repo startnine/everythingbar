@@ -57,6 +57,15 @@ namespace Superbar
             }
         }
 
+        public IEasingFunction RepositionEase
+        {
+            get => (IEasingFunction)GetValue(RepositionEaseProperty);
+            set => SetValue(RepositionEaseProperty, value);
+        }
+
+        public static readonly DependencyProperty RepositionEaseProperty =
+            DependencyProperty.Register("RepositionEase", typeof(IEasingFunction), typeof(ThumbnailsWindow), new PropertyMetadata(null));
+
         int _keepOpenInterval = 0;
 
         Timer _keepOpenTimer = new Timer
@@ -99,23 +108,168 @@ namespace Superbar
                     }
                 }));
             };
+
+            /*_openWindows.CollectionChanged += (sneder, args) =>
+            {
+                double oldWidth = ActualWidth;
+                double newWidth = WindowsListView.ActualWidth;
+                Debug.WriteLine("newWidth: " + newWidth);
+
+                DoubleAnimation widthAnimation = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromMilliseconds(500),
+                    From = oldWidth,
+                    To = newWidth
+                };
+
+                if (RepositionEase != null)
+                    widthAnimation.EasingFunction = RepositionEase;
+
+                widthAnimation.Completed += (snader, ergs) =>
+                {
+                    //_animatingSize = false;
+                    BeginAnimation(WidthProperty, null);
+                    Width = newWidth;
+                };
+
+                BeginAnimation(WidthProperty, widthAnimation);
+            };*/
         }
 
         new public void Show()
         {
-            base.Show();
-            UpdatePosition();
+            if (!IsVisible)
+            {
+                base.Show();
+                UpdatePosition();
+            }
+            /*else
+            {
+                UpdatePosition();
+                base.Show();
+            }*/
         }
+
+        //bool _animatingSize = false;
+
+        private void WindowsListView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double difference = ActualWidth - e.PreviousSize.Width;
+            double oldWidth = e.PreviousSize.Width;
+            double newWidth = e.NewSize.Width;
+            Debug.WriteLine("newWidth: " + newWidth);
+
+            DoubleAnimation widthAnimation = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromMilliseconds(500),
+                From = oldWidth,
+                To = newWidth
+            };
+
+            if (RepositionEase != null)
+                widthAnimation.EasingFunction = RepositionEase;
+
+            widthAnimation.Completed += (sneder, args) =>
+            {
+                //_animatingSize = false;
+                BeginAnimation(WidthProperty, null);
+                Width = newWidth;
+            };
+
+            BeginAnimation(WidthProperty, widthAnimation);
+        }
+
+        /*protected override void OnChildDesiredSizeChanged(UIElement child)
+        {
+            UpdatePosition();
+        }*/
+        /*protected override void OnChildDesiredSizeChanged(UIElement child)
+        {
+            base.OnChildDesiredSizeChanged(child);
+            double oldWidth = ActualWidth;
+            double newWidth = (Content as UIElement).DesiredSize.Width;
+
+            DoubleAnimation widthAnimation = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromMilliseconds(500),
+                From = oldWidth,
+                To = newWidth
+            };
+
+            if (RepositionEase != null)
+                widthAnimation.EasingFunction = RepositionEase;
+
+            widthAnimation.Completed += (sneder, args) =>
+            {
+                //_animatingSize = false;
+                BeginAnimation(WidthProperty, null);
+                Width = newWidth;
+            };
+
+            BeginAnimation(WidthProperty, widthAnimation);
+        }*/
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-
-            UpdatePosition();
+            if (!double.IsNaN(Left))
+                UpdatePosition();
         }
+        /*protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            _animatingSize = true;
+            UpdatePosition();
+            if (_animatingSize)
+            {
+                double oldWidth = sizeInfo.PreviousSize.Width;
+                double newWidth = sizeInfo.NewSize.Width;
+
+                DoubleAnimation widthAnimation = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromMilliseconds(500),
+                    From = oldWidth,
+                    To = newWidth
+                };
+
+                if (RepositionEase != null)
+                    widthAnimation.EasingFunction = RepositionEase;
+
+                widthAnimation.Completed += (sneder, args) =>
+                {
+                    base.OnRenderSizeChanged(sizeInfo);
+                    _animatingSize = false;
+                    BeginAnimation(WidthProperty, null);
+                    Left = newWidth;
+                };
+
+                BeginAnimation(WidthProperty, widthAnimation);
+            }
+        }*/
 
         public void UpdatePosition()
         {
+            //double oldWidth = ActualWidth;
+            /*double newWidth = WindowsListView.ActualWidth;
+            Debug.WriteLine("newWidth: " + newWidth);
+
+            DoubleAnimation widthAnimation = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromMilliseconds(500),
+                //From = oldWidth,
+                To = newWidth
+            };
+
+            if (RepositionEase != null)
+                widthAnimation.EasingFunction = RepositionEase;
+
+            widthAnimation.Completed += (snader, ergs) =>
+            {
+                BeginAnimation(WidthProperty, null);
+                Width = newWidth;
+            };
+
+            BeginAnimation(WidthProperty, widthAnimation);*/
+
             double newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (ActualWidth / 2);
             if (!double.IsNaN(Width))
                 newLeft = Start9.UI.Wpf.Statics.SystemScaling.CursorPosition.X - (Width / 2);
@@ -125,9 +279,9 @@ namespace Superbar
             else if ((newLeft + ActualWidth) > SystemParameters.WorkArea.Width)
                 newLeft = SystemParameters.WorkArea.Width - ActualWidth;
 
-            if (IsWindowVisible)
+            if (Visibility == Visibility.Visible)
             {
-                IEasingFunction ease = null;
+                /*IEasingFunction ease = null;
                 try
                 {
                     ease = (IEasingFunction)App.Current.Resources["ThumbnailsWindowMovementEase"];
@@ -135,7 +289,7 @@ namespace Superbar
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
-                }
+                }*/
 
                 DoubleAnimation leftAnimation = new DoubleAnimation()
                 {
@@ -143,8 +297,8 @@ namespace Superbar
                     To = newLeft
                 };
 
-                if (ease != null)
-                    leftAnimation.EasingFunction = ease;
+                if (RepositionEase != null)
+                    leftAnimation.EasingFunction = RepositionEase;
 
                 leftAnimation.Completed += (sneder, args) =>
                 {
@@ -297,5 +451,11 @@ namespace Superbar
             else
                 _keepOpenTimer.Stop();
         }
+
+        /*private void ThumbnailsWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!double.IsNaN(Left))
+                UpdatePosition();
+        }*/
     }
 }

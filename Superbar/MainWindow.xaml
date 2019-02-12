@@ -68,9 +68,9 @@
             <ToggleButton x:Name="SearchButton" Style="{DynamicResource SearchToggleButtonStyle}" Click="SearchButton_Click"/>
             <ToggleButton x:Name="TaskViewButton" Style="{DynamicResource TaskViewToggleButtonStyle}" Click="TaskViewButton_Click"/>
             <ToolBarTray x:Name="StartRegionToolBarTray">
-                <ToolBar x:Name="QuickLaunch" Visibility="Collapsed">
+                <!--local:SizableToolBar x:Name="QuickLaunch" Visibility="Collapsed">
                     <ListView SelectionChanged="ToolbarListView_SelectionChanged"/>
-                </ToolBar>
+                </local:SizableToolBar-->
             </ToolBarTray>
         </StackPanel>
     </local:TaskbarWindow.QuickLaunchArea>

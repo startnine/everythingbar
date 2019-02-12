@@ -198,5 +198,10 @@ namespace Superbar
         {
             _app.IsPinned = true;
         }
+
+        private void NoRightClickListView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

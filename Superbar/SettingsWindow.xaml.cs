@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -26,11 +27,11 @@ namespace Superbar
             InitializeComponent();
 
             //Hide UI controls for NYI features
-            AutoHideCheckBox.Visibility = Visibility.Collapsed;
-            NotificationAreaStackPanel.Visibility = Visibility.Collapsed;
-            RecentItemsMaxInJumpListDockPanel.Visibility = Visibility.Collapsed;
-            ShowMRUProgramsToggleSwitch.Visibility = Visibility.Collapsed;
-            ShowMRUFilesInJumpListsToggleSwitch.Visibility = Visibility.Collapsed;
+            AutoHideCheckBox.IsEnabled = false;
+            /*NotificationAreaStackPanel*/ ManageTrayIconsButton.IsEnabled = false;
+            RecentItemsMaxInJumpListDockPanel.IsEnabled = false;
+            ShowMRUProgramsToggleSwitch.IsEnabled = false;
+            ShowMRUFilesInJumpListsToggleSwitch.IsEnabled = false;
             ToolbarsTabItem.IsEnabled = false;
         }
 
@@ -59,34 +60,59 @@ namespace Superbar
                 AllowPeekCheckBox.IsChecked = Config.AllowPeekDesktop;
 
                 if (Config.DockMode == AppBarWindow.AppBarDockMode.Left)
-                    BarPositionComboBox.SelectedIndex = 1;
+                    SetToggleButtons(BarPositionButtonsGrid, 1); //BarPositionComboBox.SelectedIndex = 1;
                 else if (Config.DockMode == AppBarWindow.AppBarDockMode.Right)
-                    BarPositionComboBox.SelectedIndex = 2;
+                    SetToggleButtons(BarPositionButtonsGrid, 2); //BarPositionComboBox.SelectedIndex = 2;
                 else if (Config.DockMode == AppBarWindow.AppBarDockMode.Top)
-                    BarPositionComboBox.SelectedIndex = 3;
+                    SetToggleButtons(BarPositionButtonsGrid, 3); //BarPositionComboBox.SelectedIndex = 3;
                 else
-                    BarPositionComboBox.SelectedIndex = 0;
+                    SetToggleButtons(BarPositionButtonsGrid, 0); //BarPositionComboBox.SelectedIndex = 0;
 
                 if (Config.TaskbarCombineMode == Config.CombineMode.WhenFull)
-                    TaskbarCombineModeComboBox.SelectedIndex = 2;
+                    SetToggleButtons(TaskbarCombineModeGrid, 2); //TaskbarCombineModeComboBox.SelectedIndex = 2;
                 else if (Config.TaskbarCombineMode == Config.CombineMode.Never)
-                    TaskbarCombineModeComboBox.SelectedIndex = 3;
+                    SetToggleButtons(TaskbarCombineModeGrid, 3); //TaskbarCombineModeComboBox.SelectedIndex = 3;
                 else
                 {
                     if (Config.ShowCombinedLabels)
-                        TaskbarCombineModeComboBox.SelectedIndex = 0;
+                        SetToggleButtons(TaskbarCombineModeGrid, 0); //TaskbarCombineModeComboBox.SelectedIndex = 0;
                     else
-                        TaskbarCombineModeComboBox.SelectedIndex = 1;
+                        SetToggleButtons(TaskbarCombineModeGrid, 1); //TaskbarCombineModeComboBox.SelectedIndex = 1;
                 }
 
                 if (Config.TrayClockDateMode == Config.ClockDateMode.AlwaysShow)
-                    TaskbarClockDateModeComboBox.SelectedIndex = 0;
+                    SetToggleButtons(TaskbarClockDateModeGrid, 0); //TaskbarClockDateModeComboBox.SelectedIndex = 0;
                 else if (Config.TrayClockDateMode == Config.ClockDateMode.NeverShow)
-                    TaskbarClockDateModeComboBox.SelectedIndex = 2;
+                    SetToggleButtons(TaskbarClockDateModeGrid, 2); //TaskbarClockDateModeComboBox.SelectedIndex = 2;
                 else
-                    TaskbarClockDateModeComboBox.SelectedIndex = 1;
+                    SetToggleButtons(TaskbarClockDateModeGrid, 1); //TaskbarClockDateModeComboBox.SelectedIndex = 1;
 
                 ShowKillProcessesEntryToggleSwitch.IsChecked = Config.ShowKillProcessesInJumpLists;
+            }
+        }
+
+        private int GetSelectedToggleButton(Panel parent)
+        {
+            int returnIndex = -1;
+            foreach (ToggleButton t in parent.Children)
+            {
+                if (t.IsChecked == true)
+                {
+                    returnIndex = parent.Children.IndexOf(t);
+                    break;
+                }
+            }
+            return returnIndex;
+        }
+
+        private void SetToggleButtons(Panel parent, int newSelectedIndex)
+        {
+            foreach (ToggleButton t in parent.Children)
+            {
+                if (parent.Children.IndexOf(t) == newSelectedIndex)
+                    t.IsChecked = true;
+                else
+                    t.IsChecked = false;
             }
         }
 
@@ -102,32 +128,32 @@ namespace Superbar
 
             Config.ShowKillProcessesInJumpLists = ShowKillProcessesEntryToggleSwitch.IsChecked.Value;
 
-            if (BarPositionComboBox.SelectedIndex == 1)
+            if (GetSelectedToggleButton(BarPositionButtonsGrid) == 1) //BarPositionComboBox.SelectedIndex == 1)
                 Config.DockMode = AppBarWindow.AppBarDockMode.Left;
-            else if (BarPositionComboBox.SelectedIndex == 2)
+            else if (GetSelectedToggleButton(BarPositionButtonsGrid) == 2) //BarPositionComboBox.SelectedIndex == 2)
                 Config.DockMode = AppBarWindow.AppBarDockMode.Right;
-            else if (BarPositionComboBox.SelectedIndex == 3)
+            else if (GetSelectedToggleButton(BarPositionButtonsGrid) == 3) //BarPositionComboBox.SelectedIndex == 3)
                 Config.DockMode = AppBarWindow.AppBarDockMode.Top;
             else
                 Config.DockMode = AppBarWindow.AppBarDockMode.Bottom;
 
-            if (TaskbarCombineModeComboBox.SelectedIndex == 2)
+            if (GetSelectedToggleButton(TaskbarCombineModeGrid) == 2) //TaskbarCombineModeComboBox.SelectedIndex == 2)
                 Config.TaskbarCombineMode = Config.CombineMode.WhenFull;
-            else if (TaskbarCombineModeComboBox.SelectedIndex == 3)
+            else if (GetSelectedToggleButton(TaskbarCombineModeGrid) == 3) //TaskbarCombineModeComboBox.SelectedIndex == 3)
                 Config.TaskbarCombineMode = Config.CombineMode.Never;
             else
             {
                 Config.TaskbarCombineMode = Config.CombineMode.Always;
 
-                if (TaskbarCombineModeComboBox.SelectedIndex == 1)
+                if (GetSelectedToggleButton(TaskbarCombineModeGrid) == 1) //TaskbarCombineModeComboBox.SelectedIndex == 1)
                     Config.ShowCombinedLabels = false;
                 else
                     Config.ShowCombinedLabels = true;
             }
 
-            if (TaskbarClockDateModeComboBox.SelectedIndex == 1)
+            if (GetSelectedToggleButton(TaskbarClockDateModeGrid) == 1) //TaskbarClockDateModeComboBox.SelectedIndex == 1)
                 Config.TrayClockDateMode = Config.ClockDateMode.Auto;
-            else if (TaskbarClockDateModeComboBox.SelectedIndex == 2)
+            else if (GetSelectedToggleButton(TaskbarClockDateModeGrid) == 2) //TaskbarClockDateModeComboBox.SelectedIndex == 2)
                 Config.TrayClockDateMode = Config.ClockDateMode.NeverShow;
             else
                 Config.TrayClockDateMode = Config.ClockDateMode.AlwaysShow;
@@ -141,6 +167,20 @@ namespace Superbar
         private void Start9SettingsButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton button = (sender as ToggleButton);
+            Panel parent = button.Parent as Panel;
+            if (button.IsChecked == true)
+            {
+                foreach (ToggleButton t in parent.Children)
+                {
+                    if (t != button)
+                        t.IsChecked = false;
+                }
+            }
         }
     }
 }
