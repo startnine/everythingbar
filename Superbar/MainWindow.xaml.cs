@@ -287,7 +287,7 @@ namespace Everythingbar
             typeof(double), typeof(MainWindow),
             new FrameworkPropertyMetadata((double)0, FrameworkPropertyMetadataOptions.AffectsRender));
 
-        Shell32.Shell _shell = new Shell32.Shell();
+        readonly Shell32.Shell _shell = new Shell32.Shell();
 
         public List<ProcessWindow> Windows(Process process)
         {
