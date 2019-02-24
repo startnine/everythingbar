@@ -8,7 +8,7 @@
                     xmlns:tic="clr-namespace:Start9.UI.Wpf.Statics;assembly=Start9.UI.Wpf"
                     xmlns:disk="clr-namespace:WindowsSharp.DiskItems;assembly=WindowsSharp"
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                     xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Start9.UI.Wpf;component/Themes/Shale.xaml"/>
@@ -428,7 +428,7 @@
                     </DataTemplate.Resources>
                     <Grid x:Name="PinnedAppRootGrid" DataContext="{Binding}" MinWidth="44" Height="{Binding ResizeIntervalDistance, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}">
                         <e:Interaction.Behaviors>
-                            <local:TaskItemMiddleClickBehavior/>
+                            <local:TaskItemClickBehavior Button="{Binding ElementName=IconToggleButton}"/>
                             <local:TaskItemDragBehavior Application="{Binding}"/>
                         </e:Interaction.Behaviors>
                         <ListView x:Name="ItemsListView" SelectionMode="Single" ItemsSource="{Binding OpenWindows}" SelectedItem="{Binding SelectedWindow, Mode=TwoWay, FallbackValue={x:Null}}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">

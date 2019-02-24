@@ -2,10 +2,10 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <AssemblyTitle>AeroVista</AssemblyTitle>
-    <Product>AeroVista</Product>
+    <AssemblyTitle>Aero</AssemblyTitle>
+    <Product>Aero</Product>
     <Copyright>Copyright ©  2019</Copyright>
-    <OutputPath>C:\Users\Splitwirez\AppData\Roaming\Start9\TempData\Everythingbar_Skins\AeroVista</OutputPath>
+    <OutputPath>C:\Users\Splitwirez\AppData\Roaming\Start9\TempData\Everythingbar_Skins\Aero</OutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ExtrasEnableWpfProjectSetup>true</ExtrasEnableWpfProjectSetup>
     <AssemblyName>Skin</AssemblyName>

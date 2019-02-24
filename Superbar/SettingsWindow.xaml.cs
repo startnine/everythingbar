@@ -94,14 +94,16 @@ namespace Everythingbar
 
                 CurrentSkinComboBox.Items.Clear();
                 CurrentSkinComboBox.Items.Add("Shale");
-                foreach (string s in Directory.EnumerateFiles(Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Everythingbar_Skins")))
+                //foreach (string s in Directory.EnumerateFiles(Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Everythingbar_Skins")))
+                foreach (string s in Directory.EnumerateDirectories(Environment.ExpandEnvironmentVariables(@"%appdata%\Start9\TempData\Everythingbar_Skins")))
                 {
-                    if (System.IO.Path.GetExtension(s).ToLowerInvariant().EndsWith("dll"))
+                    string expectedSkinPath = System.IO.Path.Combine(s, "Skin.dll");
+                    if (File.Exists(expectedSkinPath)) //System.IO.Path.GetExtension(s).ToLowerInvariant().EndsWith("dll"))
                     {
-                        var assembly = System.Reflection.Assembly.LoadFile(s); //This is probably a terrible idea idk, todo: checc with flec
+                        var assembly = System.Reflection.Assembly.LoadFile(expectedSkinPath); //This is probably a terrible idea idk, todo: checc with flec
                         var dictionary = new ResourceDictionary()
                         {
-                            Source = new Uri(@"/" + System.IO.Path.GetFileNameWithoutExtension(s) + @";component/Themes/Theme.xaml", UriKind.RelativeOrAbsolute)
+                            Source = new Uri(@"/Skin;component/Themes/Skin.xaml", UriKind.RelativeOrAbsolute)
                         };
 
                         CurrentSkinComboBox.Items.Add(new ComboBoxItem()
