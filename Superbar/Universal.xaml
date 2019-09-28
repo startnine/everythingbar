@@ -6,7 +6,7 @@
                     xmlns:window="clr-namespace:WindowsSharp.Processes;assembly=WindowsSharp"
                     xmlns:disk="clr-namespace:WindowsSharp.DiskItems;assembly=WindowsSharp"
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
     <ResourceDictionary.MergedDictionaries>
         <!--ResourceDictionary Source="/PresentationFramework.Aero2;component/themes/Aero2.NormalColor.xaml" /-->
         <!--ResourceDictionary Source="pack://application:,,,/Start9.UI.Wpf;component/Themes/Aero2.NormalColor.xaml"/-->

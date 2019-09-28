@@ -8,7 +8,7 @@
                     xmlns:conv="clr-namespace:Start9.UI.Wpf.Converters;assembly=Start9.UI.Wpf"
                     xmlns:tray="clr-namespace:WindowsSharp;assembly=WindowsSharp"
                     xmlns:stat="clr-namespace:Start9.UI.Wpf.Statics;assembly=Start9.UI.Wpf"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
                     xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Aero;component/themes/Aero.NormalColor.xaml" />

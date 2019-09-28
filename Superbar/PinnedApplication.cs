@@ -26,11 +26,9 @@ namespace Everythingbar
                 _isPinned = value;
                 if (value == true)
                     Config.AddPinnedApp(DiskApplication.ItemPath);
-                else// if (Config.PinnedApps.Contains(DiskApplication.ItemPath))
                     Config.RemovePinnedApp(DiskApplication.ItemPath);
 
                 NotifyPropertyChanged("IsPinned");
-                //Debug.WriteLine("IsPinned updated: " + _isPinned.ToString());
                 IsPinnedChanged?.Invoke(this, new EventArgs());
             }
         }
@@ -165,18 +163,14 @@ namespace Everythingbar
         private ProcessWindow _selectedWindow = null;
         public ProcessWindow SelectedWindow
         {
-            get
-            {
-                return _selectedWindow;
-            }
+            get => _selectedWindow;
             set
             {
                 _selectedWindow = value;
-                //Debug.WriteLine("Selected Window changed");
-                if (_selectedWindow != null)
-                    ShowWindow(_selectedWindow);
-                /*else
-                    Debug.WriteLine("_selectedWindow is null");*/
+                ShowWindow(_selectedWindow);
+                
+                    
+                
                 NotifyPropertyChanged("SelectedWindow");
             }
         }
@@ -199,26 +193,28 @@ namespace Everythingbar
         {
             get
             {
-                //_isApplicationActive = GetContainsActiveWindow();
                 return _isApplicationActive;
             }
             set
             {
-                if (!Config.IsDraggingPinnedApplication)
+                var oldValue = _isApplicationActive;
+                _isApplicationActive = value;
+
+                if ((OpenWindows.Count > 0) && (!Config.IsDraggingPinnedApplication))
                 {
-                    var oldValue = _isApplicationActive;
-                    _isApplicationActive = value;
                     if ((value == true) && (oldValue != value))
                     {
 
-                        if (OpenWindows.Count == 0)
+                        /*if (OpenWindows.Count == 0)
                             DiskApplication.Open();
-                        else if (OpenWindows.Count == 1)
+                        else*/ if (OpenWindows.Count == 1)
                             ShowWindow(OpenWindows[0]);
-                        else if (AreThumbnailsShown == true)
+                        else 
+                        if (AreThumbnailsShown == true)
                             ThumbnailsRequested?.Invoke(this, new WindowEventArgs(SelectedWindow));
                     }
                 }
+
                 NotifyPropertyChanged("IsApplicationActive");
             }
         }
@@ -341,10 +337,10 @@ namespace Everythingbar
                         {
                             OpenWindows.Add(e.Window);
                             //ExamineActiveWindow(e.Window);
-                            if ((e.Window != null) && (ProcessWindow.ActiveWindow.Handle == e.Window.Handle))
+                            if /*((e.Window != null) && */(ProcessWindow.ActiveWindow.Handle == e.Window.Handle)//)
                             {
                                 SelectedWindow = e.Window;
-                                IsApplicationActive = true;
+                                //IsApplicationActive = true;
                             }
                         }
                     }

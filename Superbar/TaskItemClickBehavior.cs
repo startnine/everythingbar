@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Media;
@@ -13,10 +14,19 @@ using WindowsSharp.DiskItems;
 
 namespace Everythingbar
 {
-    public class TaskItemMiddleClickBehavior : Behavior<FrameworkElement>
+    public class TaskItemClickBehavior : Behavior<FrameworkElement>
     {
         bool _pressed = false;
         ListViewItem _item;
+        new public ToggleButton Button
+        {
+            get => (ToggleButton)GetValue(ButtonProperty);
+            set => SetValue(ButtonProperty, value);
+        }
+
+        new public static readonly DependencyProperty ButtonProperty =
+            DependencyProperty.Register("Button", typeof(ToggleButton), typeof(TaskItemClickBehavior), new PropertyMetadata(OnButtonPropertyChanged));
+
         protected override void OnAttached()
         {
             base.OnAttached();
@@ -27,6 +37,20 @@ namespace Everythingbar
                 _item.PreviewMouseDown += _item_PreviewMouseDown;
                 _item.PreviewMouseUp += _item_PreviewMouseUp;
             }
+        }
+
+        public static void OnButtonPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (e.NewValue as ToggleButton).Click += (d as TaskItemClickBehavior).Button_Click;
+        }
+
+        public void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Panel visualOwner = VisualTreeHelper.GetParent(_item) as Panel;
+            var app = ((Window.GetWindow(sender as DependencyObject) as MainWindow).OpenApplications[visualOwner.Children.IndexOf(_item)]);
+
+            if (app.OpenWindows.Count == 0)
+                app.DiskApplication.Open();
         }
 
         private void _item_PreviewMouseUp(object sender, MouseButtonEventArgs e)
